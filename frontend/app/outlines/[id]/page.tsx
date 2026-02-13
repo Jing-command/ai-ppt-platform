@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
@@ -65,9 +65,6 @@ export default function OutlineDetailPage() {
   const [isBgModalOpen, setIsBgModalOpen] = useState(false);
   const [expandedPages, setExpandedPages] = useState<Set<number>>(new Set());
 
-  useEffect(() => {
-    fetchOutline();
-  }, [outlineId, fetchOutline]);
 
   const fetchOutline = useCallback(async () => {
     try {
@@ -105,6 +102,10 @@ export default function OutlineDetailPage() {
     }
     setExpandedPages(newExpanded);
   };
+
+  useEffect(() => {
+    fetchOutline();
+  }, [outlineId, fetchOutline]);
 
   const handleAddPage = (index?: number) => {
     const newPage: OutlineSection = {

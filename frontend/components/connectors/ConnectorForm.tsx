@@ -26,7 +26,7 @@ const createConnectorSchema = (typeConfig: ConnectorTypeConfig | null) => {
     });
   }
 
-  const configShape: Record<string, unknown> = {};
+  const configShape: Record<string, any> = {};
   typeConfig.fields.forEach((field) => {
     if (field.type === 'number') {
       configShape[field.name] = field.required
@@ -73,7 +73,7 @@ const itemVariants = {
     y: 0,
     transition: {
       duration: 0.3,
-      ease: [0.4, 0, 0.2, 1] as const,
+      ease: "easeOut" as const,
     },
   },
 };
@@ -139,10 +139,11 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
 
   const handleFormSubmit = async (data: CreateConnectorRequest | UpdateConnectorRequest) => {
     // 转换数字字段
-    if (typeConfig) {
+    if (typeConfig && data.config) {
+      const config = data.config as Record<string, any>;
       typeConfig.fields.forEach((field) => {
-        if (field.type === 'number' && data.config[field.name]) {
-          data.config[field.name] = Number(data.config[field.name]);
+        if (field.type === 'number' && config[field.name]) {
+          config[field.name] = Number(config[field.name]);
         }
       });
     }

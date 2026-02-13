@@ -41,7 +41,7 @@ const itemVariants = {
     y: 0,
     transition: {
       duration: 0.3,
-      ease: [0.4, 0, 0.2, 1],
+      ease: "easeOut" as const,
     },
   },
 };
@@ -54,7 +54,7 @@ const errorVariants = {
     marginBottom: 16,
     transition: {
       duration: 0.2,
-      ease: [0.4, 0, 0.2, 1],
+      ease: "easeOut" as const,
     },
   },
   exit: {
@@ -167,7 +167,7 @@ export function LoginForm({ className }: LoginFormProps) {
           animate={{
             scale: focusedField === 'email' ? 1.01 : 1,
           }}
-          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.2, ease: "easeOut" as const }}
           className="relative"
         >
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -226,7 +226,7 @@ export function LoginForm({ className }: LoginFormProps) {
           animate={{
             scale: focusedField === 'password' ? 1.01 : 1,
           }}
-          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.2, ease: "easeOut" as const }}
           className="relative"
         >
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

@@ -53,7 +53,7 @@ export function ConnectorCard({ connector, onEdit, onDelete, onTest }: Connector
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       whileHover={{ y: -4 }}
-      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.3, ease: "easeOut" as const }}
       className="card p-5 flex flex-col gap-4"
     >
       {/* 头部：图标、名称、类型 */}

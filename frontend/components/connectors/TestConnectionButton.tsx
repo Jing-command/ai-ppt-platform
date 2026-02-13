@@ -9,7 +9,7 @@ import { TestConnectorResponse } from '@/types/connector';
 interface TestConnectionButtonProps {
   connectorId?: string;
   type?: string;
-  config?: Record<string, unknown>;
+  config?: Record<string, any>;
   onTestResult?: (result: TestConnectorResponse) => void;
   className?: string;
   variant?: 'default' | 'small';

@@ -83,9 +83,6 @@ export default function PresentationEditorPage() {
   const [history, setHistory] = useState<Slide[][]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
-  useEffect(() => {
-    fetchPresentation();
-  }, [presentationId, fetchPresentation]);
 
   const fetchPresentation = useCallback(async () => {
     try {
@@ -133,6 +130,10 @@ export default function PresentationEditorPage() {
       setSlides([...history[newIndex]]);
     }
   };
+
+  useEffect(() => {
+    fetchPresentation();
+  }, [presentationId, fetchPresentation]);
 
   // 重做
   const handleRedo = () => {
