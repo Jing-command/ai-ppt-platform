@@ -88,3 +88,8 @@ exports/
 
 # OS files
 Thumbs.db
+
+# OpenClaw 上下文压缩（不应提交到版本控制）
+.context-compression/
+CONTEXT_*.md
+AUTO_CONTEXT_*.md
