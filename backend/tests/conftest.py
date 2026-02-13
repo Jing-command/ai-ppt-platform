@@ -29,6 +29,7 @@ from ai_ppt.api.v1.router import router as api_router
 from ai_ppt.config import Settings, get_settings
 from ai_ppt.database import get_db
 from ai_ppt.domain.models.base import Base
+from ai_ppt.models.user import User
 
 # ==================== 数据库 Fixtures ====================
 
