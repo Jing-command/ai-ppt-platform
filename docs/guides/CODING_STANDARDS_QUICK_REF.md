@@ -1,27 +1,28 @@
-# 🎯 代码规范速查卡
+# 🎯 AI PPT Platform - 代码规范速查卡
 
-**规范文档**: [CODING_STANDARDS.md](../CODING_STANDARDS.md)  
-**适用范围**: 所有 Sub-agent 编写代码
+**项目规范**: [../CODING_STANDARDS.md](../CODING_STANDARDS.md)  
+**全局规范**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS.md`  
+**全局速查卡**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS_QUICK_REF.md`
 
 ---
 
 ## 🚀 提交前必做 (30秒检查)
 
 ```bash
-# 前端
+# ========== 后端 ==========
+cd backend
+black src/             # 格式化
+isort src/             # import排序
+mypy src/              # 必须 0 error
+flake8 src/            # 必须 0 warning
+bandit -r src/         # 必须无高危
+pytest --cov=src       # 必须 ≥ 80%
+
+# ========== 前端 ==========
 cd frontend
 npm run lint           # 必须 0 error
 npm run type-check     # 必须 0 error
 npm run build          # 必须成功
-
-# 后端
-cd backend
-black --check src/     # 必须通过
-isort --check src/     # 必须通过
-mypy src/              # 必须 0 error
-flake8 src/            # 必须 0 warning
-pytest --cov=src       # 必须 ≥ 80%
-bandit -r src/         # 必须无高危
 ```
 
 ---
@@ -31,10 +32,10 @@ bandit -r src/         # 必须无高危
 | 类型 | 规范 | 示例 |
 |------|------|------|
 | **常量** | `SCREAMING_SNAKE_CASE` | `MAX_RETRY = 3` |
-| **变量** | `camelCase` | `userName = ''` |
-| **函数** | `camelCase` 动词开头 | `getUserById()` |
+| **变量** | `camelCase` (TS) / `snake_case` (Python) | `userName` / `user_name` |
+| **函数** | `camelCase` (TS) / `snake_case` (Python) | `getUserById()` / `get_user_by_id()` |
 | **类/接口** | `PascalCase` | `UserService` |
-| **私有** | `_leadingUnderscore` | `_internalMethod()` |
+| **私有** | `_leadingUnderscore` | `_internal_method()` |
 | **CSS 类** | `BEM` 命名 | `.user-card__title--large` |
 
 ---
@@ -54,15 +55,17 @@ os.system(f"ping {host}")
 
 # ✅ 安全执行
 subprocess.run(["ping", host])
+```
 
+```typescript
+// ❌ XSS - 禁止
+element.innerHTML = userInput;
 
-# ❌ XSS - 禁止
-element.innerHTML = userInput
+// ✅ 安全插入
+element.textContent = userInput;
+```
 
-# ✅ 安全插入
-element.textContent = userInput
-
-
+```python
 # ❌ 硬编码密钥 - 禁止
 JWT_SECRET = "my-secret-key"
 
@@ -137,9 +140,10 @@ npm run lint -- --fix
 
 ## 📚 参考
 
-- 完整规范: [CODING_STANDARDS.md](../CODING_STANDARDS.md)
-- 腾讯 secguide: https://github.com/Tencent/secguide
-- AlloyTeam: https://alloyteam.github.io/CodeGuide/
+- **项目规范**: [../CODING_STANDARDS.md](../CODING_STANDARDS.md)
+- **全局规范**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS.md`
+- **腾讯 secguide**: https://github.com/Tencent/secguide
+- **AlloyTeam**: https://alloyteam.github.io/CodeGuide/
 
 ---
 
