@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   Design System - Minimalist Business Style
+   ============================================ */
+
+:root {
+  /* Primary Colors */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #3b82f6;
+  
+  /* Background Colors */
+  --color-background: #f8fafc;
+  --color-card: #ffffff;
+  --color-surface: #f1f5f9;
+  
+  /* Text Colors */
+  --color-text: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+  --color-text-placeholder: #94a3b8;
+  
+  /* Status Colors */
+  --color-error: #ef4444;
+  --color-error-light: #fef2f2;
+  --color-error-border: #fecaca;
+  --color-success: #10b981;
+  --color-success-light: #ecfdf5;
+  
+  /* Border Colors */
+  --color-border: #e2e8f0;
+  --color-border-hover: #cbd5e1;
+  --color-border-focus: #2563eb;
+  
+  /* Shadows */
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-focus: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  --shadow-input: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  
+  /* Animation */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ============================================
+   Form Elements
+   ============================================ */
+
+@layer components {
+  .form-input {
+    @apply w-full px-4 py-3 bg-white border border-[var(--color-border)] rounded-lg 
+           text-[var(--color-text)] placeholder-[var(--color-text-placeholder)]
+           shadow-[var(--shadow-input)]
+           transition-all duration-200 ease-out;
+  }
+  
+  .form-input:hover {
+    @apply border-[var(--color-border-hover)];
+  }
+  
+  .form-input:focus {
+    @apply outline-none border-[var(--color-primary)];
+    box-shadow: var(--shadow-focus);
+  }
+  
+  .form-input:disabled {
+    @apply opacity-50 cursor-not-allowed bg-[var(--color-surface)];
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-[var(--color-text-secondary)] mb-1.5;
+  }
+  
+  .form-error {
+    @apply mt-1.5 text-sm text-[var(--color-error)] flex items-center gap-1;
+  }
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2.5 
+           font-medium text-sm rounded-lg transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply btn text-white bg-gradient-to-r from-blue-600 to-blue-500
+           hover:from-blue-700 hover:to-blue-600
+           focus:ring-blue-500 shadow-md hover:shadow-lg
+           active:scale-[0.98];
+  }
+  
+  .btn-secondary {
+    @apply btn text-[var(--color-text-secondary)] bg-white border border-[var(--color-border)]
+           hover:bg-[var(--color-surface)] hover:border-[var(--color-border-hover)]
+           focus:ring-gray-200;
+  }
+}
+
+/* ============================================
+   Card
+   ============================================ */
+
+@layer components {
+  .card {
+    @apply bg-white rounded-xl shadow-[var(--shadow-card)]
+           transition-shadow duration-300;
+  }
+  
+  .card:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+}
+
+/* ============================================
+   Error Alert
+   ============================================ */
+
+@layer components {
+  .alert-error {
+    @apply p-4 rounded-lg bg-[var(--color-error-light)] border border-[var(--color-error-border)]
+           text-[var(--color-error)] text-sm;
+  }
+  
+  .alert-error-icon {
+    @apply flex items-start gap-3;
+  }
+}
+
+/* ============================================
+   Link
+   ============================================ */
+
+@layer components {
+  .link {
+    @apply text-[var(--color-primary)] font-medium
+           transition-colors duration-200
+           hover:text-[var(--color-primary-hover)]
+           focus:outline-none focus:underline;
+  }
+}
+
+/* ============================================
+   Utilities
+   ============================================ */
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-500;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+  
+  .animate-shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+/* ============================================
+   Spinner Animation
+   ============================================ */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

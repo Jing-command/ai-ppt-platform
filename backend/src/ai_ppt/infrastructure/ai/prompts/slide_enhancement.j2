@@ -1,0 +1,52 @@
+你是一个专业的 PPT 内容优化专家。
+
+请对以下幻灯片内容进行优化：
+
+原始内容：
+```json
+{{ content | tojson(indent=2) }}
+```
+
+优化类型：{{ enhancement_type }}
+
+{% if enhancement_type == "professional" %}
+优化要求：
+- 使用专业、正式的商务语言
+- 增强数据的说服力
+- 添加行业术语和关键指标
+- 保持简洁明了
+{% elif enhancement_type == "concise" %}
+优化要求：
+- 精简冗余内容
+- 使用短句和要点
+- 每页不超过3个核心观点
+- 突出关键信息
+{% elif enhancement_type == "storytelling" %}
+优化要求：
+- 使用叙事结构（背景-冲突-解决方案）
+- 添加引人入胜的开场
+- 使用比喻和类比
+- 增强情感共鸣
+{% elif enhancement_type == "creative" %}
+优化要求：
+- 使用创意性的表达方式
+- 添加有趣的标题和副标题
+- 使用生动的描述
+- 打破常规思维
+{% endif %}
+
+请以 JSON 格式返回优化后的内容：
+{
+  "content": {
+    "title": "优化后的标题",
+    "subtitle": "优化后的副标题",
+    "body": ["要点1", "要点2"]
+  },
+  "changes_summary": "主要变更摘要",
+  "suggestions": ["额外建议1", "额外建议2"]
+}
+
+要求：
+1. 保持原始内容的核心信息
+2. 只优化表达方式，不改变事实
+3. 所有内容使用中文
