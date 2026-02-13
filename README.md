@@ -123,7 +123,7 @@ PYTHONPATH=./src uvicorn ai_ppt.main:app --host 0.0.0.0 --port 8000 --reload
 ### 3. 前端启动
 
 ```bash
-cd my-app
+cd frontend
 
 # 安装依赖
 npm install
@@ -188,7 +188,7 @@ POST   /api/v1/connectors/{id}/test  # 测试连接
 
 ```
 ai-ppt-platform/
-├── backend/                      # 后端代码
+├── backend/                      # 后端代码 (FastAPI)
 │   ├── src/ai_ppt/
 │   │   ├── api/v1/endpoints/    # API 端点
 │   │   │   ├── auth.py          # 认证相关
@@ -197,44 +197,33 @@ ai-ppt-platform/
 │   │   │   ├── exports.py       # 导出功能
 │   │   │   └── connectors.py    # 数据连接
 │   │   ├── services/            # 业务逻辑层
-│   │   │   ├── export_service.py    # 导出服务
-│   │   │   ├── outline_service.py   # 大纲服务
-│   │   │   └── outline_generation.py # AI 生成
 │   │   ├── models/              # 数据模型
-│   │   ├── domain/              # 领域模型
-│   │   ├── infrastructure/      # 基础设施
 │   │   └── main.py              # 应用入口
-│   ├── tests/                   # 测试文件
-│   ├── alembic/                 # 数据库迁移
-│   ├── pyproject.toml           # Poetry 配置
-│   └── requirements.txt         # pip 依赖
+│   ├── tests/                   # 后端测试
+│   ├── pyproject.toml
+│   └── requirements.txt
 │
-├── my-app/                       # 前端代码
+├── frontend/                     # 前端代码 (Next.js) ⭐ 重命名
 │   ├── app/                     # Next.js 页面
-│   │   ├── auth/                # 认证页面
-│   │   ├── outlines/            # 大纲页面
-│   │   ├── presentations/       # PPT 页面
-│   │   └── page.tsx             # 首页
-│   ├── components/              # 组件
-│   │   ├── auth/                # 认证组件
-│   │   ├── outlines/            # 大纲组件
-│   │   └── presentations/       # PPT 组件
-│   │       ├── ExportButton.tsx     # 导出按钮
-│   │       ├── SlideEditor.tsx      # 幻灯片编辑
-│   │       └── SlideToolbar.tsx     # 工具栏
-│   ├── lib/api/                 # API 客户端
-│   │   ├── auth.ts
-│   │   ├── outlines.ts
-│   │   ├── presentations.ts
-│   │   └── exports.ts
+│   ├── components/              # React 组件
+│   ├── lib/                     # 工具库
 │   ├── types/                   # TypeScript 类型
 │   └── package.json
 │
+├── tests/                        # 集成测试 ⭐ 新增
+│   ├── fixtures/                # 测试数据
+│   ├── integration/             # 集成测试
+│   └── unit/                    # 单元测试
+│
 ├── docs/                         # 文档
-├── tests/                        # 集成测试
-├── DEPS.md                       # 依赖说明
-├── API_CONTRACT.md               # API 契约
-└── README.md                     # 本文件
+│   ├── architecture/            # API契约等架构文档
+│   └── guides/                  # 使用指南
+│
+├── docker/                       # Docker 配置
+├── scripts/                      # 脚本工具
+├── README.md
+├── LICENSE
+└── .gitignore
 ```
 
 ---
