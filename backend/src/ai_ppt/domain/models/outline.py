@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum as PyEnum
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, ClassVar, Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import JSON, DateTime, ForeignKey, String, Text
@@ -156,6 +156,7 @@ class Outline(Base):
     """
 
     __tablename__ = "outlines"
+    __allow_unmapped__ = True  # 允许非 Mapped 注解
 
     # 主键
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

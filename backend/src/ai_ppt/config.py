@@ -32,8 +32,8 @@ class Settings(BaseSettings):
     # Redis 配置
     REDIS_URL: str = "redis://localhost:6379/0"
 
-    # JWT 配置
-    JWT_SECRET_KEY: str = "ci-test-secret-key-change-in-production"  # CI 测试用默认值
+    # JWT 配置 - 必须设置环境变量
+    JWT_SECRET_KEY: str  # 必须在环境变量中设置，无默认值
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
