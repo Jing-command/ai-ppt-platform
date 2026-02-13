@@ -29,8 +29,6 @@ class ConnectorFactory:
     _connectors: Dict[str, Type[DataConnector]] = {
         ConnectorType.MYSQL: MySQLConnector,
         ConnectorType.SALESFORCE: SalesforceConnector,
-        # PostgreSQL 连接器占位，已注册但尚未实现
-        ConnectorType.POSTGRESQL: None,  # type: ignore[dict-value]
     }
 
     @classmethod
@@ -62,7 +60,7 @@ class ConnectorFactory:
     @classmethod
     def get_supported_types(cls) -> list[str]:
         """获取所有支持的连接器类型"""
-        return list(cls._connectors.keys())
+        return list(cls._connectors.keys()) + [ConnectorType.POSTGRESQL]
 
     @classmethod
     def create_connector(
