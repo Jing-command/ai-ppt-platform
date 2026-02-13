@@ -97,6 +97,11 @@ convention = "google"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.flake8]
+max-line-length = 100
+ignore = ["E203", "W503"]
+exclude = [".git", "__pycache__", ".venv", "venv", ".mypy_cache"]
 python_files = ["test_*.py", "*_test.py"]
 pythonpath = ["src"]
 addopts = "-v --tb=short"

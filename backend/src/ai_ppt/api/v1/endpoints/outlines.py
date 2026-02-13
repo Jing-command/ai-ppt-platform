@@ -272,9 +272,9 @@ async def update_outline(
 
 @router.delete(
     "/{outline_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
     summary="删除大纲",
     responses={
+        200: {"description": "删除成功"},
         401: {"model": ErrorResponse, "description": "未认证"},
         404: {"model": ErrorResponse, "description": "大纲不存在"},
     },

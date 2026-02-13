@@ -200,9 +200,9 @@ async def update_connector(
 
 @router.delete(
     "/{connector_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
     summary="删除连接器",
     responses={
+        200: {"description": "删除成功"},
         401: {"model": ErrorResponse, "description": "未认证"},
         404: {"model": ErrorResponse, "description": "连接器不存在"},
     },

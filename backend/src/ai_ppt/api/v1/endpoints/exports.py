@@ -2,9 +2,8 @@
 导出 API
 处理 PPT 导出为各种格式的异步任务
 """
-
 from datetime import datetime, timezone
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
@@ -43,13 +42,13 @@ def get_export_service(db: AsyncSession = Depends(get_db)) -> ExportService:
 )
 async def export_pptx(
     presentation_id: UUID,
-    quality: str = "standard",
-    slide_range: str = "all",
-    include_notes: bool = False,
-    background_tasks: Optional[BackgroundTasks] = None,
+    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
+    quality: str = "standard",
+    slide_range: str = "all",
+    include_notes: bool = False,
 ) -> Any:
     """
     提交 PPTX 导出任务
@@ -84,11 +83,7 @@ async def export_pptx(
     )
 
     # 启动后台任务
-    if background_tasks:
-        background_tasks.add_task(process_export_task, task.id)
-    else:
-        # 立即处理（同步方式）
-        await process_export_task(task.id)
+    background_tasks.add_task(process_export_task, task.id)
 
     return ExportResponse(
         taskId=task.id,
@@ -113,13 +108,13 @@ async def export_pptx(
 )
 async def export_pdf(
     presentation_id: UUID,
-    quality: str = "standard",
-    slide_range: str = "all",
-    include_notes: bool = False,
-    background_tasks: Optional[BackgroundTasks] = None,
+    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
+    quality: str = "standard",
+    slide_range: str = "all",
+    include_notes: bool = False,
 ) -> Any:
     """
     提交 PDF 导出任务
@@ -154,10 +149,7 @@ async def export_pdf(
     )
 
     # 启动后台任务
-    if background_tasks:
-        background_tasks.add_task(process_export_task, task.id)
-    else:
-        await process_export_task(task.id)
+    background_tasks.add_task(process_export_task, task.id)
 
     return ExportResponse(
         taskId=task.id,
@@ -182,13 +174,13 @@ async def export_pdf(
 )
 async def export_images(
     presentation_id: UUID,
-    format: str = "png",
-    quality: str = "standard",
-    slide_range: str = "all",
-    background_tasks: Optional[BackgroundTasks] = None,
+    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
+    format: str = "png",
+    quality: str = "standard",
+    slide_range: str = "all",
 ) -> Any:
     """
     提交图片导出任务（每页一张图片，打包为 zip）
@@ -231,10 +223,7 @@ async def export_images(
     )
 
     # 启动后台任务
-    if background_tasks:
-        background_tasks.add_task(process_export_task, task.id)
-    else:
-        await process_export_task(task.id)
+    background_tasks.add_task(process_export_task, task.id)
 
     return ExportResponse(
         taskId=task.id,

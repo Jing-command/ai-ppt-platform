@@ -17,6 +17,35 @@ AI PPT Platform 是一个智能演示文稿生成系统，支持 AI 自动生成
 
 ## 最近更新
 
+### 2026-02-14: 修复 exports.py BackgroundTasks 参数顺序问题
+**问题**: FastAPI 端点函数中 `BackgroundTasks` 参数放在有默认值的查询参数之后，导致 Python 语法错误和 FastAPI 依赖注入失败
+
+**修复**:
+- 将 `BackgroundTasks` 参数移到 `Depends()` 参数之后
+- 移除 `Optional` 包装和 None 检查（因为 FastAPI 会注入 BackgroundTasks 实例）
+- 修复文件: `src/ai_ppt/api/v1/endpoints/exports.py`
+
+**修复前**:
+```python
+async def export_pptx(
+    presentation_id: UUID,
+    quality: str = "standard",           # 有默认值
+    background_tasks: BackgroundTasks,  # 无默认值 → 语法错误！
+    ...
+) -> Any:
+```
+
+**修复后**:
+```python
+async def export_pptx(
+    presentation_id: UUID,
+    current_user: User = Depends(get_current_user),
+    background_tasks: BackgroundTasks = Depends(),  # 正确位置
+    quality: str = "standard",
+    ...
+) -> Any:
+```
+
 ### 2026-02-14: 修复所有 mypy 类型错误
 **修复统计**:
 - 修复前: 87 个错误

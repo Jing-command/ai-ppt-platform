@@ -194,7 +194,6 @@ async def update_presentation(
 
 @router.delete(
     "/{presentation_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
     summary="删除 PPT",
     responses={
         401: {"model": ErrorResponse, "description": "未认证"},

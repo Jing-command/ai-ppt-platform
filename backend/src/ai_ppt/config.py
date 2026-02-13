@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     # JWT 配置
     JWT_SECRET_KEY: str = Field(
         default="ci-test-secret-key-change-in-production",
-        description="JWT 签名密钥 - 生产环境必须修改"
+        description="JWT 签名密钥 - 生产环境必须修改",
     )
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30

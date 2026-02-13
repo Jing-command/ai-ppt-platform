@@ -13,13 +13,22 @@ from ai_ppt.domain.models.base import Base
 # 创建异步引擎
 # 使用 NullPool 在测试环境中避免连接池问题
 echo = settings.DEBUG
-engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=echo,
-    pool_size=settings.DATABASE_POOL_SIZE,
-    max_overflow=settings.DATABASE_MAX_OVERFLOW,
-    pool_pre_ping=True,  # 自动检测断开的连接
-)
+
+# SQLite 不支持连接池参数，需要特殊处理
+if settings.DATABASE_URL.startswith("sqlite"):
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=echo,
+        pool_pre_ping=True,  # 自动检测断开的连接
+    )
+else:
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        echo=echo,
+        pool_size=settings.DATABASE_POOL_SIZE,
+        max_overflow=settings.DATABASE_MAX_OVERFLOW,
+        pool_pre_ping=True,
+    )
 
 # 异步会话工厂
 AsyncSessionLocal = async_sessionmaker(

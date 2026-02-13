@@ -157,7 +157,6 @@ async def update_slide(
 
 @router.delete(
     "/{slide_id}",
-    status_code=status.HTTP_204_NO_CONTENT,
     summary="删除幻灯片",
     responses={
         401: {"model": ErrorResponse, "description": "未认证"},
