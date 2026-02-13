@@ -128,15 +128,17 @@ def auth_headers(test_user_id: uuid.UUID) -> dict[str, str]:
 
 
 @pytest_asyncio.fixture
-async def authenticated_user(db_session: AsyncSession, test_user_id: uuid.UUID) -> Any:
+async def authenticated_user(db_session: AsyncSession) -> Any:
     """创建并返回已认证的测试用户"""
     from ai_ppt.core.security import get_password_hash
     from ai_ppt.models.user import User
 
+    # 使用唯一 ID 和邮箱避免冲突
+    unique_id = uuid.uuid4()
     user = User(
-        id=test_user_id,
-        email="test@example.com",
-        username="testuser",
+        id=unique_id,
+        email=f"test_{unique_id.hex[:8]}@example.com",
+        username=f"testuser_{unique_id.hex[:8]}",
         hashed_password=get_password_hash("password123"),
         is_active=True,
         is_superuser=False,

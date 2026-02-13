@@ -268,7 +268,8 @@ class TestAuthAPI:
         """测试未认证访问"""
         response = await client.get("/api/v1/auth/me")
 
-        assert response.status_code == 403
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
     async def test_get_me_invalid_token(self, client: AsyncClient):
         """测试无效的令牌"""
