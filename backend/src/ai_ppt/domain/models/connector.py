@@ -14,8 +14,14 @@ from uuid import UUID
 from sqlalchemy import JSON, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from ai_ppt.domain.models.base import (Base, DateTimeAuto, DateTimeUpdated,
-                                       Str255, TextOptional, UUIDPk)
+from ai_ppt.domain.models.base import (
+    Base,
+    DateTimeAuto,
+    DateTimeUpdated,
+    Str255,
+    TextOptional,
+    UUIDPk,
+)
 
 
 class ConnectorStatus(str, PyEnum):

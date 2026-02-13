@@ -9,9 +9,11 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ai_ppt.api.v1.schemas.connector import (ConnectorCreate,
-                                             ConnectorTestResponse,
-                                             ConnectorUpdate)
+from ai_ppt.api.v1.schemas.connector import (
+    ConnectorCreate,
+    ConnectorTestResponse,
+    ConnectorUpdate,
+)
 from ai_ppt.domain.models.connector import Connector, ConnectorStatus
 from ai_ppt.domain.repositories.connector import IConnectorRepository
 from ai_ppt.infrastructure.connectors.factory import ConnectorFactory

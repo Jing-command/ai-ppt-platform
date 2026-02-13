@@ -4,9 +4,12 @@
 定义所有仓储接口
 """
 
-from ai_ppt.domain.repositories.base import (DuplicateEntityError,
-                                             EntityNotFoundError, IRepository,
-                                             RepositoryError)
+from ai_ppt.domain.repositories.base import (
+    DuplicateEntityError,
+    EntityNotFoundError,
+    IRepository,
+    RepositoryError,
+)
 from ai_ppt.domain.repositories.connector import IConnectorRepository
 from ai_ppt.domain.repositories.outline import IOutlineRepository
 from ai_ppt.domain.repositories.slide import ISlideRepository

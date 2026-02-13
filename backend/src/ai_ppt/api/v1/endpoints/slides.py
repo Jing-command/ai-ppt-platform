@@ -14,9 +14,11 @@ from ai_ppt.api.v1.schemas.common import ErrorResponse
 from ai_ppt.api.v1.schemas.presentation import SlideResponse, SlideUpdate
 from ai_ppt.api.v1.schemas.slide import UndoRedoResponse
 from ai_ppt.application.services.presentation_service import (
-    PresentationNotFoundError, PresentationService, SlideNotFoundError)
-from ai_ppt.application.services.slide_service import (SlideService,
-                                                       UndoRedoError)
+    PresentationNotFoundError,
+    PresentationService,
+    SlideNotFoundError,
+)
+from ai_ppt.application.services.slide_service import SlideService, UndoRedoError
 from ai_ppt.database import get_db
 from ai_ppt.models.user import User
 
