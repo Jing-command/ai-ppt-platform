@@ -9,10 +9,7 @@ from uuid import UUID
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ai_ppt.domain.models.outline import (
-    Outline,
-    OutlineStatus,
-)
+from ai_ppt.domain.models.outline import Outline, OutlineStatus
 from ai_ppt.services.outline_generation import OutlineGenerationService
 
 

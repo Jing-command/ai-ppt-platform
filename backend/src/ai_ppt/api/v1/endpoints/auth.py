@@ -11,22 +11,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ai_ppt.api.deps import get_current_user
-from ai_ppt.api.v1.schemas.auth import (
-    LoginRequest,
-    LoginResponse,
-    RefreshRequest,
-    RefreshResponse,
-    RegisterRequest,
-    RegisterResponse,
-    UserResponse,
-)
+from ai_ppt.api.v1.schemas.auth import (LoginRequest, LoginResponse,
+                                        RefreshRequest, RefreshResponse,
+                                        RegisterRequest, RegisterResponse,
+                                        UserResponse)
 from ai_ppt.api.v1.schemas.common import ErrorResponse
-from ai_ppt.core.security import (
-    create_access_token,
-    decode_token,
-    get_password_hash,
-    verify_password,
-)
+from ai_ppt.core.security import (create_access_token, decode_token,
+                                  get_password_hash, verify_password)
 from ai_ppt.database import get_db
 from ai_ppt.models.user import User
 

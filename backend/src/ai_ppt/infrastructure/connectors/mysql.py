@@ -7,15 +7,11 @@ from typing import Any, AsyncIterator, Dict, List, Optional
 
 import aiomysql
 
-from ai_ppt.infrastructure.connectors.base import (
-    ColumnSchema,
-    ConnectionError,
-    DataConnector,
-    DataRow,
-    DataType,
-    QueryError,
-    TableSchema,
-)
+from ai_ppt.infrastructure.connectors.base import (ColumnSchema,
+                                                   ConnectionError,
+                                                   DataConnector, DataRow,
+                                                   DataType, QueryError,
+                                                   TableSchema)
 
 # MySQL 类型映射到通用数据类型
 MYSQL_TYPE_MAPPING = {

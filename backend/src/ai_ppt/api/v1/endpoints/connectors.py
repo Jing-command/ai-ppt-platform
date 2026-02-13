@@ -9,27 +9,19 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ai_ppt.api.deps import get_current_user
-from ai_ppt.api.v1.schemas.common import (
-    ErrorResponse,
-    PaginatedResponse,
-    PaginationParams,
-)
-from ai_ppt.api.v1.schemas.connector import (
-    ConnectorCreate,
-    ConnectorDetailResponse,
-    ConnectorQueryRequest,
-    ConnectorQueryResponse,
-    ConnectorResponse,
-    ConnectorSchemaResponse,
-    ConnectorTestRequest,
-    ConnectorTestResponse,
-    ConnectorUpdate,
-)
+from ai_ppt.api.v1.schemas.common import (ErrorResponse, PaginatedResponse,
+                                          PaginationParams)
+from ai_ppt.api.v1.schemas.connector import (ConnectorCreate,
+                                             ConnectorDetailResponse,
+                                             ConnectorQueryRequest,
+                                             ConnectorQueryResponse,
+                                             ConnectorResponse,
+                                             ConnectorSchemaResponse,
+                                             ConnectorTestRequest,
+                                             ConnectorTestResponse,
+                                             ConnectorUpdate)
 from ai_ppt.application.services.connector_service import (
-    ConnectorNameExistsError,
-    ConnectorNotFoundError,
-    ConnectorService,
-)
+    ConnectorNameExistsError, ConnectorNotFoundError, ConnectorService)
 from ai_ppt.database import get_db
 from ai_ppt.models.user import User
 

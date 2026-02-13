@@ -12,17 +12,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ai_ppt.api.deps import get_current_user
 from ai_ppt.api.v1.schemas.common import ErrorResponse
-from ai_ppt.api.v1.schemas.export import (
-    ExportResponse,
-    ExportStatusResponse,
-)
+from ai_ppt.api.v1.schemas.export import ExportResponse, ExportStatusResponse
 from ai_ppt.database import get_db
 from ai_ppt.models.user import User
-from ai_ppt.services.export_service import (
-    ExportFormat,
-    ExportService,
-    process_export_task,
-)
+from ai_ppt.services.export_service import (ExportFormat, ExportService,
+                                            process_export_task)
 
 router = APIRouter(prefix="/exports", tags=["导出管理"])
 
@@ -64,7 +58,8 @@ async def export_pptx(
     返回任务 ID，使用 /exports/{task_id}/status 查询进度
     """
     # 验证 PPT 存在
-    from ai_ppt.application.services.presentation_service import PresentationService
+    from ai_ppt.application.services.presentation_service import \
+        PresentationService
 
     ppt_service = PresentationService(db)
     presentation = await ppt_service.get_by_id(presentation_id, current_user.id)
@@ -131,7 +126,8 @@ async def export_pdf(
     返回任务 ID，使用 /exports/{task_id}/status 查询进度
     """
     # 验证 PPT 存在
-    from ai_ppt.application.services.presentation_service import PresentationService
+    from ai_ppt.application.services.presentation_service import \
+        PresentationService
 
     ppt_service = PresentationService(db)
     presentation = await ppt_service.get_by_id(presentation_id, current_user.id)
@@ -204,7 +200,8 @@ async def export_images(
         )
 
     # 验证 PPT 存在
-    from ai_ppt.application.services.presentation_service import PresentationService
+    from ai_ppt.application.services.presentation_service import \
+        PresentationService
 
     ppt_service = PresentationService(db)
     presentation = await ppt_service.get_by_id(presentation_id, current_user.id)

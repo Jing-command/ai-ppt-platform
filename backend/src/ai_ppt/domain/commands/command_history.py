@@ -7,7 +7,8 @@ from collections import deque
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from ai_ppt.domain.commands.base import Command, CommandExecutionError, CommandUndoError
+from ai_ppt.domain.commands.base import (Command, CommandExecutionError,
+                                         CommandUndoError)
 
 
 class CommandHistory:

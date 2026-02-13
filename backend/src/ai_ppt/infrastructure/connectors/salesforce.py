@@ -8,16 +8,12 @@ from urllib.parse import urljoin
 
 import httpx
 
-from ai_ppt.infrastructure.connectors.base import (
-    AuthenticationError,
-    ColumnSchema,
-    ConnectionError,
-    DataConnector,
-    DataRow,
-    DataType,
-    QueryError,
-    TableSchema,
-)
+from ai_ppt.infrastructure.connectors.base import (AuthenticationError,
+                                                   ColumnSchema,
+                                                   ConnectionError,
+                                                   DataConnector, DataRow,
+                                                   DataType, QueryError,
+                                                   TableSchema)
 
 # Salesforce 类型映射到通用数据类型
 SF_TYPE_MAPPING = {

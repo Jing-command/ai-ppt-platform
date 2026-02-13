@@ -10,10 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ai_ppt.domain.models.base import Base
-from ai_ppt.domain.repositories.base import (
-    EntityNotFoundError,
-    IRepository,
-)
+from ai_ppt.domain.repositories.base import EntityNotFoundError, IRepository
 
 # 模型类型变量，约束为 Base 的子类
 ModelT = TypeVar("ModelT", bound=Base)
