@@ -13,15 +13,10 @@ from typing import Any, AsyncIterator, Dict, List, Literal, Optional, Union
 import httpx
 from jinja2 import Environment, PackageLoader, select_autoescape
 
-from ai_ppt.infrastructure.ai.models import (
-    DataSchema,
-    LLMRequest,
-    LLMResponse,
-    OutlineResult,
-    SlideEnhancementResult,
-    StreamingChunk,
-    Usage,
-)
+from ai_ppt.infrastructure.ai.models import (DataSchema, LLMRequest,
+                                             LLMResponse, OutlineResult,
+                                             SlideEnhancementResult,
+                                             StreamingChunk, Usage)
 from ai_ppt.infrastructure.config import settings
 
 

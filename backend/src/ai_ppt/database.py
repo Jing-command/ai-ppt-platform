@@ -5,7 +5,8 @@ SQLAlchemy 异步会话配置
 
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
+                                    create_async_engine)
 
 from ai_ppt.config import settings
 from ai_ppt.domain.models.base import Base

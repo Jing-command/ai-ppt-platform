@@ -8,7 +8,8 @@ import uuid
 from datetime import datetime
 from typing import Any, Optional
 
-from ai_ppt.domain.models.outline import Outline, OutlineBackground, OutlineStatus
+from ai_ppt.domain.models.outline import (Outline, OutlineBackground,
+                                          OutlineStatus)
 from ai_ppt.infrastructure.ai.client import LLMClient
 from ai_ppt.infrastructure.ai.models import LLMRequest
 

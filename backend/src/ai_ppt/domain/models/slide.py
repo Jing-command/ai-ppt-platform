@@ -12,14 +12,8 @@ from uuid import UUID
 from sqlalchemy import JSON, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ai_ppt.domain.models.base import (
-    Base,
-    DateTimeAuto,
-    DateTimeUpdated,
-    Str255,
-    TextOptional,
-    UUIDPk,
-)
+from ai_ppt.domain.models.base import (Base, DateTimeAuto, DateTimeUpdated,
+                                       Str255, TextOptional, UUIDPk)
 
 if TYPE_CHECKING:
     from ai_ppt.domain.models.presentation import Presentation

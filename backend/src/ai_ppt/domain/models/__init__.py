@@ -6,12 +6,8 @@
 
 from ai_ppt.domain.models.base import Base
 from ai_ppt.domain.models.connector import Connector, ConnectorStatus
-from ai_ppt.domain.models.outline import (
-    Outline,
-    OutlineBackground,
-    OutlinePage,
-    OutlineStatus,
-)
+from ai_ppt.domain.models.outline import (Outline, OutlineBackground,
+                                          OutlinePage, OutlineStatus)
 from ai_ppt.domain.models.presentation import Presentation, PresentationStatus
 from ai_ppt.domain.models.slide import Slide, SlideLayoutType
 

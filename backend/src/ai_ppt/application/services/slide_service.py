@@ -8,7 +8,8 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ai_ppt.application.services.presentation_service import PresentationService
+from ai_ppt.application.services.presentation_service import \
+    PresentationService
 from ai_ppt.domain.commands.command_history import CommandHistory
 from ai_ppt.domain.commands.slide_commands import UpdateSlideCommand
 from ai_ppt.infrastructure.repositories.slide import SlideRepository
