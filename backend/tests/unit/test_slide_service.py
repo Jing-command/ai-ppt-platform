@@ -22,9 +22,18 @@ def mock_db_session():
 
 
 @pytest.fixture
-def slide_service(mock_db_session):
+def mock_slide_repo():
+    """模拟幻灯片仓储"""
+    repo = AsyncMock()
+    return repo
+
+
+@pytest.fixture
+def slide_service(mock_db_session, mock_slide_repo):
     """创建幻灯片服务实例"""
-    return SlideService(mock_db_session)
+    service = SlideService(mock_db_session)
+    service._slide_repo = mock_slide_repo
+    return service
 
 
 @pytest.fixture
@@ -57,11 +66,14 @@ class TestSlideServiceUpdateSlide:
     """测试更新幻灯片"""
 
     async def test_update_slide_success(
-        self, slide_service, mock_db_session, sample_presentation, sample_slide
+        self, slide_service, mock_db_session, mock_slide_repo, sample_presentation, sample_slide
     ):
         """测试成功更新幻灯片"""
         ppt_id = uuid.uuid4()
         user_id = uuid.uuid4()
+
+        # 模拟仓储返回
+        mock_slide_repo.get_by_id.return_value = sample_slide
 
         # 模拟演示文稿服务
         with patch.object(
@@ -80,7 +92,7 @@ class TestSlideServiceUpdateSlide:
         mock_update.assert_called_once()
 
     async def test_update_slide_creates_command(
-        self, slide_service, mock_db_session, sample_presentation
+        self, slide_service, mock_db_session, mock_slide_repo, sample_presentation
     ):
         """测试更新创建命令"""
         ppt_id = uuid.uuid4()
@@ -88,17 +100,22 @@ class TestSlideServiceUpdateSlide:
 
         from ai_ppt.api.v1.schemas.presentation import SlideUpdate
 
+        new_slide = Slide(
+            id=uuid.uuid4(),
+            title="Updated",
+            presentation_id=ppt_id,
+            layout_type=SlideLayoutType.TITLE_CONTENT,
+            order_index=0,
+            content={"title": "Updated"},
+        )
+
+        # 模拟仓储返回
+        mock_slide_repo.get_by_id.return_value = new_slide
+
         with patch.object(
             slide_service._presentation_service, "update_slide"
         ) as mock_update:
-            mock_update.return_value = Slide(
-                id=uuid.uuid4(),
-                title="Updated",
-                presentation_id=ppt_id,
-                layout_type=SlideLayoutType.TITLE_CONTENT,
-                order_index=0,
-                content={"title": "Updated"},
-            )
+            mock_update.return_value = new_slide
 
             await slide_service.update_slide(
                 presentation_id=ppt_id,
@@ -116,34 +133,39 @@ class TestSlideServiceUndo:
     """测试撤销操作"""
 
     async def test_undo_success(
-        self, slide_service, mock_db_session, sample_presentation
+        self, slide_service, mock_db_session, mock_slide_repo, sample_presentation
     ):
         """测试成功撤销"""
         ppt_id = sample_presentation.id
         slide_id = uuid.uuid4()
         user_id = sample_presentation.owner_id
 
-        # 设置命令历史
+        # 设置命令历史 - 使用 AsyncMock 作为命令
         history = slide_service._get_command_history(ppt_id)
 
-        # 创建一个模拟命令
+        # 创建一个模拟命令，execute 和 undo 都是 AsyncMock
         mock_command = MagicMock()
         mock_command.command_type = "UPDATE_SLIDE"
         mock_command.slide_id = slide_id
+        mock_command.execute = AsyncMock()
+        mock_command.undo = AsyncMock()
+        mock_command.mark_executed = MagicMock()
+        mock_command.mark_undone = MagicMock()
+        
         await history.execute(mock_command)
 
-        with patch.object(slide_service._presentation_service, "get_by_id_or_raise"):
-            with patch.object(slide_service._slide_repo, "get_by_id") as mock_get_slide:
-                mock_get_slide.return_value = Slide(
-                    id=slide_id,
-                    title="Before Undo",
-                    presentation_id=ppt_id,
-                    layout_type=SlideLayoutType.TITLE_CONTENT,
-                    order_index=0,
-                    content={},
-                )
+        # 模拟仓储返回
+        mock_slide_repo.get_by_id.return_value = Slide(
+            id=slide_id,
+            title="Before Undo",
+            presentation_id=ppt_id,
+            layout_type=SlideLayoutType.TITLE_CONTENT,
+            order_index=0,
+            content={},
+        )
 
-                result = await slide_service.undo(ppt_id, slide_id, user_id)
+        with patch.object(slide_service._presentation_service, "get_by_id_or_raise"):
+            result = await slide_service.undo(ppt_id, slide_id, user_id)
 
         assert result["success"] is True
         assert "撤销" in result["description"]
@@ -175,7 +197,7 @@ class TestSlideServiceRedo:
     """测试重做操作"""
 
     async def test_redo_success(
-        self, slide_service, mock_db_session, sample_presentation
+        self, slide_service, mock_db_session, mock_slide_repo, sample_presentation
     ):
         """测试成功重做"""
         ppt_id = sample_presentation.id
@@ -185,25 +207,30 @@ class TestSlideServiceRedo:
         # 设置命令历史
         history = slide_service._get_command_history(ppt_id)
 
-        # 创建并执行命令，然后撤销
+        # 创建并执行命令，然后撤销 - 使用 AsyncMock 作为命令方法
         mock_command = MagicMock()
         mock_command.command_type = "UPDATE_SLIDE"
         mock_command.slide_id = slide_id
+        mock_command.execute = AsyncMock()
+        mock_command.undo = AsyncMock()
+        mock_command.mark_executed = MagicMock()
+        mock_command.mark_undone = MagicMock()
+        
         await history.execute(mock_command)
         await history.undo()
 
-        with patch.object(slide_service._presentation_service, "get_by_id_or_raise"):
-            with patch.object(slide_service._slide_repo, "get_by_id") as mock_get_slide:
-                mock_get_slide.return_value = Slide(
-                    id=slide_id,
-                    title="After Redo",
-                    presentation_id=ppt_id,
-                    layout_type=SlideLayoutType.TITLE_CONTENT,
-                    order_index=0,
-                    content={},
-                )
+        # 模拟仓储返回
+        mock_slide_repo.get_by_id.return_value = Slide(
+            id=slide_id,
+            title="After Redo",
+            presentation_id=ppt_id,
+            layout_type=SlideLayoutType.TITLE_CONTENT,
+            order_index=0,
+            content={},
+        )
 
-                result = await slide_service.redo(ppt_id, slide_id, user_id)
+        with patch.object(slide_service._presentation_service, "get_by_id_or_raise"):
+            result = await slide_service.redo(ppt_id, slide_id, user_id)
 
         assert result["success"] is True
         assert "重做" in result["description"]
@@ -256,10 +283,12 @@ class TestSlideServiceHistory:
         """测试清除历史"""
         ppt_id = uuid.uuid4()
 
-        # 添加一些历史
+        # 添加一些历史 - 使用 sync 方法
         history = slide_service._get_command_history(ppt_id)
         mock_command = MagicMock()
-        await history.execute(mock_command)
+        # 手动添加到历史而不执行
+        history._history.append(mock_command)
+        history._current_index = 0
 
         assert history.undo_count > 0
 

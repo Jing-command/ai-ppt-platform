@@ -235,10 +235,15 @@ class ExportService:
         try:
             if "-" in slide_range:
                 start, end = map(int, slide_range.split("-"))
+                # 验证范围有效性
+                if start > len(slides) or start < 1:
+                    return slides
                 return slides[start - 1 : end]
             else:
                 idx = int(slide_range) - 1
-                return [slides[idx]] if 0 <= idx < len(slides) else slides
+                if 0 <= idx < len(slides):
+                    return [slides[idx]]
+                return slides
         except (ValueError, IndexError):
             return slides
 

@@ -198,6 +198,7 @@ class TestConnectorServiceUpdate:
     ):
         """测试成功更新连接器"""
         mock_repository.get_by_id.return_value = sample_connector
+        mock_repository.name_exists.return_value = False  # 名称不冲突
         mock_repository.update.return_value = sample_connector
 
         data = ConnectorUpdate(name="Updated Name", description="New description")
@@ -305,6 +306,7 @@ class TestConnectorServiceTest:
         ) as mock_factory:
             mock_connector = AsyncMock()
             mock_connector.test_connection.return_value = True
+            mock_connector.server_version = "8.0.0"  # 设置为字符串
             mock_factory.create_connector.return_value = mock_connector
 
             result = await connector_service.test_connector(

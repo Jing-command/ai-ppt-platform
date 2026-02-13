@@ -14,6 +14,7 @@ from ai_ppt.api.v1.schemas.presentation import (
     SlideContent,
     SlideCreate,
     SlideLayout,
+    SlideUpdate,
 )
 from ai_ppt.application.services.presentation_service import (
     PresentationNotFoundError,
@@ -34,9 +35,18 @@ def mock_db_session():
 
 
 @pytest.fixture
-def presentation_service(mock_db_session):
+def mock_slide_repo():
+    """模拟幻灯片仓储"""
+    repo = AsyncMock()
+    return repo
+
+
+@pytest.fixture
+def presentation_service(mock_db_session, mock_slide_repo):
     """创建演示文稿服务实例"""
-    return PresentationService(mock_db_session)
+    service = PresentationService(mock_db_session)
+    service._slide_repo = mock_slide_repo
+    return service
 
 
 @pytest.fixture
@@ -121,10 +131,11 @@ class TestPresentationServiceCreate:
         data = PresentationCreate(
             title="With Slides",
             slides=[
-                Slide(
-                    content=SlideContent(title="Slide 1", text="Content 1"),
-                    layout=SlideLayout(type="title_content"),
-                ),
+                {
+                    "type": "content",
+                    "content": {"title": "Slide 1", "text": "Content 1"},
+                    "layout": {"type": "title_content"},
+                },
             ],
         )
 
@@ -357,12 +368,13 @@ class TestPresentationServiceSlides:
     """测试幻灯片操作"""
 
     async def test_add_slide(
-        self, presentation_service, mock_db_session, sample_presentation
+        self, presentation_service, mock_db_session, mock_slide_repo, sample_presentation
     ):
         """测试添加幻灯片"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_presentation
         mock_db_session.execute.return_value = mock_result
+        mock_slide_repo.get_max_order.return_value = 0
 
         slide_data = SlideCreate(
             type="content",
@@ -399,16 +411,15 @@ class TestPresentationServiceSlides:
         assert result is not None
 
     async def test_get_slides(
-        self, presentation_service, mock_db_session, sample_presentation, sample_slide
+        self, presentation_service, mock_db_session, mock_slide_repo, sample_presentation, sample_slide
     ):
         """测试获取幻灯片列表"""
         mock_ppt_result = MagicMock()
         mock_ppt_result.scalar_one_or_none.return_value = sample_presentation
 
-        mock_slide_result = MagicMock()
-        mock_slide_result.scalars.return_value.all.return_value = [sample_slide]
+        mock_slide_repo.get_by_presentation.return_value = [sample_slide]
 
-        mock_db_session.execute.side_effect = [mock_ppt_result, mock_slide_result]
+        mock_db_session.execute.return_value = mock_ppt_result
 
         result = await presentation_service.get_slides(
             sample_presentation.id, sample_presentation.owner_id
@@ -430,16 +441,17 @@ class TestPresentationServiceSlides:
         assert result is None
 
     async def test_get_slide(
-        self, presentation_service, mock_db_session, sample_presentation, sample_slide
+        self, presentation_service, mock_db_session, mock_slide_repo, sample_presentation, sample_slide
     ):
         """测试获取单个幻灯片"""
         mock_ppt_result = MagicMock()
         mock_ppt_result.scalar_one_or_none.return_value = sample_presentation
 
-        mock_slide_result = MagicMock()
-        mock_slide_result.scalar_one_or_none.return_value = sample_slide
+        # 确保幻灯片属于该演示文稿
+        sample_slide.presentation_id = sample_presentation.id
+        mock_slide_repo.get_by_id.return_value = sample_slide
 
-        mock_db_session.execute.side_effect = [mock_ppt_result, mock_slide_result]
+        mock_db_session.execute.return_value = mock_ppt_result
 
         result = await presentation_service.get_slide(
             sample_presentation.id, sample_slide.id, sample_presentation.owner_id
@@ -467,16 +479,17 @@ class TestPresentationServiceSlides:
         assert result is None
 
     async def test_update_slide(
-        self, presentation_service, mock_db_session, sample_presentation, sample_slide
+        self, presentation_service, mock_db_session, mock_slide_repo, sample_presentation, sample_slide
     ):
         """测试更新幻灯片"""
         mock_ppt_result = MagicMock()
         mock_ppt_result.scalar_one_or_none.return_value = sample_presentation
 
-        mock_slide_result = MagicMock()
-        mock_slide_result.scalar_one_or_none.return_value = sample_slide
+        # 确保幻灯片属于该演示文稿
+        sample_slide.presentation_id = sample_presentation.id
+        mock_slide_repo.get_by_id.return_value = sample_slide
 
-        mock_db_session.execute.side_effect = [mock_ppt_result, mock_slide_result]
+        mock_db_session.execute.return_value = mock_ppt_result
 
         data = SlideUpdate(content=SlideContent(title="Updated"))
 
@@ -487,16 +500,17 @@ class TestPresentationServiceSlides:
         assert result.content["title"] == "Updated"
 
     async def test_delete_slide(
-        self, presentation_service, mock_db_session, sample_presentation, sample_slide
+        self, presentation_service, mock_db_session, mock_slide_repo, sample_presentation, sample_slide
     ):
         """测试删除幻灯片"""
         mock_ppt_result = MagicMock()
         mock_ppt_result.scalar_one_or_none.return_value = sample_presentation
 
-        mock_slide_result = MagicMock()
-        mock_slide_result.scalar_one_or_none.return_value = sample_slide
+        # 确保幻灯片属于该演示文稿
+        sample_slide.presentation_id = sample_presentation.id
+        mock_slide_repo.get_by_id.return_value = sample_slide
 
-        mock_db_session.execute.side_effect = [mock_ppt_result, mock_slide_result]
+        mock_db_session.execute.return_value = mock_ppt_result
 
         result = await presentation_service.delete_slide(
             sample_presentation.id, sample_slide.id, sample_presentation.owner_id

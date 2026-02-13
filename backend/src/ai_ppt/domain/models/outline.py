@@ -244,13 +244,16 @@ class Outline(Base):
         status: Optional[str] = None,
         ai_prompt: Optional[str] = None,
         ai_parameters: Optional[dict[str, Any]] = None,
+        id: Optional[UUID] = None,
     ) -> None:
+        if id is not None:
+            self.id = id
         self.title = title
         self.user_id = user_id
         self.description = description
         self.pages = pages or []
         self.background = background
-        self.total_slides = total_slides
+        self.total_slides = total_slides if total_slides else len(pages or [])
         self.status = status or OutlineStatus.DRAFT.value
         self.ai_prompt = ai_prompt
         self.ai_parameters = ai_parameters

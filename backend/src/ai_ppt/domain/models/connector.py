@@ -92,14 +92,19 @@ class Connector(Base):
         user_id: UUID,
         config: dict[str, Any] | None = None,
         description: Optional[str] = None,
+        id: Optional[UUID] = None,
+        is_active: bool = True,
+        status: Optional[ConnectorStatus] = None,
     ) -> None:
+        if id is not None:
+            self.id = id
         self.name = name
         self.type = type
         self.user_id = user_id
         self.config = config or {}
         self.description = description
-        self.status = ConnectorStatus.DISCONNECTED
-        self.is_active = True
+        self.status = status or ConnectorStatus.DISCONNECTED
+        self.is_active = is_active
 
     def update_status(self, status: ConnectorStatus) -> None:
         """更新连接器状态"""

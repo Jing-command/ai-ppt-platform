@@ -123,7 +123,10 @@ class Slide(Base):
         background_color: Optional[str] = None,
         text_color: Optional[str] = None,
         font_family: Optional[str] = None,
+        id: Optional[UUID] = None,
     ) -> None:
+        if id is not None:
+            self.id = id
         self.title = title
         self.presentation_id = presentation_id
         self.layout_type = layout_type
@@ -134,6 +137,7 @@ class Slide(Base):
         self.background_color = background_color
         self.text_color = text_color
         self.font_family = font_family
+        self.version = 1  # Set default version
 
     def update_content(self, new_content: dict[str, Any]) -> None:
         """

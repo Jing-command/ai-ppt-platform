@@ -97,11 +97,20 @@ class Presentation(Base):
         owner_id: UUID,
         description: Optional[str] = None,
         theme: str = "default",
+        id: Optional[UUID] = None,
+        outline_id: Optional[UUID] = None,
+        status: Optional[PresentationStatus] = None,
     ) -> None:
+        if id is not None:
+            self.id = id
         self.title = title
         self.owner_id = owner_id
         self.description = description
         self.theme = theme
+        if outline_id is not None:
+            self.outline_id = outline_id
+        if status is not None:
+            self.status = status
 
     def update_title(self, new_title: str) -> None:
         """更新标题（领域方法）"""
