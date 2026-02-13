@@ -1,0 +1,102 @@
+{
+  "version": "2.0",
+  "last_updated": "2026-02-13T17:30:00Z",
+  "project": "AI PPT Platform",
+  "summary": {
+    "total_items": 150,
+    "must_total": 30,
+    "should_total": 50,
+    "could_total": 70,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "pending": 150,
+    "completion_rate": 0.0
+  },
+  "by_iteration": {
+    "1": {
+      "name": "用户认证",
+      "must_total": 6,
+      "must_passed": 0,
+      "status": "pending"
+    },
+    "2": {
+      "name": "连接器管理",
+      "must_total": 5,
+      "must_passed": 0,
+      "status": "pending"
+    },
+    "3": {
+      "name": "大纲编辑器",
+      "must_total": 5,
+      "must_passed": 0,
+      "status": "pending"
+    },
+    "4": {
+      "name": "PPT编辑器",
+      "must_total": 5,
+      "must_passed": 0,
+      "status": "pending"
+    },
+    "5": {
+      "name": "导出系统",
+      "must_total": 4,
+      "must_passed": 0,
+      "status": "pending"
+    }
+  },
+  "items": [
+    {
+      "id": "G-01",
+      "category": "通用",
+      "priority": "MUST",
+      "description": "API P95 响应时间 < 500ms",
+      "status": "pending",
+      "tested_by": null,
+      "tested_at": null,
+      "evidence": null
+    },
+    {
+      "id": "G-02",
+      "category": "通用",
+      "priority": "MUST",
+      "description": "测试覆盖率 ≥ 80%",
+      "status": "pending",
+      "tested_by": null,
+      "tested_at": null,
+      "evidence": null
+    },
+    {
+      "id": "G-03",
+      "category": "通用",
+      "priority": "MUST",
+      "description": "无高危安全漏洞",
+      "status": "pending",
+      "tested_by": null,
+      "tested_at": null,
+      "evidence": null
+    },
+    {
+      "id": "G-04",
+      "category": "通用",
+      "priority": "MUST",
+      "description": "所有 API 有错误处理",
+      "status": "pending",
+      "tested_by": null,
+      "tested_at": null,
+      "evidence": null
+    },
+    {
+      "id": "G-05",
+      "category": "通用",
+      "priority": "MUST",
+      "description": "核心功能 e2e 测试通过",
+      "status": "pending",
+      "tested_by": null,
+      "tested_at": null,
+      "evidence": null
+    }
+  ],
+  "history": [],
+  "notes": "初始状态，待验收"
+}
