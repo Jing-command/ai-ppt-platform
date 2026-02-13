@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Download, 
   FileText, 
-  FileImage, 
   Image as ImageIcon,
   X,
   CheckCircle,

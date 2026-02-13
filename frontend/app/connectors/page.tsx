@@ -23,24 +23,12 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.4,
-      ease: [0.4, 0, 0.2, 1],
-    },
-  },
-};
-
 export default function ConnectorsPage() {
   const router = useRouter();
   const [connectors, setConnectors] = useState<Connector[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
+  const [, setDeleteLoading] = useState<string | null>(null);
 
   const fetchConnectors = useCallback(async () => {
     setIsLoading(true);
@@ -66,10 +54,10 @@ export default function ConnectorsPage() {
     fetchConnectors();
   }, [fetchConnectors]);
 
-  const handleEdit = (connector: Connector) => {
+  const handleEdit = (_connector: Connector) => {
     // 编辑功能 - 可以导航到编辑页面或打开编辑弹窗
     // 这里暂时使用 alert，实际应该实现编辑页面
-    alert(`编辑连接器: ${connector.name}\n功能开发中...`);
+    alert(`编辑连接器: ${_connector.name}\n功能开发中...`);
   };
 
   const handleDelete = async (connector: Connector) => {
@@ -94,7 +82,7 @@ export default function ConnectorsPage() {
     }
   };
 
-  const handleTest = (connector: Connector) => {
+  const handleTest = () => {
     // 刷新连接器数据
     fetchConnectors();
   };

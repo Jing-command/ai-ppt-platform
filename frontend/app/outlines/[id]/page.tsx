@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Loader2, Save, Trash2, FileText, Plus, 
-  ImageIcon, Palette, Wand2, Upload, ChevronUp, ChevronDown 
+  ImageIcon, Palette, Wand2, ChevronUp, ChevronDown 
 } from 'lucide-react';
 import { 
   getOutline, updateOutline, deleteOutline, createPresentationFromOutline 

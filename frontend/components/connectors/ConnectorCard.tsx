@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Database, Cloud, MoreHorizontal, Edit2, Trash2, Activity, Calendar } from 'lucide-react';
+import { Database, Cloud, Edit2, Trash2, Calendar } from 'lucide-react';
 import { Connector, getConnectorDisplayStatus, getConnectorTypeLabel, ConnectorType } from '@/types/connector';
 import { TestConnectionButton } from './TestConnectionButton';
 

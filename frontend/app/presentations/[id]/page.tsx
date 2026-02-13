@@ -9,22 +9,14 @@ import {
   Save, 
   Trash2, 
   LayoutTemplate,
-  Palette,
   Wand2,
-  FileText,
   Image as ImageIcon,
-  Type
 } from 'lucide-react';
 import { 
   getPresentation, 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updatePresentation, 
   deletePresentation,
-  addSlide,
-  updateSlide,
-  deleteSlide,
-  undoSlide,
-  redoSlide
 } from '@/lib/api/presentations';
 import { PresentationDetailResponse, Slide, SlideType, SlideContent } from '@/types/presentation';
 import { AxiosError } from 'axios';

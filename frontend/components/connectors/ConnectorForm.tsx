@@ -26,7 +26,7 @@ const createConnectorSchema = (typeConfig: ConnectorTypeConfig | null) => {
     });
   }
 
-  const configShape: Record<string, any> = {};
+  const configShape: Record<string, z.ZodType<unknown>> = {};
   typeConfig.fields.forEach((field) => {
     if (field.type === 'number') {
       configShape[field.name] = field.required
@@ -140,6 +140,7 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
   const handleFormSubmit = async (data: CreateConnectorRequest | UpdateConnectorRequest) => {
     // 转换数字字段
     if (typeConfig && data.config) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const config = data.config as Record<string, any>;
       typeConfig.fields.forEach((field) => {
         if (field.type === 'number' && config[field.name]) {
