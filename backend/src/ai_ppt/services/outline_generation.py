@@ -170,7 +170,7 @@ class OutlineGenerationService:
             # 确保每个页面有 id
             for i, page in enumerate(result.get("pages", [])):
                 if "id" not in page:
-                    page["id"] = f"page-{i+1}"
+                    page["id"] = f"page-{i + 1}"
                 if "pageNumber" not in page:
                     page["pageNumber"] = i + 1
 
