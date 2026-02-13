@@ -1,8 +1,10 @@
 """
 AI 基础设施模块
 """
+
 from ai_ppt.infrastructure.ai.client import LLMClient, LLMClientError, LLMProvider
 from ai_ppt.infrastructure.ai.models import (
+    DataSchema,
     LLMRequest,
     LLMResponse,
     OutlineResult,
@@ -10,7 +12,6 @@ from ai_ppt.infrastructure.ai.models import (
     SlideEnhancementResult,
     StreamingChunk,
     Usage,
-    DataSchema,
 )
 
 __all__ = [

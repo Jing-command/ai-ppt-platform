@@ -7,27 +7,27 @@
 
 # 基类和数据类型
 from ai_ppt.infrastructure.connectors.base import (
+    AuthenticationError,
+    ColumnSchema,
+    ConnectionError,
+    ConnectorError,
     DataConnector,
     DataConnectorFactory,
     DataRow,
     DataType,
-    ColumnSchema,
-    TableSchema,
-    ConnectorError,
-    ConnectionError,
     QueryError,
-    AuthenticationError,
+    TableSchema,
 )
-
-# 具体连接器实现
-from ai_ppt.infrastructure.connectors.mysql import MySQLConnector
-from ai_ppt.infrastructure.connectors.salesforce import SalesforceConnector
 
 # 工厂类
 from ai_ppt.infrastructure.connectors.factory import (
     ConnectorFactory,
     ConnectorType,
 )
+
+# 具体连接器实现
+from ai_ppt.infrastructure.connectors.mysql import MySQLConnector
+from ai_ppt.infrastructure.connectors.salesforce import SalesforceConnector
 
 __all__ = [
     # 基类

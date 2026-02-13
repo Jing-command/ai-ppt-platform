@@ -2,9 +2,9 @@
 数据库连接管理
 SQLAlchemy 异步会话配置
 """
+
 from typing import AsyncGenerator
 
-from sqlalchemy import NullPool
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -37,7 +37,7 @@ AsyncSessionLocal = async_sessionmaker(
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     依赖注入用的数据库会话生成器
-    
+
     使用示例：
         @app.get("/items/")
         async def read_items(db: AsyncSession = Depends(get_db)):
@@ -60,12 +60,12 @@ async def init_db() -> None:
     用于应用启动时调用
     """
     # 导入所有模型以确保它们被注册到 Base.metadata
-    from ai_ppt.models.user import User  # noqa: F401
+    from ai_ppt.domain.models.connector import Connector  # noqa: F401
     from ai_ppt.domain.models.outline import Outline  # noqa: F401
     from ai_ppt.domain.models.presentation import Presentation  # noqa: F401
     from ai_ppt.domain.models.slide import Slide  # noqa: F401
-    from ai_ppt.domain.models.connector import Connector  # noqa: F401
-    
+    from ai_ppt.models.user import User  # noqa: F401
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 

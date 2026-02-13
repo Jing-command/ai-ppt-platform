@@ -2,22 +2,23 @@
 Slide（幻灯片）领域模型
 支持单页编辑和版本控制
 """
+
 from __future__ import annotations
 
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING, Any, Optional
 from uuid import UUID
 
-from sqlalchemy import ForeignKey, Index, Integer, String, JSON
+from sqlalchemy import JSON, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ai_ppt.domain.models.base import (
     Base,
-    UUIDPk,
-    Str255,
-    TextOptional,
     DateTimeAuto,
     DateTimeUpdated,
+    Str255,
+    TextOptional,
+    UUIDPk,
 )
 
 if TYPE_CHECKING:
@@ -26,6 +27,7 @@ if TYPE_CHECKING:
 
 class SlideLayoutType(str, PyEnum):
     """幻灯片布局类型枚举"""
+
     TITLE_ONLY = "title_only"
     TITLE_CONTENT = "title_content"
     TWO_COLUMN = "two_column"
@@ -40,23 +42,24 @@ class SlideLayoutType(str, PyEnum):
 class Slide(Base):
     """
     幻灯片实体
-    
+
     每个 Slide 属于一个 Presentation，支持独立的版本控制
     """
+
     __tablename__ = "slides"
-    
+
     # 索引
     __table_args__ = (
         Index("ix_slides_presentation_order", "presentation_id", "order_index"),
     )
-    
+
     # 主键
     id: Mapped[UUIDPk]
-    
+
     # 基础字段
     title: Mapped[Str255]
     subtitle: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
-    
+
     # 布局和内容
     layout_type: Mapped[SlideLayoutType] = mapped_column(
         String(50),
@@ -67,10 +70,8 @@ class Slide(Base):
         default=dict,
         comment="幻灯片内容（JSON格式）",
     )
-    notes: Mapped[TextOptional] = mapped_column(
-        comment="演讲者备注"
-    )
-    
+    notes: Mapped[TextOptional] = mapped_column(comment="演讲者备注")
+
     # 排序和版本控制
     order_index: Mapped[int] = mapped_column(
         Integer,
@@ -82,23 +83,23 @@ class Slide(Base):
         default=1,
         comment="幻灯片版本号",
     )
-    
+
     # 外键
     presentation_id: Mapped[UUID] = mapped_column(
         ForeignKey("presentations.id", ondelete="CASCADE"),
         nullable=False,
     )
-    
+
     # 时间戳
     created_at: Mapped[DateTimeAuto]
     updated_at: Mapped[DateTimeUpdated]
-    
+
     # 关系
     presentation: Mapped["Presentation"] = relationship(
         "Presentation",
         back_populates="slides",
     )
-    
+
     def __init__(
         self,
         title: str,
@@ -116,30 +117,30 @@ class Slide(Base):
         self.content = content or {}
         self.subtitle = subtitle
         self.notes = notes
-    
+
     def update_content(self, new_content: dict[str, Any]) -> None:
         """
         更新内容并增加版本号
-        
+
         Args:
             new_content: 新的内容字典
         """
         self.content = new_content
         self.version += 1
-    
+
     def move_to(self, new_order: int) -> None:
         """
         移动到新位置
-        
+
         Args:
             new_order: 新的排序索引
         """
         self.order_index = new_order
-    
+
     def clone(self) -> Slide:
         """
         创建副本（用于复制幻灯片）
-        
+
         Returns:
             新的 Slide 实例，内容相同但 ID 不同
         """

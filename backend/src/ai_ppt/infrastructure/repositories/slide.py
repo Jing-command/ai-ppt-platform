@@ -1,6 +1,7 @@
 """
 Slide 仓储实现
 """
+
 from uuid import UUID
 
 from sqlalchemy import func, select, update
@@ -13,10 +14,10 @@ from ai_ppt.infrastructure.repositories.base import BaseRepository
 
 class SlideRepository(BaseRepository[Slide], ISlideRepository):
     """幻灯片仓储实现"""
-    
+
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, Slide)
-    
+
     async def get_by_presentation(self, presentation_id: UUID) -> list[Slide]:
         """获取指定演示文稿的所有幻灯片"""
         stmt = (
@@ -26,17 +27,16 @@ class SlideRepository(BaseRepository[Slide], ISlideRepository):
         )
         result = await self._session.execute(stmt)
         return list(result.scalars().all())
-    
+
     async def get_max_order(self, presentation_id: UUID) -> int:
         """获取最大排序索引"""
-        stmt = (
-            select(func.max(Slide.order_index))
-            .where(Slide.presentation_id == presentation_id)
+        stmt = select(func.max(Slide.order_index)).where(
+            Slide.presentation_id == presentation_id
         )
         result = await self._session.execute(stmt)
         max_order = result.scalar_one_or_none()
         return max_order or 0
-    
+
     async def reorder_slides(
         self,
         presentation_id: UUID,
@@ -54,19 +54,19 @@ class SlideRepository(BaseRepository[Slide], ISlideRepository):
             )
             await self._session.execute(stmt)
         await self._session.flush()
-    
+
     async def delete_by_presentation(self, presentation_id: UUID) -> int:
         """
         删除指定演示文稿的所有幻灯片
-        
+
         Args:
             presentation_id: 演示文稿 ID
-            
+
         Returns:
             删除的幻灯片数量
         """
         from sqlalchemy import delete
-        
+
         stmt = delete(Slide).where(Slide.presentation_id == presentation_id)
         result = await self._session.execute(stmt)
         await self._session.flush()

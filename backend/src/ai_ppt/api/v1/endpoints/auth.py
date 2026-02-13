@@ -5,7 +5,6 @@
 
 from datetime import datetime, timezone
 from typing import Optional
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -24,7 +23,6 @@ from ai_ppt.api.v1.schemas.auth import (
 from ai_ppt.api.v1.schemas.common import ErrorResponse
 from ai_ppt.core.security import (
     create_access_token,
-    create_refresh_token,
     decode_token,
     get_password_hash,
     verify_password,
@@ -53,7 +51,7 @@ def _user_to_response(user: User) -> UserResponse:
         id=user.id,
         email=user.email,
         name=user.username,  # username 映射为 name
-        created_at=user.created_at
+        created_at=user.created_at,
     )
 
 
@@ -64,20 +62,17 @@ def _user_to_response(user: User) -> UserResponse:
     summary="用户注册",
     responses={
         400: {"model": ErrorResponse, "description": "请求参数错误或用户已存在"},
-        500: {"model": ErrorResponse, "description": "服务器错误"}
-    }
+        500: {"model": ErrorResponse, "description": "服务器错误"},
+    },
 )
-async def register(
-    data: RegisterRequest,
-    db: AsyncSession = Depends(get_db)
-):
+async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
     """
     注册新用户
-    
+
     - **email**: 邮箱地址（唯一）
     - **password**: 密码（至少6位）
     - **name**: 用户名称
-    
+
     返回包含 accessToken 和 user 信息的响应
     """
     # 检查邮箱是否已存在
@@ -85,23 +80,17 @@ async def register(
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={
-                "code": "EMAIL_EXISTS",
-                "message": "该邮箱已被注册"
-            }
+            detail={"code": "EMAIL_EXISTS", "message": "该邮箱已被注册"},
         )
-    
+
     # 检查用户名是否已存在（使用 name 作为 username）
     existing_username = await _get_user_by_username(db, data.name)
     if existing_username:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={
-                "code": "USERNAME_EXISTS",
-                "message": "该用户名已被使用"
-            }
+            detail={"code": "USERNAME_EXISTS", "message": "该用户名已被使用"},
         )
-    
+
     # 创建新用户
     hashed_password = get_password_hash(data.password)
     new_user = User(
@@ -109,20 +98,18 @@ async def register(
         username=data.name,  # name 映射为 username
         hashed_password=hashed_password,
         is_active=True,
-        is_superuser=False
+        is_superuser=False,
     )
-    
+
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
-    
+
     # 生成令牌
     access_token = create_access_token(new_user.id)
-    
+
     return RegisterResponse(
-        access_token=access_token,
-        token_type="bearer",
-        user=_user_to_response(new_user)
+        access_token=access_token, token_type="bearer", user=_user_to_response(new_user)
     )
 
 
@@ -133,19 +120,16 @@ async def register(
     responses={
         401: {"model": ErrorResponse, "description": "邮箱或密码错误"},
         403: {"model": ErrorResponse, "description": "用户账户已被禁用"},
-        500: {"model": ErrorResponse, "description": "服务器错误"}
-    }
+        500: {"model": ErrorResponse, "description": "服务器错误"},
+    },
 )
-async def login(
-    data: LoginRequest,
-    db: AsyncSession = Depends(get_db)
-):
+async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     """
     用户登录
-    
+
     - **email**: 邮箱地址
     - **password**: 密码
-    
+
     验证成功后返回 accessToken 和用户信息
     """
     # 查找用户
@@ -153,45 +137,34 @@ async def login(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "code": "INVALID_CREDENTIALS",
-                "message": "邮箱或密码错误"
-            },
-            headers={"WWW-Authenticate": "Bearer"}
+            detail={"code": "INVALID_CREDENTIALS", "message": "邮箱或密码错误"},
+            headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     # 验证密码
     if not verify_password(data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "code": "INVALID_CREDENTIALS",
-                "message": "邮箱或密码错误"
-            },
-            headers={"WWW-Authenticate": "Bearer"}
+            detail={"code": "INVALID_CREDENTIALS", "message": "邮箱或密码错误"},
+            headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     # 检查用户是否激活
     if not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "code": "USER_INACTIVE",
-                "message": "用户账户已被禁用"
-            }
+            detail={"code": "USER_INACTIVE", "message": "用户账户已被禁用"},
         )
-    
+
     # 更新最后登录时间
     user.last_login = datetime.now(timezone.utc)
     await db.commit()
-    
+
     # 生成令牌
     access_token = create_access_token(user.id)
-    
+
     return LoginResponse(
-        access_token=access_token,
-        token_type="bearer",
-        user=_user_to_response(user)
+        access_token=access_token, token_type="bearer", user=_user_to_response(user)
     )
 
 
@@ -201,64 +174,56 @@ async def login(
     summary="刷新访问令牌",
     responses={
         401: {"model": ErrorResponse, "description": "无效的刷新令牌"},
-        500: {"model": ErrorResponse, "description": "服务器错误"}
-    }
+        500: {"model": ErrorResponse, "description": "服务器错误"},
+    },
 )
-async def refresh(
-    data: RefreshRequest,
-    db: AsyncSession = Depends(get_db)
-):
+async def refresh(data: RefreshRequest, db: AsyncSession = Depends(get_db)):
     """
     使用刷新令牌获取新的访问令牌
-    
+
     - **refreshToken**: 刷新令牌
-    
+
     返回新的 accessToken
     """
     # 解码刷新令牌
     user_id, error = decode_token(data.refresh_token, expected_type="refresh")
-    
+
     if error:
         code = "TOKEN_EXPIRED" if error == "Token expired" else "INVALID_TOKEN"
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
                 "code": code,
-                "message": "无效的刷新令牌" if code == "INVALID_TOKEN" else "刷新令牌已过期，请重新登录"
+                "message": (
+                    "无效的刷新令牌"
+                    if code == "INVALID_TOKEN"
+                    else "刷新令牌已过期，请重新登录"
+                ),
             },
-            headers={"WWW-Authenticate": "Bearer"}
+            headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     # 验证用户是否存在且激活
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
-    
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={
-                "code": "USER_NOT_FOUND",
-                "message": "用户不存在"
-            },
-            headers={"WWW-Authenticate": "Bearer"}
+            detail={"code": "USER_NOT_FOUND", "message": "用户不存在"},
+            headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     if not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "code": "USER_INACTIVE",
-                "message": "用户账户已被禁用"
-            }
+            detail={"code": "USER_INACTIVE", "message": "用户账户已被禁用"},
         )
-    
+
     # 生成新的访问令牌
     new_access_token = create_access_token(user.id)
-    
-    return RefreshResponse(
-        access_token=new_access_token,
-        token_type="bearer"
-    )
+
+    return RefreshResponse(access_token=new_access_token, token_type="bearer")
 
 
 @router.get(
@@ -268,15 +233,13 @@ async def refresh(
     responses={
         401: {"model": ErrorResponse, "description": "未认证"},
         403: {"model": ErrorResponse, "description": "用户账户已被禁用"},
-        500: {"model": ErrorResponse, "description": "服务器错误"}
-    }
+        500: {"model": ErrorResponse, "description": "服务器错误"},
+    },
 )
-async def get_me(
-    current_user: User = Depends(get_current_user)
-):
+async def get_me(current_user: User = Depends(get_current_user)):
     """
     获取当前登录用户的信息
-    
+
     需要有效的访问令牌
     """
     return _user_to_response(current_user)

@@ -27,16 +27,15 @@ def get_password_hash(password: str) -> str:
 
 
 def create_access_token(
-    user_id: UUID,
-    expires_delta: Optional[timedelta] = None
+    user_id: UUID, expires_delta: Optional[timedelta] = None
 ) -> str:
     """
     创建 JWT 访问令牌
-    
+
     Args:
         user_id: 用户 UUID
         expires_delta: 过期时间增量，默认使用配置中的设置
-    
+
     Returns:
         JWT 令牌字符串
     """
@@ -46,18 +45,16 @@ def create_access_token(
         expire = datetime.now(timezone.utc) + timedelta(
             minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
         )
-    
+
     to_encode = {
         "sub": str(user_id),
         "exp": expire,
         "type": "access",
-        "iat": datetime.now(timezone.utc)
+        "iat": datetime.now(timezone.utc),
     }
-    
+
     encoded_jwt = jwt.encode(
-        to_encode,
-        settings.JWT_SECRET_KEY,
-        algorithm=settings.JWT_ALGORITHM
+        to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
     )
     return encoded_jwt
 
@@ -65,43 +62,40 @@ def create_access_token(
 def create_refresh_token(user_id: UUID) -> str:
     """
     创建 JWT 刷新令牌
-    
+
     Args:
         user_id: 用户 UUID
-    
+
     Returns:
         JWT 刷新令牌字符串
     """
     expire = datetime.now(timezone.utc) + timedelta(
         days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
     )
-    
+
     to_encode = {
         "sub": str(user_id),
         "exp": expire,
         "type": "refresh",
-        "iat": datetime.now(timezone.utc)
+        "iat": datetime.now(timezone.utc),
     }
-    
+
     encoded_jwt = jwt.encode(
-        to_encode,
-        settings.JWT_SECRET_KEY,
-        algorithm=settings.JWT_ALGORITHM
+        to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
     )
     return encoded_jwt
 
 
 def decode_token(
-    token: str,
-    expected_type: str = "access"
+    token: str, expected_type: str = "access"
 ) -> Tuple[Optional[UUID], Optional[str]]:
     """
     解码并验证 JWT 令牌
-    
+
     Args:
         token: JWT 令牌字符串
         expected_type: 预期的令牌类型 ("access" 或 "refresh")
-    
+
     Returns:
         (user_id, error_message)
         - 成功时：user_id 为 UUID，error_message 为 None
@@ -109,28 +103,29 @@ def decode_token(
     """
     try:
         payload = jwt.decode(
-            token,
-            settings.JWT_SECRET_KEY,
-            algorithms=[settings.JWT_ALGORITHM]
+            token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
         )
-        
+
         # 验证令牌类型
         token_type = payload.get("type")
         if token_type != expected_type:
-            return None, f"Invalid token type: expected {expected_type}, got {token_type}"
-        
+            return (
+                None,
+                f"Invalid token type: expected {expected_type}, got {token_type}",
+            )
+
         # 获取用户 ID
         user_id_str = payload.get("sub")
         if not user_id_str:
             return None, "Token missing subject"
-        
+
         try:
             user_id = UUID(user_id_str)
         except ValueError:
             return None, "Invalid user ID format"
-        
+
         return user_id, None
-        
+
     except jwt.ExpiredSignatureError:
         return None, "Token expired"
     except jwt.InvalidTokenError as e:

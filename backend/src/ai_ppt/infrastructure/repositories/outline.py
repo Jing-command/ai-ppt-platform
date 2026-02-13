@@ -1,6 +1,7 @@
 """
 Outline 仓储实现
 """
+
 from uuid import UUID
 
 from sqlalchemy import select
@@ -13,10 +14,10 @@ from ai_ppt.infrastructure.repositories.base import BaseRepository
 
 class OutlineRepository(BaseRepository[Outline], IOutlineRepository):
     """大纲仓储实现"""
-    
+
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session, Outline)
-    
+
     async def get_by_owner(
         self,
         owner_id: UUID,
@@ -33,7 +34,7 @@ class OutlineRepository(BaseRepository[Outline], IOutlineRepository):
         )
         result = await self._session.execute(stmt)
         return list(result.scalars().all())
-    
+
     async def get_ready_outlines(
         self,
         owner_id: UUID,
@@ -53,7 +54,7 @@ class OutlineRepository(BaseRepository[Outline], IOutlineRepository):
         )
         result = await self._session.execute(stmt)
         return list(result.scalars().all())
-    
+
     async def search_by_title(
         self,
         owner_id: UUID,

@@ -50,6 +50,7 @@ logs/
 .coverage
 htmlcov/
 .tox/
+.mypy_cache/
 
 # Environment variables
 .env
