@@ -111,7 +111,7 @@ export default function PresentationEditorPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [presentationId, router]);
 
   // 保存历史状态
   const saveToHistory = useCallback((newSlides: Slide[]) => {

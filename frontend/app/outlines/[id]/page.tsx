@@ -94,7 +94,7 @@ export default function OutlineDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [outlineId, router]);
 
   const togglePageExpand = (index: number) => {
     const newExpanded = new Set(expandedPages);

@@ -28,7 +28,10 @@ jobs:
       - name: 🎨 Run ESLint
         working-directory: frontend
         run: npm run lint
-        continue-on-error: true  # 允许警告，只阻止错误
+
+      - name: 📘 Run TypeScript Check
+        working-directory: frontend
+        run: npm run type-check
 
       - name: 🏗️ Build Check
         working-directory: frontend
@@ -54,7 +57,7 @@ jobs:
       - name: Install tools
         working-directory: backend
         run: |
-          pip install black isort flake8 bandit
+          pip install black isort mypy flake8 bandit pytest pytest-cov
 
       - name: 🖤 Check Black Formatting
         working-directory: backend
@@ -64,6 +67,10 @@ jobs:
         working-directory: backend
         run: isort --check src/
 
+      - name: 📘 Run Type Check (mypy)
+        working-directory: backend
+        run: mypy src/ --ignore-missing-imports
+
       - name: 📏 Run Style Check (flake8)
         working-directory: backend
         run: flake8 src/ --max-line-length=88 --extend-ignore=E203,W503
@@ -71,6 +78,12 @@ jobs:
       - name: 🛡️ Run Security Scan (bandit)
         working-directory: backend
         run: bandit -r src/ -ll
+
+      - name: 🧪 Run Tests with Coverage
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt
+          pytest --cov=src --cov-fail-under=80 -v
 
   # Security Scan
   security-scan:
