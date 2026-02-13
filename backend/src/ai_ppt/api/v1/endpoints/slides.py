@@ -3,7 +3,7 @@
 处理单张幻灯片的编辑和撤销/重做操作
 """
 
-from typing import List
+from typing import Any, List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -48,7 +48,7 @@ async def list_slides(
     ppt_id: UUID,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     获取 PPT 的所有幻灯片
 
@@ -81,7 +81,7 @@ async def get_slide(
     slide_id: UUID,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     获取指定幻灯片的详细信息
 
@@ -116,7 +116,7 @@ async def update_slide(
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
     slide_service: SlideService = Depends(get_slide_service),
-):
+) -> Any:
     """
     更新指定幻灯片（支持部分更新）
 
@@ -169,7 +169,7 @@ async def delete_slide(
     slide_id: UUID,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> None:
     """
     删除指定幻灯片
 
@@ -204,7 +204,7 @@ async def undo_slide_operation(
     slide_id: UUID,
     current_user: User = Depends(get_current_user),
     slide_service: SlideService = Depends(get_slide_service),
-):
+) -> UndoRedoResponse:
     """
     撤销对幻灯片的上一操作
 
@@ -247,7 +247,7 @@ async def redo_slide_operation(
     slide_id: UUID,
     current_user: User = Depends(get_current_user),
     slide_service: SlideService = Depends(get_slide_service),
-):
+) -> UndoRedoResponse:
     """
     重做被撤销的操作
 

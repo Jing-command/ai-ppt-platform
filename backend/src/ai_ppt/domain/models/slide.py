@@ -72,6 +72,17 @@ class Slide(Base):
     )
     notes: Mapped[TextOptional] = mapped_column(comment="演讲者备注")
 
+    # 样式设置
+    background_color: Mapped[Optional[str]] = mapped_column(
+        String(7), nullable=True, comment="背景颜色 (HEX格式)"
+    )
+    text_color: Mapped[Optional[str]] = mapped_column(
+        String(7), nullable=True, comment="文字颜色 (HEX格式)"
+    )
+    font_family: Mapped[Optional[str]] = mapped_column(
+        String(100), nullable=True, comment="字体家族"
+    )
+
     # 排序和版本控制
     order_index: Mapped[int] = mapped_column(
         Integer,
@@ -109,6 +120,9 @@ class Slide(Base):
         content: Optional[dict[str, Any]] = None,
         subtitle: Optional[str] = None,
         notes: Optional[str] = None,
+        background_color: Optional[str] = None,
+        text_color: Optional[str] = None,
+        font_family: Optional[str] = None,
     ) -> None:
         self.title = title
         self.presentation_id = presentation_id
@@ -117,6 +131,9 @@ class Slide(Base):
         self.content = content or {}
         self.subtitle = subtitle
         self.notes = notes
+        self.background_color = background_color
+        self.text_color = text_color
+        self.font_family = font_family
 
     def update_content(self, new_content: dict[str, Any]) -> None:
         """

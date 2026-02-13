@@ -186,6 +186,9 @@ class SalesforceConnector(DataConnector):
         if not self.instance_url:
             raise ConnectionError("Instance URL not set")
 
+        if not self._client:
+            raise ConnectionError("Not connected")
+
         url = urljoin(self.instance_url, endpoint)
         headers = {
             "Authorization": f"Bearer {self._access_token}",
@@ -206,7 +209,8 @@ class SalesforceConnector(DataConnector):
         response.raise_for_status()
 
         if response.content:
-            return response.json()
+            result: dict[str, Any] = response.json()
+            return result
         return {}
 
     async def get_schema(self) -> List[TableSchema]:

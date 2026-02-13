@@ -3,7 +3,7 @@
 处理数据源连接器的 CRUD 操作
 """
 
-from typing import Optional
+from typing import Any, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -56,7 +56,7 @@ async def list_connectors(
     connector_type: Optional[str] = None,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
-):
+) -> Any:
     """
     获取当前用户的连接器列表
 
@@ -100,7 +100,7 @@ async def create_connector(
     data: ConnectorCreate,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
-):
+) -> Any:
     """
     创建新的数据源连接器
 
@@ -135,7 +135,7 @@ async def get_connector(
     connector_id: UUID,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
-):
+) -> Any:
     """
     获取指定连接器的详细信息
 
@@ -170,7 +170,7 @@ async def update_connector(
     data: ConnectorUpdate,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
-):
+) -> Any:
     """
     更新连接器配置
 
@@ -211,7 +211,7 @@ async def delete_connector(
     connector_id: UUID,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
-):
+) -> Any:
     """
     删除指定的连接器
 
@@ -243,7 +243,7 @@ async def test_connector(
     data: ConnectorTestRequest | None = None,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
-):
+) -> Any:
     """
     测试数据源连接
 
@@ -281,7 +281,7 @@ async def get_connector_schema(
     refresh: bool = False,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
-):
+) -> Any:
     """
     获取数据源的表结构和字段信息
 
@@ -313,7 +313,7 @@ async def execute_query(
     data: ConnectorQueryRequest,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
-):
+) -> Any:
     """
     在数据源上执行查询
 

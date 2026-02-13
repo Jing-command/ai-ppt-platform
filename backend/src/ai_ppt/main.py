@@ -9,6 +9,7 @@ FastAPI 主应用入口
 """
 
 from contextlib import asynccontextmanager
+from typing import Any, AsyncIterator
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +21,7 @@ from ai_ppt.database import close_db, init_db
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     应用生命周期管理
 
@@ -100,7 +101,7 @@ app.add_middleware(
 
 
 @app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """
     统一 HTTP 异常返回格式
 
@@ -115,7 +116,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
 
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
+async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """
     全局异常处理
 
@@ -150,7 +151,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 # 健康检查（根路径，无需认证）
 @app.get("/health", tags=["系统"], summary="健康检查")
-async def health_check():
+async def health_check() -> dict[str, Any]:
     """
     健康检查端点
 
@@ -167,7 +168,7 @@ async def health_check():
 
 
 @app.get("/", tags=["系统"], summary="API 信息")
-async def root():
+async def root() -> dict[str, Any]:
     """
     API 根路径
 

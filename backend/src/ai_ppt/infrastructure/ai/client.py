@@ -189,7 +189,7 @@ class LLMClient:
         return LLMResponse(
             content=choice["message"]["content"],
             model=data.get("model", self.model),
-            provider=self.provider.value,  # type: ignore
+            provider=self.provider.value,
             usage=usage,
             finish_reason=choice.get("finish_reason"),
             latency_ms=latency_ms,
@@ -428,6 +428,11 @@ class LLMClient:
         """异步上下文管理器入口"""
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+    async def __aexit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[Any],
+    ) -> None:
         """异步上下文管理器出口"""
         await self.close()

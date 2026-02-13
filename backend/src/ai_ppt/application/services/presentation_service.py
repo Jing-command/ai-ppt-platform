@@ -3,7 +3,7 @@
 处理 PPT 的 CRUD 操作和幻灯片管理
 """
 
-from typing import Optional
+from typing import Any, Optional
 from uuid import UUID
 
 from sqlalchemy import func, select
@@ -476,7 +476,7 @@ class PresentationService:
     def _create_slide_from_schema(
         self,
         presentation_id: UUID,
-        slide_data,
+        slide_data: Any,
         order_index: int,
     ) -> Slide:
         """

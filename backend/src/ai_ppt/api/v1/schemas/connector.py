@@ -113,7 +113,7 @@ class DatabaseTable(BaseModel):
     """数据库表信息"""
 
     name: str
-    schema: Optional[str] = None
+    schema_: Optional[str] = Field(default=None, alias="schema")
     comment: Optional[str] = None
     columns: List[DatabaseColumn] = Field(default_factory=list)
     row_count: Optional[int] = Field(None, alias="rowCount")

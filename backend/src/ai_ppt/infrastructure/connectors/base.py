@@ -136,7 +136,7 @@ class DataConnector(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def query_stream(
+    def query_stream(
         self,
         query: str,
         params: Optional[Dict[str, Any]] = None,

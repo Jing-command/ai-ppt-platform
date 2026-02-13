@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum as PyEnum
-from typing import TYPE_CHECKING, Any, ClassVar, Optional
+from typing import TYPE_CHECKING, Any, Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import JSON, DateTime, ForeignKey, String, Text
@@ -228,9 +228,9 @@ class Outline(Base):
         lazy="selectin",
     )
 
-    # 非持久化属性，用于缓存页面列表
-    _pages_cache: ClassVar[Optional[list[OutlinePage]]] = None
-    _background_cache: ClassVar[Optional[OutlineBackground]] = None
+    # 非持久化属性，用于缓存页面列表（实例变量，在__init__中初始化）
+    _pages_cache: Optional[list[OutlinePage]]
+    _background_cache: Optional[OutlineBackground]
 
     def __init__(
         self,

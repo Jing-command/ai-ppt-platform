@@ -70,4 +70,6 @@ class SlideRepository(BaseRepository[Slide], ISlideRepository):
         stmt = delete(Slide).where(Slide.presentation_id == presentation_id)
         result = await self._session.execute(stmt)
         await self._session.flush()
-        return result.rowcount
+        # rowcount 可能是 None，使用 getattr 并提供默认值
+        rowcount: int = getattr(result, "rowcount", None) or 0
+        return rowcount

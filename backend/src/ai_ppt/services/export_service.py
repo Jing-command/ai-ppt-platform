@@ -10,9 +10,10 @@ import uuid
 from datetime import datetime, timedelta
 from enum import Enum as PyEnum
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Union
 from uuid import UUID
 
+from PIL import Image, ImageDraw, ImageFont
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -497,8 +498,6 @@ class ExportService:
         """
         import zipfile
 
-        from PIL import Image, ImageDraw, ImageFont
-
         task.progress = 60
 
         # 设置分辨率
@@ -521,6 +520,9 @@ class ExportService:
             draw = ImageDraw.Draw(img)
 
             # 尝试加载字体
+            title_font: Union[ImageFont.FreeTypeFont, ImageFont.ImageFont]
+            subtitle_font: Union[ImageFont.FreeTypeFont, ImageFont.ImageFont]
+            text_font: Union[ImageFont.FreeTypeFont, ImageFont.ImageFont]
             try:
                 title_font = ImageFont.truetype(
                     "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",

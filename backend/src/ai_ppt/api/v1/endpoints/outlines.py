@@ -65,7 +65,7 @@ async def list_outlines(
     status: Optional[str] = None,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-):
+) -> Any:
     """
     获取当前用户的大纲列表
 
@@ -108,7 +108,7 @@ async def create_outline(
     data: OutlineCreate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-):
+) -> Any:
     """
     手动创建 PPT 大纲
 
@@ -142,7 +142,7 @@ async def generate_outline(
     data: OutlineGenerateRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-):
+) -> Any:
     """
     使用 AI 自动生成 PPT 大纲
 
@@ -195,7 +195,7 @@ async def get_outline(
     outline_id: UUID,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-):
+) -> Any:
     """
     获取大纲详情
 
@@ -233,7 +233,7 @@ async def update_outline(
     data: OutlineUpdate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-):
+) -> Any:
     """
     更新大纲内容
 
@@ -283,7 +283,7 @@ async def delete_outline(
     outline_id: UUID,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-):
+) -> Any:
     """
     删除指定大纲
 
@@ -326,7 +326,7 @@ async def create_presentation_from_outline(
     data: OutlineToPresentationRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-):
+) -> Any:
     """
     基于大纲创建完整的 PPT
 

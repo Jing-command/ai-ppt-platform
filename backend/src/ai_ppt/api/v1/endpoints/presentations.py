@@ -3,7 +3,7 @@ PPT 管理 API
 处理 PPT 演示文稿的 CRUD 操作
 """
 
-from typing import Optional
+from typing import Any, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -61,7 +61,7 @@ async def list_presentations(
     status: Optional[str] = None,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     获取当前用户的 PPT 列表
 
@@ -104,7 +104,7 @@ async def create_presentation(
     data: PresentationCreate,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     创建新的 PPT 演示文稿
 
@@ -135,7 +135,7 @@ async def get_presentation(
     presentation_id: UUID,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     获取 PPT 详情（包含所有幻灯片）
 
@@ -167,7 +167,7 @@ async def update_presentation(
     data: PresentationUpdate,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     更新 PPT 信息
 
@@ -205,7 +205,7 @@ async def delete_presentation(
     presentation_id: UUID,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     删除指定 PPT
 
@@ -241,7 +241,7 @@ async def add_slide(
     data: SlideCreate,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     向 PPT 添加新幻灯片
 
@@ -284,7 +284,7 @@ async def update_slide(
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
     slide_service: SlideService = Depends(get_slide_service),
-):
+) -> Any:
     """
     更新幻灯片内容（支持撤销/重做）
 
@@ -330,7 +330,7 @@ async def delete_slide(
     slide_id: UUID,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
-):
+) -> Any:
     """
     删除幻灯片
 
@@ -370,7 +370,7 @@ async def undo_slide_operation(
     slide_id: UUID,
     current_user: User = Depends(get_current_user),
     slide_service: SlideService = Depends(get_slide_service),
-):
+) -> Any:
     """
     撤销对幻灯片的上一操作
 
@@ -413,7 +413,7 @@ async def redo_slide_operation(
     slide_id: UUID,
     current_user: User = Depends(get_current_user),
     slide_service: SlideService = Depends(get_slide_service),
-):
+) -> Any:
     """
     重做被撤销的操作
 
@@ -460,7 +460,7 @@ async def generate_presentation(
     data: GenerateRequest,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-):
+) -> Any:
     """
     直接使用 AI 生成 PPT（无需先创建大纲）
 

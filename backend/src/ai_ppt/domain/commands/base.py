@@ -5,7 +5,7 @@ Command 模式基类
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Type
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -186,10 +186,10 @@ class CommandFactory(ABC):
     每个领域应该有自己的工厂实现。
     """
 
-    _registry: Dict[str, type] = {}
+    _registry: Dict[str, Type[Command]] = {}
 
     @classmethod
-    def register(cls, command_type: str, command_class: type) -> None:
+    def register(cls, command_type: str, command_class: Type[Command]) -> None:
         """
         注册命令类型
 

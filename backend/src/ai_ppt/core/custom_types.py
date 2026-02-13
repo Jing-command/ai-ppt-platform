@@ -3,8 +3,9 @@
 """
 
 import uuid
+from typing import Any, Optional
 
-from sqlalchemy import String, TypeDecorator
+from sqlalchemy import Dialect, String, TypeDecorator
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.types import JSON
 
@@ -20,16 +21,18 @@ class GUID(TypeDecorator):
     impl = String
     cache_ok = True
 
-    def __init__(self, length=36):
+    def __init__(self, length: int = 36) -> None:
         super().__init__(length=length)
 
-    def load_dialect_impl(self, dialect):
+    def load_dialect_impl(self, dialect: Dialect) -> Any:
         if dialect.name == "postgresql":
             return dialect.type_descriptor(PG_UUID())
         else:
             return dialect.type_descriptor(String(36))
 
-    def process_bind_param(self, value, dialect):
+    def process_bind_param(
+        self, value: Optional[uuid.UUID], dialect: Dialect
+    ) -> Optional[str]:
         if value is None:
             return value
         elif dialect.name == "postgresql":
@@ -39,12 +42,14 @@ class GUID(TypeDecorator):
                 return str(value)
             return value
 
-    def process_result_value(self, value, dialect):
+    def process_result_value(
+        self, value: Optional[str], dialect: Dialect
+    ) -> Optional[uuid.UUID]:
         if value is None:
+            return None
+        if isinstance(value, uuid.UUID):
             return value
-        if not isinstance(value, uuid.UUID):
-            value = uuid.UUID(value)
-        return value
+        return uuid.UUID(value)
 
 
 class JSONType(TypeDecorator):
@@ -57,5 +62,5 @@ class JSONType(TypeDecorator):
     impl = JSON
     cache_ok = True
 
-    def load_dialect_impl(self, dialect):
+    def load_dialect_impl(self, dialect: Dialect) -> Any:
         return dialect.type_descriptor(JSON())

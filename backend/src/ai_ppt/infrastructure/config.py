@@ -6,7 +6,7 @@ Pydantic Settings 配置管理
 from functools import lru_cache
 from typing import Literal, Optional
 
-from pydantic import Field, PostgresDsn, RedisDsn, SecretStr
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,7 +15,7 @@ class DatabaseSettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="DB_")
 
-    url: PostgresDsn = Field(
+    url: str = Field(
         default="postgresql+asyncpg://postgres:postgres@localhost:5432/ai_ppt"
     )
     pool_size: int = Field(default=10, ge=1, le=100)
@@ -29,7 +29,7 @@ class RedisSettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="REDIS_")
 
-    url: RedisDsn = Field(default="redis://localhost:6379/0")
+    url: str = Field(default="redis://localhost:6379/0")
     connection_timeout: int = Field(default=5)
 
 
@@ -59,7 +59,7 @@ class SecuritySettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="SECURITY_")
 
-    secret_key: SecretStr = Field(default="change-me-in-production")
+    secret_key: str = Field(default="change-me-in-production")
     algorithm: str = Field(default="HS256")
     access_token_expire_minutes: int = Field(default=30, ge=1)
     refresh_token_expire_days: int = Field(default=7, ge=1)

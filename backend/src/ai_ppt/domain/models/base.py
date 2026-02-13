@@ -4,7 +4,7 @@ SQLAlchemy 2.0 基础模型配置
 """
 
 from datetime import datetime
-from typing import Annotated, Any, Optional
+from typing import Annotated, Any, ClassVar, Optional
 from uuid import UUID, uuid4
 
 from sqlalchemy import DateTime, MetaData, String, func
@@ -52,8 +52,8 @@ class Base(DeclarativeBase):
     - 类型注册表
     """
 
-    registry: registry = registry()
-    metadata: MetaData = MetaData(naming_convention=convention)
+    registry: ClassVar[registry] = registry()
+    metadata: ClassVar[MetaData] = MetaData(naming_convention=convention)
 
     def __repr__(self) -> str:
         """统一的字符串表示"""

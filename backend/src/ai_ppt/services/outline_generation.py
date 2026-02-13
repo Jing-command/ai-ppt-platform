@@ -161,7 +161,7 @@ class OutlineGenerationService:
 
         try:
             response = await self._llm_client.complete(request)
-            result = json.loads(response.content)
+            result: dict[str, Any] = json.loads(response.content)
 
             # 验证结果格式
             if "pages" not in result:
@@ -255,6 +255,11 @@ class OutlineGenerationService:
         """异步上下文管理器入口"""
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+    async def __aexit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[Any],
+    ) -> None:
         """异步上下文管理器出口"""
         await self.close()

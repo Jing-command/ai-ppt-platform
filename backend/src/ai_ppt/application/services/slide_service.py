@@ -166,7 +166,7 @@ class SlideService:
             "success": True,
             "description": f"已撤销 {command.command_type}",
             "slide_id": str(slide_id),
-            "state": slide.model_dump() if slide else None,
+            "state": slide.to_dict() if slide else None,
             "can_undo": history.can_undo,
             "can_redo": history.can_redo,
         }
@@ -212,7 +212,7 @@ class SlideService:
             "success": True,
             "description": f"已重做 {command.command_type}",
             "slide_id": str(slide_id),
-            "state": slide.model_dump() if slide else None,
+            "state": slide.to_dict() if slide else None,
             "can_undo": history.can_undo,
             "can_redo": history.can_redo,
         }

@@ -4,7 +4,7 @@
 """
 
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Any, Optional
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
@@ -50,7 +50,7 @@ async def export_pptx(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
-):
+) -> Any:
     """
     提交 PPTX 导出任务
 
@@ -120,7 +120,7 @@ async def export_pdf(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
-):
+) -> Any:
     """
     提交 PDF 导出任务
 
@@ -189,7 +189,7 @@ async def export_images(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
-):
+) -> Any:
     """
     提交图片导出任务（每页一张图片，打包为 zip）
 
@@ -259,7 +259,7 @@ async def get_export_status(
     task_id: UUID,
     current_user: User = Depends(get_current_user),
     service: ExportService = Depends(get_export_service),
-):
+) -> Any:
     """
     查询导出任务状态
 
@@ -310,7 +310,7 @@ async def download_export(
     task_id: UUID,
     current_user: User = Depends(get_current_user),
     service: ExportService = Depends(get_export_service),
-):
+) -> Any:
     """
     下载导出的文件
 

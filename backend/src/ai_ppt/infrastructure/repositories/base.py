@@ -3,7 +3,7 @@ Repository 实现基类（泛型）
 使用 SQLAlchemy 2.0 实现仓储接口
 """
 
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 from uuid import UUID
 
 from sqlalchemy import select
@@ -36,7 +36,9 @@ class BaseRepository(IRepository[ModelT], Generic[ModelT]):
 
     async def get_by_id(self, entity_id: UUID) -> ModelT | None:
         """根据 ID 获取实体"""
-        stmt = select(self._model_class).where(self._model_class.id == entity_id)
+        # 使用 getattr 避免 mypy 对类变量访问的检查问题
+        id_column: Any = getattr(self._model_class, "id")
+        stmt = select(self._model_class).where(id_column == entity_id)
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
