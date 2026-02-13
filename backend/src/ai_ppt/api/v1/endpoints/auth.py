@@ -4,7 +4,7 @@
 """
 
 from datetime import datetime, timezone
-from typing import Any, Optional
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
@@ -65,7 +65,9 @@ def _user_to_response(user: User) -> UserResponse:
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)) -> Any:
+async def register(
+    data: RegisterRequest, db: AsyncSession = Depends(get_db)
+) -> RegisterResponse:
     """
     注册新用户
 
@@ -123,7 +125,9 @@ async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)) ->
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)) -> Any:
+async def login(
+    data: LoginRequest, db: AsyncSession = Depends(get_db)
+) -> LoginResponse:
     """
     用户登录
 
@@ -177,7 +181,9 @@ async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)) -> Any:
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def refresh(data: RefreshRequest, db: AsyncSession = Depends(get_db)) -> Any:
+async def refresh(
+    data: RefreshRequest, db: AsyncSession = Depends(get_db)
+) -> RefreshResponse:
     """
     使用刷新令牌获取新的访问令牌
 
@@ -236,7 +242,7 @@ async def refresh(data: RefreshRequest, db: AsyncSession = Depends(get_db)) -> A
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def get_me(current_user: User = Depends(get_current_user)) -> Any:
+async def get_me(current_user: User = Depends(get_current_user)) -> UserResponse:
     """
     获取当前登录用户的信息
 
