@@ -16,11 +16,10 @@ class TestSlideAPI:
     async def test_list_slides_success(self, client: AsyncClient, authenticated_user):
         """测试成功获取幻灯片列表"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
 
         response = await client.get(
             f"/api/v1/presentations/{ppt_id}/slides",
@@ -33,12 +32,18 @@ ppt_id = uuid.uuid4()
         """测试未认证获取幻灯片列表"""
         response = await client.get(f"/api/v1/presentations/{uuid.uuid4()}/slides")
 
-        assert response.status_code in [401, 403]  # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
     async def test_list_slides_presentation_not_found(
-        self, client: AsyncClient, auth_headers
+        self, client: AsyncClient, authenticated_user
     ):
         """测试获取不存在 PPT 的幻灯片"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         response = await client.get(
             f"/api/v1/presentations/{uuid.uuid4()}/slides",
             headers=headers,
@@ -49,11 +54,10 @@ ppt_id = uuid.uuid4()
     async def test_get_slide_success(self, client: AsyncClient, authenticated_user):
         """测试成功获取单个幻灯片"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.get(
@@ -66,11 +70,10 @@ ppt_id = uuid.uuid4()
     async def test_get_slide_not_found(self, client: AsyncClient, authenticated_user):
         """测试获取不存在的幻灯片"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.get(
@@ -86,7 +89,8 @@ ppt_id = uuid.uuid4()
             f"/api/v1/presentations/{uuid.uuid4()}/slides/{uuid.uuid4()}",
         )
 
-        assert response.status_code in [401, 403]  # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
 
 @pytest.mark.asyncio
@@ -96,11 +100,10 @@ class TestSlideUpdateAPI:
     async def test_update_slide_success(self, client: AsyncClient, authenticated_user):
         """测试成功更新幻灯片"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.put(
@@ -124,11 +127,10 @@ ppt_id = uuid.uuid4()
     async def test_update_slide_partial(self, client: AsyncClient, authenticated_user):
         """测试部分更新幻灯片"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.put(
@@ -150,16 +152,16 @@ ppt_id = uuid.uuid4()
             json={"content": {"title": "Test"}},
         )
 
-        assert response.status_code in [401, 403]  # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
     async def test_update_slide_invalid_data(self, client: AsyncClient, authenticated_user):
         """测试更新幻灯片时提供无效数据"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.put(
@@ -180,11 +182,10 @@ class TestSlideDeleteAPI:
     async def test_delete_slide_success(self, client: AsyncClient, authenticated_user):
         """测试成功删除幻灯片"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.delete(
@@ -200,16 +201,17 @@ ppt_id = uuid.uuid4()
             f"/api/v1/presentations/{uuid.uuid4()}/slides/{uuid.uuid4()}",
         )
 
-        assert response.status_code in [401, 403]  # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
     async def test_delete_slide_not_found(self, client: AsyncClient, authenticated_user):
         """测试删除不存在的幻灯片"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-response = await client.delete(
+
+        response = await client.delete(
             f"/api/v1/presentations/{uuid.uuid4()}/slides/{uuid.uuid4()}",
             headers=headers,
         )
@@ -224,11 +226,10 @@ class TestSlideUndoRedoAPI:
     async def test_undo_slide_success(self, client: AsyncClient, authenticated_user):
         """测试成功撤销幻灯片操作"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.post(
@@ -244,16 +245,16 @@ ppt_id = uuid.uuid4()
             f"/api/v1/presentations/{uuid.uuid4()}/slides/{uuid.uuid4()}/undo",
         )
 
-        assert response.status_code in [401, 403]  # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
     async def test_undo_slide_no_history(self, client: AsyncClient, authenticated_user):
         """测试无历史记录时撤销"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         # 由于没有操作历史，应该返回 400
@@ -267,11 +268,10 @@ ppt_id = uuid.uuid4()
     async def test_redo_slide_success(self, client: AsyncClient, authenticated_user):
         """测试成功重做幻灯片操作"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.post(
@@ -287,16 +287,16 @@ ppt_id = uuid.uuid4()
             f"/api/v1/presentations/{uuid.uuid4()}/slides/{uuid.uuid4()}/redo",
         )
 
-        assert response.status_code in [401, 403]  # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
     async def test_redo_slide_no_history(self, client: AsyncClient, authenticated_user):
         """测试无可重做操作时"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         # 由于没有可重做的操作，应该返回 400
@@ -315,11 +315,10 @@ class TestSlideContentValidation:
     async def test_update_slide_empty_content(self, client: AsyncClient, authenticated_user):
         """测试更新幻灯片时提供空内容"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.put(
@@ -334,9 +333,13 @@ ppt_id = uuid.uuid4()
         assert response.status_code in [200, 404, 500]
 
     async def test_update_slide_complex_content(
-        self, client: AsyncClient, auth_headers
+        self, client: AsyncClient, authenticated_user
     ):
         """测试更新幻灯片时提供复杂内容"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
         ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
@@ -363,11 +366,10 @@ ppt_id = uuid.uuid4()
     async def test_update_slide_style(self, client: AsyncClient, authenticated_user):
         """测试更新幻灯片样式"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.put(
@@ -388,11 +390,10 @@ ppt_id = uuid.uuid4()
     async def test_update_slide_notes(self, client: AsyncClient, authenticated_user):
         """测试更新幻灯片备注"""
         from ai_ppt.core.security import create_access_token
-        
+
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        
-ppt_id = uuid.uuid4()
+        ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()
 
         response = await client.put(
