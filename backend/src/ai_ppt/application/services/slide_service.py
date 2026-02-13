@@ -8,6 +8,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ai_ppt.api.v1.schemas.presentation import SlideUpdate
 from ai_ppt.application.services.presentation_service import PresentationService
 from ai_ppt.domain.commands.command_history import CommandHistory
 from ai_ppt.domain.commands.slide_commands import UpdateSlideCommand
@@ -97,7 +98,7 @@ class SlideService:
             presentation_id=presentation_id,
             slide_id=slide_id,
             user_id=user_id,
-            data=updates,
+            data=SlideUpdate(**updates),
         )
 
         # 创建 Command 记录操作

@@ -3,6 +3,7 @@
 处理数据源连接器的 CRUD 操作
 """
 
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -52,7 +53,7 @@ def get_connector_service(db: AsyncSession = Depends(get_db)) -> ConnectorServic
 )
 async def list_connectors(
     pagination: PaginationParams = Depends(),
-    connector_type: str = None,
+    connector_type: Optional[str] = None,
     current_user: User = Depends(get_current_user),
     service: ConnectorService = Depends(get_connector_service),
 ):

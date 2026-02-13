@@ -51,7 +51,7 @@ def _user_to_response(user: User) -> UserResponse:
         id=user.id,
         email=user.email,
         name=user.username,  # username 映射为 name
-        created_at=user.created_at,
+        createdAt=user.created_at,
     )
 
 
@@ -109,7 +109,7 @@ async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)):
     access_token = create_access_token(new_user.id)
 
     return RegisterResponse(
-        access_token=access_token, token_type="bearer", user=_user_to_response(new_user)
+        accessToken=access_token, tokenType="bearer", user=_user_to_response(new_user)
     )
 
 
@@ -164,7 +164,7 @@ async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     access_token = create_access_token(user.id)
 
     return LoginResponse(
-        access_token=access_token, token_type="bearer", user=_user_to_response(user)
+        accessToken=access_token, tokenType="bearer", user=_user_to_response(user)
     )
 
 
@@ -223,7 +223,7 @@ async def refresh(data: RefreshRequest, db: AsyncSession = Depends(get_db)):
     # 生成新的访问令牌
     new_access_token = create_access_token(user.id)
 
-    return RefreshResponse(access_token=new_access_token, token_type="bearer")
+    return RefreshResponse(accessToken=new_access_token, tokenType="bearer")
 
 
 @router.get(

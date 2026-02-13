@@ -4,6 +4,7 @@
 """
 
 from datetime import datetime, timezone
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
@@ -45,7 +46,7 @@ async def export_pptx(
     quality: str = "standard",
     slide_range: str = "all",
     include_notes: bool = False,
-    background_tasks: BackgroundTasks = None,
+    background_tasks: Optional[BackgroundTasks] = None,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
@@ -90,9 +91,12 @@ async def export_pptx(
         await process_export_task(task.id)
 
     return ExportResponse(
-        task_id=task.id,
+        taskId=task.id,
         status=task.status.value,
-        created_at=task.created_at,
+        downloadUrl=None,
+        fileSize=None,
+        expiresAt=None,
+        createdAt=task.created_at,
     )
 
 
@@ -112,7 +116,7 @@ async def export_pdf(
     quality: str = "standard",
     slide_range: str = "all",
     include_notes: bool = False,
-    background_tasks: BackgroundTasks = None,
+    background_tasks: Optional[BackgroundTasks] = None,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
@@ -156,9 +160,12 @@ async def export_pdf(
         await process_export_task(task.id)
 
     return ExportResponse(
-        task_id=task.id,
+        taskId=task.id,
         status=task.status.value,
-        created_at=task.created_at,
+        downloadUrl=None,
+        fileSize=None,
+        expiresAt=None,
+        createdAt=task.created_at,
     )
 
 
@@ -178,7 +185,7 @@ async def export_images(
     format: str = "png",
     quality: str = "standard",
     slide_range: str = "all",
-    background_tasks: BackgroundTasks = None,
+    background_tasks: Optional[BackgroundTasks] = None,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     service: ExportService = Depends(get_export_service),
@@ -230,9 +237,12 @@ async def export_images(
         await process_export_task(task.id)
 
     return ExportResponse(
-        task_id=task.id,
+        taskId=task.id,
         status=task.status.value,
-        created_at=task.created_at,
+        downloadUrl=None,
+        fileSize=None,
+        expiresAt=None,
+        createdAt=task.created_at,
     )
 
 
@@ -272,18 +282,18 @@ async def get_export_status(
         download_url = f"/api/v1/exports/{task_id}/download"
 
     return ExportStatusResponse(
-        task_id=task.id,
-        presentation_id=task.presentation_id,
+        taskId=task.id,
+        presentationId=task.presentation_id,
         format=task.format.value,
         status=task.status.value,
         progress=task.progress,
-        file_path=task.file_path,
-        file_size=task.file_size,
-        error_message=task.error_message,
-        download_url=download_url,
-        expires_at=task.expires_at,
-        created_at=task.created_at,
-        completed_at=task.completed_at,
+        filePath=task.file_path,
+        fileSize=task.file_size,
+        errorMessage=task.error_message,
+        downloadUrl=download_url,
+        expiresAt=task.expires_at,
+        createdAt=task.created_at,
+        completedAt=task.completed_at,
     )
 
 
@@ -328,6 +338,13 @@ async def download_export(
         raise HTTPException(
             status_code=status.HTTP_410_GONE,
             detail={"code": "EXPIRED", "message": "文件下载链接已过期"},
+        )
+
+    # 检查文件路径是否存在
+    if not task.file_path:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "FILE_NOT_FOUND", "message": "导出文件不存在"},
         )
 
     file_path = service.get_full_path(task.file_path)

@@ -169,9 +169,9 @@ async def generate_outline(
         )
 
         return OutlineGenerateResponse(
-            task_id=outline.id,
+            taskId=outline.id,
             status="completed",
-            estimated_time=0,
+            estimatedTime=0,
             message="大纲生成成功",
         )
 
@@ -357,9 +357,9 @@ async def create_presentation_from_outline(
     task_id = uuid4()
 
     return OutlineToPresentationResponse(
-        presentation_id=presentation_id,
-        task_id=task_id,
+        presentationId=presentation_id,
+        taskId=task_id,
         status="pending",
         message="PPT 生成任务已提交",
-        estimated_time=60,
+        estimatedTime=60,
     )

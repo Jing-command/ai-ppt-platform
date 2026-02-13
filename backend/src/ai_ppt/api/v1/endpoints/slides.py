@@ -224,7 +224,7 @@ async def undo_slide_operation(
             success=result["success"],
             description=result["description"],
             state=result.get("state"),
-            slide_id=result["slide_id"],
+            slideId=result["slide_id"],
         )
     except UndoRedoError as e:
         raise HTTPException(
@@ -267,7 +267,7 @@ async def redo_slide_operation(
             success=result["success"],
             description=result["description"],
             state=result.get("state"),
-            slide_id=result["slide_id"],
+            slideId=result["slide_id"],
         )
     except UndoRedoError as e:
         raise HTTPException(

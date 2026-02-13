@@ -305,15 +305,17 @@ class ConnectorService:
                 return ConnectorTestResponse(
                     success=True,
                     message="Connection successful",
-                    latency_ms=latency_ms,
-                    server_version=getattr(data_connector, "server_version", None),
+                    latencyMs=latency_ms,
+                    serverVersion=getattr(data_connector, "server_version", None),
+                    errorDetails=None,
                 )
             else:
                 return ConnectorTestResponse(
                     success=False,
                     message="Connection failed",
-                    latency_ms=latency_ms,
-                    error_details="Unable to establish connection",
+                    latencyMs=latency_ms,
+                    errorDetails="Unable to establish connection",
+                    serverVersion=None,
                 )
 
         except Exception as e:
@@ -324,7 +326,9 @@ class ConnectorService:
             return ConnectorTestResponse(
                 success=False,
                 message=f"Connection test failed: {str(e)}",
-                error_details=str(e),
+                errorDetails=str(e),
+                latencyMs=None,
+                serverVersion=None,
             )
 
 

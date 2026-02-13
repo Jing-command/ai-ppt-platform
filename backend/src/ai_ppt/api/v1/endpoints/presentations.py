@@ -3,6 +3,7 @@ PPT 管理 API
 处理 PPT 演示文稿的 CRUD 操作
 """
 
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -57,7 +58,7 @@ def get_slide_service(db: AsyncSession = Depends(get_db)) -> SlideService:
 )
 async def list_presentations(
     pagination: PaginationParams = Depends(),
-    status: str = None,
+    status: Optional[str] = None,
     current_user: User = Depends(get_current_user),
     service: PresentationService = Depends(get_presentation_service),
 ):
@@ -389,7 +390,7 @@ async def undo_slide_operation(
             success=result["success"],
             description=result["description"],
             state=result.get("state"),
-            slide_id=result["slide_id"],
+            slideId=result["slide_id"],
         )
     except UndoRedoError as e:
         raise HTTPException(
@@ -432,7 +433,7 @@ async def redo_slide_operation(
             success=result["success"],
             description=result["description"],
             state=result.get("state"),
-            slide_id=result["slide_id"],
+            slideId=result["slide_id"],
         )
     except UndoRedoError as e:
         raise HTTPException(
@@ -484,9 +485,9 @@ async def generate_presentation(
     #     provider=data.provider
     # )
     # return GenerateResponse(
-    #     task_id=task.id,
+    #     taskId=task.id,
     #     status=task.status,
-    #     estimated_time=task.estimated_seconds,
+    #     estimatedTime=task.estimated_seconds,
     #     message="PPT 生成任务已提交"
     # )
 
