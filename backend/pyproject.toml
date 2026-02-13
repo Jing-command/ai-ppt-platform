@@ -97,6 +97,7 @@ convention = "google"
 asyncio_mode = "auto"
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
+pythonpath = ["src"]
 addopts = "-v --tb=short"
 
 [tool.coverage.run]
