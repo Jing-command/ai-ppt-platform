@@ -26,7 +26,7 @@ const createConnectorSchema = (typeConfig: ConnectorTypeConfig | null) => {
     });
   }
 
-  const configShape: Record<string, any> = {};
+  const configShape: Record<string, unknown> = {};
   typeConfig.fields.forEach((field) => {
     if (field.type === 'number') {
       configShape[field.name] = field.required
@@ -90,7 +90,7 @@ const typeIcons: Record<ConnectorType, React.ReactNode> = {
 export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: ConnectorFormProps) {
   const [selectedType, setSelectedType] = useState<ConnectorType | ''>(initialData?.type || '');
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
-  const [testConfig, setTestConfig] = useState<Record<string, any> | null>(null);
+  const [testConfig, setTestConfig] = useState<Record<string, unknown> | null>(null);
 
   const typeConfig = selectedType ? CONNECTOR_TYPE_CONFIGS[selectedType] : null;
   const schema = createConnectorSchema(typeConfig);
@@ -99,8 +99,9 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+
     setValue,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     reset,
     control,
   } = useForm({
@@ -128,7 +129,7 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
     setShowTypeDropdown(false);
 
     // 重置配置
-    const config: Record<string, any> = {};
+    const config: Record<string, unknown> = {};
     const newTypeConfig = CONNECTOR_TYPE_CONFIGS[type];
     newTypeConfig?.fields.forEach((field) => {
       config[field.name] = field.defaultValue !== undefined ? field.defaultValue : '';
@@ -136,7 +137,7 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
     setValue('config', config);
   };
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: CreateConnectorRequest | UpdateConnectorRequest) => {
     // 转换数字字段
     if (typeConfig) {
       typeConfig.fields.forEach((field) => {

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { 
   getPresentation, 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   updatePresentation, 
   deletePresentation,
   addSlide,

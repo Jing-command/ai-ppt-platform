@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Wand2, Upload, Palette, ImageIcon, Check, Loader2 } from 'lucide-react';
+import { X, Wand2, Upload, Palette, Check, Loader2 } from 'lucide-react';
 import { OutlineBackground, BackgroundType } from '@/types/outline';
 
 interface BackgroundSettingsModalProps {
@@ -239,8 +240,8 @@ export default function BackgroundSettingsModal({
                       ) : uploadedImage ? (
                         <>
                           <div className="relative w-full max-w-xs">
-                            <img
-                              src={uploadedImage}
+                            <Image
+                              src={uploadedImage} width={320} height={192}
                               alt="预览"
                               className="w-full h-48 object-cover rounded-lg"
                             />
