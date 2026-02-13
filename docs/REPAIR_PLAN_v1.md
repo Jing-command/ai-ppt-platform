@@ -228,7 +228,31 @@ if not SECRET_KEY:
 
 ## 🔄 开发流程规范
 
+### 代码规范 (🔴 强制)
+
+所有代码必须严格遵守 **[全局代码规范](../CODING_STANDARDS.md)**:
+
+**提交前强制检查**:
+```bash
+# 后端
+cd backend
+black src/              # 代码格式化
+isort src/              # import排序
+mypy src/               # 类型检查 (必须0 error)
+flake8 src/             # 风格检查 (必须0 warning)
+bandit -r src/          # 安全扫描 (必须无HIGH)
+pytest --cov=src        # 测试覆盖 (必须≥80%)
+
+# 前端
+cd frontend
+npm run lint            # ESLint (必须0 error)
+npm run type-check      # TypeScript (必须0 error)
+npm run build           # 构建 (必须成功)
 ```
+
+**任何检查失败，代码不得提交！**
+
+### 开发流程
 1. 接收任务
    ↓
 2. 阅读相关文档

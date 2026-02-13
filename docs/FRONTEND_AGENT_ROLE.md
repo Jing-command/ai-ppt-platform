@@ -147,31 +147,60 @@ function useApi<T>(url: string) {
 
 ## 🛠️ 技术规范
 
-### 代码规范
-```typescript
-// 必须遵循
-- ESLint 规则
-- Prettier 格式化
-- TypeScript 严格模式
-- 函数组件使用箭头函数
+### 代码规范 (🔴 强制遵循 [CODING_STANDARDS.md](../CODING_STANDARDS.md))
 
-// 项目结构
-frontend/
-├── app/              # Next.js 页面
-│   ├── page.tsx      # 首页
-│   ├── layout.tsx    # 根布局
-│   └── ...
-├── components/       # React 组件
-│   ├── auth/
-│   ├── outlines/
-│   └── presentations/
-├── lib/              # 工具库
-│   ├── api/          # API 客户端
-│   └── utils/        # 工具函数
-├── types/            # TypeScript 类型
-├── hooks/            # 自定义 Hooks
-└── styles/           # 全局样式
+```typescript
+// 命名规范
+const MAX_RETRY = 3;                      // 常量: 大写下划线
+const userName = '张三';                   // 变量: 驼峰命名
+function getUserById(): void {}           // 函数: 驼峰命名
+interface IUser { }                       // 接口: PascalCase
+class UserService { }                     // 类: PascalCase
+
+// CSS 命名 (BEM)
+// .user-card { }                    // Block
+// .user-card__title { }             // Element
+// .user-card--large { }             // Modifier
+
+// 代码格式 (Prettier 自动处理)
+- 行长度: 100 字符
+- 缩进: 2 空格
+- 字符串: 单引号
+
+// 类型安全 (TypeScript 严格模式)
+// ❌ 禁止: function process(data: any) { }
+// ✅ 必须: function process(data: unknown) { }
+
+// CSS 属性顺序 (AlloyTeam 规范)
+// 1. 布局(display/float) 
+// 2. 定位(position/top)
+// 3. 盒模型(margin/padding)
+// 4. 字体排版(font/text)
+// 5. 视觉(color/background)
+// 6. 动画(transition/animation)
 ```
+
+### 提交前强制检查清单
+```bash
+cd frontend
+
+# 1. ESLint 检查 (必须 0 error)
+npm run lint
+
+# 2. TypeScript 类型检查 (必须 0 error)
+npm run type-check
+
+# 3. 构建测试 (必须成功)
+npm run build
+
+# 4. 单元测试 (必须全部通过)
+npm run test
+
+# 5. E2E 测试 (核心流程)
+npx playwright test
+```
+
+**任何检查失败，代码不得提交！**
 
 ### 组件规范
 ```typescript

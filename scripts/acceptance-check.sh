@@ -146,25 +146,120 @@ check_security() {
     fi
 }
 
-# 检查代码规范
-check_lint() {
+# 检查代码规范 - 后端 Black 格式化
+check_backend_format() {
     echo ""
-    echo "检查: 代码规范 (ESLint)"
+    echo "检查: CODE-03 - 后端代码规范 (Black + isort)"
     
-    if ! check_command "eslint" "ESLint"; then
+    cd "$PROJECT_DIR/backend"
+    
+    if [ -d "venv" ]; then
+        source venv/bin/activate
+    fi
+    
+    # 检查 black
+    if ! command -v black > /dev/null 2>&1; then
+        print_status "SKIP" "Black 未安装"
         return
     fi
     
+    if black --check src/ 2>/dev/null; then
+        print_status "PASS" "CODE-03: Black 格式化检查通过"
+    else
+        print_status "FAIL" "CODE-03: 代码需要格式化 (运行: black src/)"
+    fi
+    
+    # 检查 isort
+    if command -v isort > /dev/null 2>&1; then
+        if isort --check-only src/ 2>/dev/null; then
+            print_status "PASS" "CODE-03: isort import 排序检查通过"
+        else
+            print_status "FAIL" "CODE-03: import 需要排序 (运行: isort src/)"
+        fi
+    fi
+}
+
+# 检查代码规范 - 后端类型检查
+check_backend_types() {
+    echo ""
+    echo "检查: CODE-04 - 后端类型检查 (mypy)"
+    
+    cd "$PROJECT_DIR/backend"
+    
+    if [ -d "venv" ]; then
+        source venv/bin/activate
+    fi
+    
+    if ! command -v mypy > /dev/null 2>&1; then
+        print_status "SKIP" "mypy 未安装"
+        return
+    fi
+    
+    if mypy src/ --ignore-missing-imports 2>/dev/null; then
+        print_status "PASS" "CODE-04: mypy 类型检查通过"
+    else
+        print_status "FAIL" "CODE-04: 类型检查发现错误"
+    fi
+}
+
+# 检查代码规范 - 后端风格检查
+check_backend_style() {
+    echo ""
+    echo "检查: CODE-05 - 后端代码风格 (flake8)"
+    
+    cd "$PROJECT_DIR/backend"
+    
+    if [ -d "venv" ]; then
+        source venv/bin/activate
+    fi
+    
+    if ! command -v flake8 > /dev/null 2>&1; then
+        print_status "SKIP" "flake8 未安装"
+        return
+    fi
+    
+    if flake8 src/ --max-line-length=88 --extend-ignore=E203 2>/dev/null; then
+        print_status "PASS" "CODE-05: flake8 风格检查通过"
+    else
+        print_status "FAIL" "CODE-05: 代码风格检查发现问题"
+    fi
+}
+
+# 检查代码规范 - 前端 ESLint
+check_frontend_lint() {
+    echo ""
+    echo "检查: CODE-01 - 前端代码规范 (ESLint)"
+    
     cd "$PROJECT_DIR/frontend"
     
-    if [ -f ".eslintrc.js" ]; then
-        if eslint . --ext .ts,.tsx --quiet 2>/dev/null; then
-            print_status "PASS" "前端代码规范检查通过"
-        else
-            print_status "FAIL" "前端代码规范检查失败"
-        fi
+    if [ ! -f "package.json" ]; then
+        print_status "SKIP" "前端项目不存在"
+        return
+    fi
+    
+    if npm run lint 2>/dev/null | grep -q "error"; then
+        print_status "FAIL" "CODE-01: ESLint 发现错误"
     else
-        print_status "SKIP" "未找到 ESLint 配置"
+        print_status "PASS" "CODE-01: ESLint 检查通过"
+    fi
+}
+
+# 检查代码规范 - 前端类型检查
+check_frontend_types() {
+    echo ""
+    echo "检查: CODE-02 - 前端类型检查 (TypeScript)"
+    
+    cd "$PROJECT_DIR/frontend"
+    
+    if [ ! -f "package.json" ]; then
+        print_status "SKIP" "前端项目不存在"
+        return
+    fi
+    
+    if npm run type-check 2>/dev/null | grep -q "error"; then
+        print_status "FAIL" "CODE-02: TypeScript 类型检查发现错误"
+    else
+        print_status "PASS" "CODE-02: TypeScript 类型检查通过"
     fi
 }
 
@@ -280,7 +375,11 @@ main() {
     check_backend_health
     
     # 代码质量检查
-    check_lint
+    check_frontend_lint
+    check_frontend_types
+    check_backend_format
+    check_backend_types
+    check_backend_style
     check_security
     
     # 测试检查 (如果需要)

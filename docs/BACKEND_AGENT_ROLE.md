@@ -131,27 +131,51 @@ def mock_db():
 
 ## 🛠️ 技术规范
 
-### 代码规范
-```python
-# 必须遵循
-- PEP 8 规范
-- 类型注解（mypy 检查通过）
-- 文档字符串（Google 风格）
-- 异步函数使用 async/await
+### 代码规范 (🔴 强制遵循 [CODING_STANDARDS.md](../CODING_STANDARDS.md))
 
-# 项目结构
-backend/
-├── src/ai_ppt/
-│   ├── api/          # API 端点
-│   ├── services/     # 业务逻辑
-│   ├── models/       # 数据库模型
-│   ├── domain/       # 领域模型
-│   └── infrastructure/ # 基础设施
-├── tests/
-│   ├── unit/         # 单元测试
-│   └── integration/  # 集成测试
-└── alembic/          # 数据库迁移
+```python
+# 命名规范
+MAX_RETRY = 3                      # 常量: 大写下划线
+user_name = "张三"                  # 变量: 小写下划线
+def get_user_by_id(): pass         # 函数: 小写下划线
+class UserService: pass            # 类: PascalCase
+
+# 代码格式 (Black 自动处理)
+- 行长度: 88 字符
+- 缩进: 4 空格
+- import 分组排序
+
+# 类型注解 (mypy 检查通过)
+def create_user(data: UserCreate) -> User:
+    ...
+
+# 安全检查 (bandit 扫描通过)
+# ❌ 禁止: f"SELECT * FROM users WHERE id = {user_id}"
+# ✅ 必须: cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
 ```
+
+### 提交前强制检查清单
+```bash
+cd backend
+
+# 1. 代码格式化
+black src/
+isort src/
+
+# 2. 类型检查 (必须 0 error)
+mypy src/
+
+# 3. 风格检查 (必须 0 warning)
+flake8 src/ --max-line-length=88
+
+# 4. 安全扫描 (必须无 HIGH)
+bandit -r src/
+
+# 5. 测试覆盖 (必须 ≥ 80%)
+pytest --cov=src --cov-report=term-missing
+```
+
+**任何检查失败，代码不得提交！**
 
 ### 测试规范
 ```python
