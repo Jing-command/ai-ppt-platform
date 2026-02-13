@@ -29,8 +29,8 @@ class ConnectorFactory:
     _connectors: Dict[str, Type[DataConnector]] = {
         ConnectorType.MYSQL: MySQLConnector,
         ConnectorType.SALESFORCE: SalesforceConnector,
-        # PostgreSQL 连接器占位，可后续实现
-        # ConnectorType.POSTGRESQL: PostgreSQLConnector,
+        # PostgreSQL 连接器占位，已注册但尚未实现
+        ConnectorType.POSTGRESQL: None,  # type: ignore[dict-value]
     }
 
     @classmethod
@@ -87,6 +87,13 @@ class ConnectorFactory:
         Raises:
             ValueError: 不支持的连接器类型
         """
+        # 首先检查是否是不支持/未实现的类型
+        if connector_type == ConnectorType.POSTGRESQL:
+            raise NotImplementedError(
+                "PostgreSQL connector is not yet implemented. "
+                "Please implement PostgreSQLConnector class."
+            )
+
         connector_class = cls._connectors.get(connector_type)
         if not connector_class:
             raise ValueError(
@@ -129,13 +136,6 @@ class ConnectorFactory:
                     config["client_id"], config["client_secret"]
                 )
             return connector
-
-        elif connector_type == ConnectorType.POSTGRESQL:
-            # PostgreSQL 连接器占位实现
-            raise NotImplementedError(
-                "PostgreSQL connector is not yet implemented. "
-                "Please implement PostgreSQLConnector class."
-            )
 
         else:
             raise ValueError(f"Unknown connector type: {connector_type}")
