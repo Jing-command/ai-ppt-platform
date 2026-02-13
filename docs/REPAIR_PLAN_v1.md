@@ -230,7 +230,7 @@ if not SECRET_KEY:
 
 ### 代码规范 (🔴 强制)
 
-所有代码必须严格遵守 **[全局代码规范](../CODING_STANDARDS.md)**:
+所有代码必须严格遵守 **[全局代码规范](/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS.md)**:
 
 **提交前强制检查**:
 ```bash

@@ -1,7 +1,7 @@
 # 🎯 AI PPT Platform - 代码规范速查卡
 
-**项目规范**: [../CODING_STANDARDS.md](../CODING_STANDARDS.md)  
 **全局规范**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS.md`  
+**强制性条款**: `/root/.openclaw/workspace/.openclaw/standards/MANDATORY_CLAUSE.md`  
 **全局速查卡**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS_QUICK_REF.md`
 
 ---
@@ -140,8 +140,9 @@ npm run lint -- --fix
 
 ## 📚 参考
 
-- **项目规范**: [../CODING_STANDARDS.md](../CODING_STANDARDS.md)
 - **全局规范**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS.md`
+- **强制性条款**: `/root/.openclaw/workspace/.openclaw/standards/MANDATORY_CLAUSE.md`
+- **全局速查卡**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS_QUICK_REF.md`
 - **腾讯 secguide**: https://github.com/Tencent/secguide
 - **AlloyTeam**: https://alloyteam.github.io/CodeGuide/
 

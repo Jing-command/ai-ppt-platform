@@ -150,7 +150,7 @@ function useApi<T>(url: string) {
 ### 代码规范 (🔴 强制遵循)
 
 **全局规范**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS.md`  
-**项目规范**: [CODING_STANDARDS.md](../CODING_STANDARDS.md)  
+**强制性条款**: `/root/.openclaw/workspace/.openclaw/standards/MANDATORY_CLAUSE.md`  
 **速查卡**: `/root/.openclaw/workspace/.openclaw/standards/CODING_STANDARDS_QUICK_REF.md`
 
 ```typescript
