@@ -7,7 +7,7 @@ from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from sqlalchemy import Select
+from sqlalchemy import Column, DateTime, Select, String
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ai_ppt.domain.models.base import Base
@@ -17,9 +17,14 @@ from ai_ppt.infrastructure.repositories.base import BaseRepository
 
 class MockModel(Base):
     """测试用模型类"""
+    __tablename__ = "mock_models"
+
+    id = Column(String, primary_key=True)
+    name = Column(String, default="test")
+    created_at = Column(DateTime, default=datetime.utcnow)
 
     def __init__(self, id=None, name="test"):
-        self.id = id or uuid.uuid4()
+        self.id = str(id or uuid.uuid4())
         self.name = name
         self.created_at = datetime.utcnow()
 

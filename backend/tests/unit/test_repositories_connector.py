@@ -8,7 +8,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ai_ppt.domain.models.connector import Connector, ConnectorType
+from ai_ppt.domain.models.connector import Connector
+from ai_ppt.infrastructure.connectors import ConnectorType
 from ai_ppt.infrastructure.repositories.connector import ConnectorRepository
 
 
