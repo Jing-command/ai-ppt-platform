@@ -1,1 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Running Code Standards Enforcer..."
 npx lint-staged
