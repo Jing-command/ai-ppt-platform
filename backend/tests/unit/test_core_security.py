@@ -7,8 +7,8 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
 
-import pytest
 import jwt
+import pytest
 
 from ai_ppt.core.security import (
     create_access_token,

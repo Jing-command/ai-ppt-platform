@@ -252,7 +252,7 @@ class TestExportAPI:
 
     async def test_download_export_expired(self, client: AsyncClient, auth_headers):
         """测试下载已过期的导出"""
-        from datetime import datetime, timezone, timedelta
+        from datetime import datetime, timedelta, timezone
 
         task_id = uuid.uuid4()
 

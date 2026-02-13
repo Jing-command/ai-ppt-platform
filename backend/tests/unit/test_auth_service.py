@@ -4,25 +4,26 @@ Auth Service 单元测试 - BE-001
 """
 
 import uuid
-import pytest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ai_ppt.api.v1.schemas.auth import (
+    LoginRequest,
+    RefreshRequest,
+    RegisterRequest,
+)
+
 # 导入被测试的模块
 from ai_ppt.core.security import (
-    verify_password,
-    get_password_hash,
     create_access_token,
     create_refresh_token,
     decode_token,
-)
-from ai_ppt.api.v1.schemas.auth import (
-    RegisterRequest,
-    LoginRequest,
-    RefreshRequest,
+    get_password_hash,
+    verify_password,
 )
 from ai_ppt.models.user import User
 
@@ -370,8 +371,9 @@ class TestAuthEndpoints:
 
     async def test_refresh_expired_token(self, mock_db):
         """测试使用过期刷新令牌"""
-        from ai_ppt.api.v1.endpoints.auth import refresh
         from datetime import timedelta
+
+        from ai_ppt.api.v1.endpoints.auth import refresh
 
         user_id = uuid.uuid4()
         # 创建已过期的刷新令牌
@@ -451,8 +453,9 @@ class TestAuthDependencies:
 
     async def test_get_current_user_success(self, mock_db, sample_user):
         """测试成功获取当前用户"""
-        from ai_ppt.api.deps import get_current_user
         from fastapi.security import HTTPAuthorizationCredentials
+
+        from ai_ppt.api.deps import get_current_user
 
         # 创建有效令牌
         token = create_access_token(sample_user.id)
@@ -479,8 +482,9 @@ class TestAuthDependencies:
 
     async def test_get_current_user_invalid_token(self, mock_db):
         """测试无效的认证令牌"""
-        from ai_ppt.api.deps import get_current_user
         from fastapi.security import HTTPAuthorizationCredentials
+
+        from ai_ppt.api.deps import get_current_user
 
         credentials = HTTPAuthorizationCredentials(
             scheme="Bearer", credentials="invalid.token.here"
@@ -494,9 +498,11 @@ class TestAuthDependencies:
 
     async def test_get_current_user_expired_token(self, mock_db):
         """测试过期的认证令牌"""
-        from ai_ppt.api.deps import get_current_user
-        from fastapi.security import HTTPAuthorizationCredentials
         from datetime import timedelta
+
+        from fastapi.security import HTTPAuthorizationCredentials
+
+        from ai_ppt.api.deps import get_current_user
 
         user_id = uuid.uuid4()
         expired_token = create_access_token(
@@ -515,8 +521,9 @@ class TestAuthDependencies:
 
     async def test_get_current_user_not_found(self, mock_db):
         """测试令牌有效但用户不存在"""
-        from ai_ppt.api.deps import get_current_user
         from fastapi.security import HTTPAuthorizationCredentials
+
+        from ai_ppt.api.deps import get_current_user
 
         user_id = uuid.uuid4()
         token = create_access_token(user_id)
@@ -534,8 +541,9 @@ class TestAuthDependencies:
 
     async def test_get_current_user_inactive(self, mock_db, sample_user):
         """测试用户已被禁用"""
-        from ai_ppt.api.deps import get_current_user
         from fastapi.security import HTTPAuthorizationCredentials
+
+        from ai_ppt.api.deps import get_current_user
 
         sample_user.is_active = False
         token = create_access_token(sample_user.id)
@@ -553,8 +561,9 @@ class TestAuthDependencies:
 
     async def test_get_optional_user_with_valid_token(self, mock_db, sample_user):
         """测试可选用户获取 - 有有效令牌"""
-        from ai_ppt.api.deps import get_optional_user
         from fastapi.security import HTTPAuthorizationCredentials
+
+        from ai_ppt.api.deps import get_optional_user
 
         token = create_access_token(sample_user.id)
         credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
@@ -578,8 +587,9 @@ class TestAuthDependencies:
 
     async def test_get_optional_user_invalid_token(self, mock_db):
         """测试可选用户获取 - 无效令牌返回 None"""
-        from ai_ppt.api.deps import get_optional_user
         from fastapi.security import HTTPAuthorizationCredentials
+
+        from ai_ppt.api.deps import get_optional_user
 
         credentials = HTTPAuthorizationCredentials(
             scheme="Bearer", credentials="invalid.token"

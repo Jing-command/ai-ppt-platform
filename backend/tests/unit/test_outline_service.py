@@ -13,7 +13,9 @@ from ai_ppt.api.v1.schemas.outline import OutlinePage
 from ai_ppt.domain.models.outline import (
     Outline,
     OutlineBackground,
-    OutlinePage as DomainOutlinePage,
+)
+from ai_ppt.domain.models.outline import OutlinePage as DomainOutlinePage
+from ai_ppt.domain.models.outline import (
     OutlineStatus,
 )
 from ai_ppt.services.outline_service import (

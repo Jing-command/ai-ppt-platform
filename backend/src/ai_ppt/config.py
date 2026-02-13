@@ -6,8 +6,8 @@ AI PPT Generator - 配置管理
 from functools import lru_cache
 from typing import List
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):

@@ -11,8 +11,8 @@ import pytest
 from ai_ppt.api.v1.schemas.presentation import (
     PresentationCreate,
     PresentationUpdate,
-    SlideCreate,
     SlideContent,
+    SlideCreate,
     SlideLayout,
 )
 from ai_ppt.application.services.presentation_service import (

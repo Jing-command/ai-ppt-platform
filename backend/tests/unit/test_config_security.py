@@ -3,8 +3,9 @@
 """
 
 import os
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 
 class TestConfigSecurity:
@@ -27,7 +28,7 @@ class TestConfigSecurity:
         # 注意：如果 JWT_SECRET_KEY 已经在环境变量中设置，此测试可能失败
         # 因为在测试环境中我们通常已经设置了它
         import os
-        
+
         # 如果环境变量已存在，跳过此测试
         if os.environ.get("JWT_SECRET_KEY"):
             pytest.skip("JWT_SECRET_KEY already set in environment")
@@ -37,6 +38,7 @@ class TestConfigSecurity:
 
         with patch.dict(os.environ, env_without_jwt, clear=True):
             from pydantic import ValidationError
+
             from ai_ppt.config import Settings
 
             # 应该抛出验证错误 - JWT_SECRET_KEY 是必需的
@@ -65,6 +67,7 @@ class TestJWTFunctions:
     def test_create_and_decode_access_token(self):
         """测试创建和解码访问令牌"""
         from uuid import uuid4
+
         from ai_ppt.core.security import create_access_token, decode_token
 
         user_id = uuid4()
@@ -79,6 +82,7 @@ class TestJWTFunctions:
     def test_create_and_decode_refresh_token(self):
         """测试创建和解码刷新令牌"""
         from uuid import uuid4
+
         from ai_ppt.core.security import create_refresh_token, decode_token
 
         user_id = uuid4()
@@ -92,8 +96,9 @@ class TestJWTFunctions:
 
     def test_decode_expired_token(self):
         """测试解码过期令牌"""
-        from uuid import uuid4
         from datetime import timedelta
+        from uuid import uuid4
+
         from ai_ppt.core.security import create_access_token, decode_token
 
         user_id = uuid4()
@@ -117,6 +122,7 @@ class TestJWTFunctions:
     def test_token_type_mismatch(self):
         """测试令牌类型不匹配"""
         from uuid import uuid4
+
         from ai_ppt.core.security import create_refresh_token, decode_token
 
         user_id = uuid4()

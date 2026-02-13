@@ -129,8 +129,8 @@ def auth_headers(test_user_id: uuid.UUID) -> dict[str, str]:
 @pytest_asyncio.fixture
 async def authenticated_user(db_session: AsyncSession, test_user_id: uuid.UUID) -> Any:
     """创建并返回已认证的测试用户"""
-    from ai_ppt.models.user import User
     from ai_ppt.core.security import get_password_hash
+    from ai_ppt.models.user import User
 
     user = User(
         id=test_user_id,
