@@ -46,8 +46,9 @@ export default function ExportButton({ presentationId }: ExportButtonProps) {
 
   // 清理轮询
   useEffect(() => {
-    return () => {
-      Object.values(pollingRefs.current).forEach(clearInterval);
+    const timers = pollingRefs.current;
+      return () => {
+      Object.values(timers).forEach(clearInterval);
     };
   }, []);
 

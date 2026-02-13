@@ -49,6 +49,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
   const [bullets, setBullets] = useState<string[]>(content.bullets || ['']);
   const [imagePrompt, setImagePrompt] = useState(slide.imagePrompt || '');
 
+/* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     setBullets(content.bullets || ['']);
     setImagePrompt(slide.imagePrompt || '');

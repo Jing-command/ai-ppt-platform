@@ -42,7 +42,7 @@ export default function ConnectorsPage() {
   const [error, setError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
-  const fetchConnectors = async () => {
+  const fetchConnectors = useCallback(async () => {
     setIsLoading(true);
     setError('');
 
@@ -60,11 +60,11 @@ export default function ConnectorsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     fetchConnectors();
-  }, []);
+  }, [fetchConnectors]);
 
   const handleEdit = (connector: Connector) => {
     // 编辑功能 - 可以导航到编辑页面或打开编辑弹窗

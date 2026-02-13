@@ -85,9 +85,9 @@ export default function PresentationEditorPage() {
 
   useEffect(() => {
     fetchPresentation();
-  }, [presentationId]);
+  }, [presentationId, fetchPresentation]);
 
-  const fetchPresentation = async () => {
+  const fetchPresentation = useCallback(async () => {
     try {
       const data = await getPresentation(presentationId);
       setPresentation(data);

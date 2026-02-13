@@ -54,7 +54,7 @@ export default function OutlinesPage() {
   const [error, setError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
-  const fetchOutlines = async () => {
+  const fetchOutlines = useCallback(async () => {
     setIsLoading(true);
     setError('');
 
@@ -72,11 +72,11 @@ export default function OutlinesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     fetchOutlines();
-  }, []);
+  }, [fetchOutlines]);
 
   const handleEdit = (outline: OutlineResponse) => {
     router.push(`/outlines/${outline.id}`);

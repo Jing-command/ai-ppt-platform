@@ -55,7 +55,7 @@ export default function PresentationsPage() {
   const [error, setError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
-  const fetchPresentations = async () => {
+  const fetchPresentations = useCallback(async () => {
     setIsLoading(true);
     setError('');
 
@@ -73,11 +73,11 @@ export default function PresentationsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     fetchPresentations();
-  }, []);
+  }, [fetchPresentations]);
 
   const handleEdit = (presentation: PresentationResponse) => {
     router.push(`/presentations/${presentation.id}`);

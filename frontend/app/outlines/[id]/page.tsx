@@ -67,9 +67,9 @@ export default function OutlineDetailPage() {
 
   useEffect(() => {
     fetchOutline();
-  }, [outlineId]);
+  }, [outlineId, fetchOutline]);
 
-  const fetchOutline = async () => {
+  const fetchOutline = useCallback(async () => {
     try {
       const data = await getOutline(outlineId);
       setOutline(data);
