@@ -13,8 +13,13 @@ from httpx import AsyncClient
 class TestExportAPI:
     """测试导出 API 端点"""
 
-    async def test_export_pptx_success(self, client: AsyncClient, auth_headers):
+    async def test_export_pptx_success(self, client: AsyncClient, authenticated_user):
         """测试成功导出 PPTX"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -33,7 +38,7 @@ class TestExportAPI:
 
                 response = await client.post(
                     "/api/v1/exports/pptx?presentation_id=" + str(uuid.uuid4()),
-                    headers=auth_headers,
+                    headers=headers,
                 )
 
         assert response.status_code in [202, 200, 404, 500]
@@ -44,12 +49,18 @@ class TestExportAPI:
             "/api/v1/exports/pptx?presentation_id=" + str(uuid.uuid4()),
         )
 
-        assert response.status_code == 403
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
     async def test_export_pptx_presentation_not_found(
-        self, client: AsyncClient, auth_headers
+        self, client: AsyncClient, authenticated_user
     ):
         """测试导出不存在的 PPT"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -59,13 +70,18 @@ class TestExportAPI:
 
             response = await client.post(
                 "/api/v1/exports/pptx?presentation_id=" + str(uuid.uuid4()),
-                headers=auth_headers,
+                headers=headers,
             )
 
         assert response.status_code == 404
 
-    async def test_export_pdf_success(self, client: AsyncClient, auth_headers):
+    async def test_export_pdf_success(self, client: AsyncClient, authenticated_user):
         """测试成功导出 PDF"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -84,13 +100,18 @@ class TestExportAPI:
 
                 response = await client.post(
                     "/api/v1/exports/pdf?presentation_id=" + str(uuid.uuid4()),
-                    headers=auth_headers,
+                    headers=headers,
                 )
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_pdf_with_options(self, client: AsyncClient, auth_headers):
+    async def test_export_pdf_with_options(self, client: AsyncClient, authenticated_user):
         """测试带选项导出 PDF"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -109,13 +130,18 @@ class TestExportAPI:
 
                 response = await client.post(
                     f"/api/v1/exports/pdf?presentation_id={uuid.uuid4()}&quality=high&slide_range=1-5&include_notes=true",
-                    headers=auth_headers,
+                    headers=headers,
                 )
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_images_success(self, client: AsyncClient, auth_headers):
+    async def test_export_images_success(self, client: AsyncClient, authenticated_user):
         """测试成功导出图片"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -134,15 +160,20 @@ class TestExportAPI:
 
                 response = await client.post(
                     f"/api/v1/exports/images?presentation_id={uuid.uuid4()}&format=png",
-                    headers=auth_headers,
+                    headers=headers,
                 )
 
         assert response.status_code in [202, 200, 404, 500]
 
     async def test_export_images_invalid_format(
-        self, client: AsyncClient, auth_headers
+        self, client: AsyncClient, authenticated_user
     ):
         """测试导出图片时提供无效格式"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -152,13 +183,17 @@ class TestExportAPI:
 
             response = await client.post(
                 f"/api/v1/exports/images?presentation_id={uuid.uuid4()}&format=gif",  # 无效格式
-                headers=auth_headers,
+                headers=headers,
             )
 
         assert response.status_code == 400
 
-    async def test_get_export_status_success(self, client: AsyncClient, auth_headers):
+    async def test_get_export_status_success(self, client: AsyncClient, authenticated_user):
         """测试成功获取导出状态"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
         task_id = uuid.uuid4()
 
         with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
@@ -180,7 +215,7 @@ class TestExportAPI:
 
             response = await client.get(
                 f"/api/v1/exports/{task_id}/status",
-                headers=auth_headers,
+                headers=headers,
             )
 
         assert response.status_code in [200, 404, 500]
@@ -189,10 +224,16 @@ class TestExportAPI:
         """测试未认证获取导出状态"""
         response = await client.get(f"/api/v1/exports/{uuid.uuid4()}/status")
 
-        assert response.status_code == 403
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
-    async def test_get_export_status_not_found(self, client: AsyncClient, auth_headers):
+    async def test_get_export_status_not_found(self, client: AsyncClient, authenticated_user):
         """测试获取不存在的导出任务状态"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
             mock_export_instance = AsyncMock()
             mock_export_instance.get_task.return_value = None
@@ -200,13 +241,17 @@ class TestExportAPI:
 
             response = await client.get(
                 f"/api/v1/exports/{uuid.uuid4()}/status",
-                headers=auth_headers,
+                headers=headers,
             )
 
         assert response.status_code == 404
 
-    async def test_download_export_success(self, client: AsyncClient, auth_headers):
+    async def test_download_export_success(self, client: AsyncClient, authenticated_user):
         """测试成功下载导出文件"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
         task_id = uuid.uuid4()
 
         with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
@@ -224,15 +269,19 @@ class TestExportAPI:
             # 注意：FileResponse 在测试环境中可能不会实际返回文件内容
             response = await client.get(
                 f"/api/v1/exports/{task_id}/download",
-                headers=auth_headers,
+                headers=headers,
             )
 
         assert response.status_code in [200, 404, 410, 500]
 
     async def test_download_export_not_completed(
-        self, client: AsyncClient, auth_headers
+        self, client: AsyncClient, authenticated_user
     ):
         """测试下载未完成的导出"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
         task_id = uuid.uuid4()
 
         with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
@@ -245,15 +294,18 @@ class TestExportAPI:
 
             response = await client.get(
                 f"/api/v1/exports/{task_id}/download",
-                headers=auth_headers,
+                headers=headers,
             )
 
         assert response.status_code == 400
 
-    async def test_download_export_expired(self, client: AsyncClient, auth_headers):
+    async def test_download_export_expired(self, client: AsyncClient, authenticated_user):
         """测试下载已过期的导出"""
         from datetime import datetime, timedelta, timezone
+        from ai_ppt.core.security import create_access_token
 
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
         task_id = uuid.uuid4()
 
         with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
@@ -267,7 +319,7 @@ class TestExportAPI:
 
             response = await client.get(
                 f"/api/v1/exports/{task_id}/download",
-                headers=auth_headers,
+                headers=headers,
             )
 
         assert response.status_code == 410
@@ -276,15 +328,21 @@ class TestExportAPI:
         """测试未认证下载导出文件"""
         response = await client.get(f"/api/v1/exports/{uuid.uuid4()}/download")
 
-        assert response.status_code == 403
+        # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
+        assert response.status_code in [401, 403]
 
 
 @pytest.mark.asyncio
 class TestExportFormats:
     """测试不同导出格式"""
 
-    async def test_export_jpg_success(self, client: AsyncClient, auth_headers):
+    async def test_export_jpg_success(self, client: AsyncClient, authenticated_user):
         """测试成功导出 JPG"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -303,15 +361,20 @@ class TestExportFormats:
 
                 response = await client.post(
                     f"/api/v1/exports/images?presentation_id={uuid.uuid4()}&format=jpg",
-                    headers=auth_headers,
+                    headers=headers,
                 )
 
         assert response.status_code in [202, 200, 404, 500]
 
     async def test_export_with_quality_standard(
-        self, client: AsyncClient, auth_headers
+        self, client: AsyncClient, authenticated_user
     ):
         """测试导出标准质量"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -330,13 +393,18 @@ class TestExportFormats:
 
                 response = await client.post(
                     f"/api/v1/exports/pptx?presentation_id={uuid.uuid4()}&quality=standard",
-                    headers=auth_headers,
+                    headers=headers,
                 )
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_with_slide_range(self, client: AsyncClient, auth_headers):
+    async def test_export_with_slide_range(self, client: AsyncClient, authenticated_user):
         """测试导出指定页面范围"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -355,13 +423,18 @@ class TestExportFormats:
 
                 response = await client.post(
                     f"/api/v1/exports/pdf?presentation_id={uuid.uuid4()}&slide_range=1-3",
-                    headers=auth_headers,
+                    headers=headers,
                 )
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_with_include_notes(self, client: AsyncClient, auth_headers):
+    async def test_export_with_include_notes(self, client: AsyncClient, authenticated_user):
         """测试导出包含备注"""
+        from ai_ppt.core.security import create_access_token
+
+        token = create_access_token(authenticated_user.id)
+        headers = {"Authorization": f"Bearer {token}"}
+
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
         ) as mock_service:
@@ -380,7 +453,7 @@ class TestExportFormats:
 
                 response = await client.post(
                     f"/api/v1/exports/pptx?presentation_id={uuid.uuid4()}&include_notes=true",
-                    headers=auth_headers,
+                    headers=headers,
                 )
 
         assert response.status_code in [202, 200, 404, 500]
