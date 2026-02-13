@@ -22,9 +22,7 @@ convention = {
 
 # 类型别名 - 常用字段类型
 IntPk = Annotated[int, mapped_column(primary_key=True)]
-UUIDPk = Annotated[
-    UUID, mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid4)
-]
+UUIDPk = Annotated[UUID, mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid4)]
 Str255 = Annotated[str, mapped_column(String(255), nullable=False)]
 Str50 = Annotated[str, mapped_column(String(50), nullable=False)]
 StrOptional = Annotated[Optional[str], mapped_column(nullable=True)]
@@ -37,9 +35,7 @@ DateTimeAuto = Annotated[
 ]
 DateTimeUpdated = Annotated[
     datetime,
-    mapped_column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
-    ),
+    mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now()),
 ]
 
 
@@ -57,9 +53,7 @@ class Base(DeclarativeBase):
 
     def __repr__(self) -> str:
         """统一的字符串表示"""
-        columns = [
-            f"{col.key}={getattr(self, col.key)}" for col in self.__table__.columns
-        ]
+        columns = [f"{col.key}={getattr(self, col.key)}" for col in self.__table__.columns]
         return f"<{self.__class__.__name__}({', '.join(columns)})>"
 
     def to_dict(self) -> dict[str, Any]:

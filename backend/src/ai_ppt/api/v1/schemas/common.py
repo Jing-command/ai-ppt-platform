@@ -57,9 +57,7 @@ class TaskStatusResponse(BaseModel):
     """异步任务状态响应"""
 
     task_id: UUID = Field(..., alias="taskId")
-    status: str = Field(
-        ..., description="任务状态: pending, processing, completed, failed"
-    )
+    status: str = Field(..., description="任务状态: pending, processing, completed, failed")
     progress: int = Field(default=0, ge=0, le=100, description="进度百分比")
     result: Optional[Dict[str, Any]] = None
     error_message: Optional[str] = Field(None, alias="errorMessage")

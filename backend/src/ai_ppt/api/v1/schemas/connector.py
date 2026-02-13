@@ -13,9 +13,7 @@ class ConnectorBase(BaseModel):
     """连接器基础模型"""
 
     name: str = Field(..., min_length=1, max_length=100, description="连接器名称")
-    type: str = Field(
-        ..., description="连接类型: mysql, postgresql, mongodb, csv, api, etc."
-    )
+    type: str = Field(..., description="连接类型: mysql, postgresql, mongodb, csv, api, etc.")
     description: Optional[str] = Field(None, max_length=500, description="描述")
 
 
@@ -58,9 +56,7 @@ class ConnectorResponse(ConnectorBase):
 
     id: UUID
     user_id: UUID = Field(..., alias="userId")
-    config: Dict[str, Any] = Field(
-        default_factory=dict, description="配置(敏感信息脱敏)"
-    )
+    config: Dict[str, Any] = Field(default_factory=dict, description="配置(敏感信息脱敏)")
     is_active: bool = Field(default=True, alias="isActive")
     last_tested_at: Optional[datetime] = Field(None, alias="lastTestedAt")
     last_test_status: Optional[str] = Field(
@@ -87,9 +83,7 @@ class ConnectorTestResponse(BaseModel):
 
     success: bool
     message: str
-    latency_ms: Optional[int] = Field(
-        None, alias="latencyMs", description="连接延迟毫秒"
-    )
+    latency_ms: Optional[int] = Field(None, alias="latencyMs", description="连接延迟毫秒")
     server_version: Optional[str] = Field(None, alias="serverVersion")
     error_details: Optional[str] = Field(None, alias="errorDetails")
 

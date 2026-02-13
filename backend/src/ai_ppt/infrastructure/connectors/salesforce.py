@@ -238,11 +238,7 @@ class SalesforceConnector(DataConnector):
 
             # 跳过系统对象
             name = obj.get("name", "")
-            if (
-                name.endswith("__Share")
-                or name.endswith("__History")
-                or name.endswith("__Feed")
-            ):
+            if name.endswith("__Share") or name.endswith("__History") or name.endswith("__Feed"):
                 continue
 
             # 获取对象描述

@@ -305,9 +305,7 @@ class TestTokenDecode:
     def test_decode_expired_token(self):
         """测试解码过期令牌"""
         user_id = uuid.uuid4()
-        expired_token = create_access_token(
-            user_id, expires_delta=timedelta(seconds=-1)
-        )
+        expired_token = create_access_token(user_id, expires_delta=timedelta(seconds=-1))
 
         decoded_id, error = decode_token(expired_token)
 

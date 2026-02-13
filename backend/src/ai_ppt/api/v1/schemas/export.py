@@ -13,15 +13,11 @@ class ExportRequest(BaseModel):
     """导出请求"""
 
     format: str = Field(..., pattern="^(pptx|pdf|png|jpg)$", description="导出格式")
-    quality: str = Field(
-        default="standard", pattern="^(standard|high)$", description="导出质量"
-    )
+    quality: str = Field(default="standard", pattern="^(standard|high)$", description="导出质量")
     slide_range: Optional[str] = Field(
         None, alias="slideRange", description="页面范围，如 '1-5' 或 'all'"
     )
-    include_notes: bool = Field(
-        default=False, alias="includeNotes", description="是否包含备注"
-    )
+    include_notes: bool = Field(default=False, alias="includeNotes", description="是否包含备注")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -32,9 +28,7 @@ class ExportResponse(BaseModel):
     task_id: UUID = Field(..., alias="taskId")
     status: str = Field(..., description="状态: pending, processing, completed, failed")
     download_url: Optional[str] = Field(None, alias="downloadUrl")
-    file_size: Optional[int] = Field(
-        None, alias="fileSize", description="文件大小（字节）"
-    )
+    file_size: Optional[int] = Field(None, alias="fileSize", description="文件大小（字节）")
     expires_at: Optional[datetime] = Field(None, alias="expiresAt")
     created_at: datetime = Field(..., alias="createdAt")
 
@@ -73,9 +67,7 @@ class PptxExportOptions(BaseModel):
 class PdfExportOptions(BaseModel):
     """PDF 导出选项"""
 
-    page_size: str = Field(
-        default="16:9", alias="pageSize", description="页面尺寸: 16:9, 4:3, A4"
-    )
+    page_size: str = Field(default="16:9", alias="pageSize", description="页面尺寸: 16:9, 4:3, A4")
     quality: str = Field(default="standard", pattern="^(standard|high|print)$")
     include_notes: bool = Field(default=False, alias="includeNotes")
 

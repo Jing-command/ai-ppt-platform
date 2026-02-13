@@ -77,9 +77,7 @@ class CreateSlideCommand(Command):
             "layout_type": self.layout_type,
             "content": self.content,
             "order_index": self.order_index,
-            "created_slide_id": (
-                str(self._created_slide_id) if self._created_slide_id else None
-            ),
+            "created_slide_id": (str(self._created_slide_id) if self._created_slide_id else None),
             "executed_at": self.executed_at.isoformat() if self.executed_at else None,
         }
 

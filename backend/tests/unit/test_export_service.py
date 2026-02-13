@@ -289,9 +289,7 @@ class TestExportServiceFilePaths:
 class TestExportServiceProcessExport:
     """测试导出处理"""
 
-    async def test_process_export_presentation_not_found(
-        self, export_service, mock_db_session
-    ):
+    async def test_process_export_presentation_not_found(self, export_service, mock_db_session):
         """测试演示文稿不存在时的处理"""
         task = await export_service.create_task(
             user_id=uuid.uuid4(),

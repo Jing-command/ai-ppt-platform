@@ -32,7 +32,7 @@ class TestConfigSecurity:
         # 如果环境变量已存在，跳过此测试
         if os.environ.get("JWT_SECRET_KEY"):
             pytest.skip("JWT_SECRET_KEY already set in environment")
-        
+
         # 清除 JWT_SECRET_KEY 环境变量和 .env 文件影响
         env_without_jwt = {k: v for k, v in os.environ.items() if k != "JWT_SECRET_KEY"}
 

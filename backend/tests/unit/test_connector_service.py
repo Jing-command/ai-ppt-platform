@@ -88,9 +88,7 @@ class TestConnectorServiceCreate:
         mock_repository.name_exists.assert_called_once_with(user_id, "MySQL Connection")
         mock_repository.create.assert_called_once()
 
-    async def test_create_connector_name_exists(
-        self, connector_service, mock_repository
-    ):
+    async def test_create_connector_name_exists(self, connector_service, mock_repository):
         """测试名称已存在的连接器创建"""
         user_id = uuid.uuid4()
         data = ConnectorCreate(
@@ -162,9 +160,7 @@ class TestConnectorServiceGet:
         mock_repository.get_by_user.return_value = connectors
         mock_repository.count_by_user.return_value = 3
 
-        result, total = await connector_service.get_connectors(
-            user_id=user_id, skip=0, limit=10
-        )
+        result, total = await connector_service.get_connectors(user_id=user_id, skip=0, limit=10)
 
         assert len(result) == 3
         assert total == 3
@@ -172,9 +168,7 @@ class TestConnectorServiceGet:
             user_id=user_id, skip=0, limit=10, connector_type=None
         )
 
-    async def test_get_connectors_with_type_filter(
-        self, connector_service, mock_repository
-    ):
+    async def test_get_connectors_with_type_filter(self, connector_service, mock_repository):
         """测试带类型过滤的连接器列表"""
         user_id = uuid.uuid4()
 

@@ -71,9 +71,7 @@ def sample_outline():
 class TestOutlineServiceGetById:
     """测试获取大纲"""
 
-    async def test_get_by_id_success(
-        self, outline_service, mock_db_session, sample_outline
-    ):
+    async def test_get_by_id_success(self, outline_service, mock_db_session, sample_outline):
         """测试成功获取大纲"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_outline
@@ -103,15 +101,11 @@ class TestOutlineServiceGetById:
         mock_result.scalar_one_or_none.return_value = sample_outline
         mock_db_session.execute.return_value = mock_result
 
-        result = await outline_service.get_by_id(
-            sample_outline.id, user_id=sample_outline.user_id
-        )
+        result = await outline_service.get_by_id(sample_outline.id, user_id=sample_outline.user_id)
 
         assert result is not None
 
-    async def test_get_by_id_wrong_user(
-        self, outline_service, mock_db_session, sample_outline
-    ):
+    async def test_get_by_id_wrong_user(self, outline_service, mock_db_session, sample_outline):
         """测试获取其他用户的大纲"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_outline
@@ -152,9 +146,7 @@ class TestOutlineServiceGetByUser:
     async def test_get_by_user_success(self, outline_service, mock_db_session):
         """测试成功获取用户大纲列表"""
         user_id = uuid.uuid4()
-        outlines = [
-            Outline(title=f"Outline {i}", user_id=user_id, pages=[]) for i in range(3)
-        ]
+        outlines = [Outline(title=f"Outline {i}", user_id=user_id, pages=[]) for i in range(3)]
 
         # 模拟总数查询
         mock_count_result = MagicMock()
@@ -171,9 +163,7 @@ class TestOutlineServiceGetByUser:
         assert len(result) == 3
         assert total == 3
 
-    async def test_get_by_user_with_status_filter(
-        self, outline_service, mock_db_session
-    ):
+    async def test_get_by_user_with_status_filter(self, outline_service, mock_db_session):
         """测试带状态过滤的获取"""
         user_id = uuid.uuid4()
 
@@ -269,9 +259,7 @@ class TestOutlineServiceCreate:
 class TestOutlineServiceUpdate:
     """测试更新大纲"""
 
-    async def test_update_success(
-        self, outline_service, mock_db_session, sample_outline
-    ):
+    async def test_update_success(self, outline_service, mock_db_session, sample_outline):
         """测试成功更新大纲"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_outline
@@ -310,9 +298,7 @@ class TestOutlineServiceUpdate:
         assert result.pages == new_pages
         assert result.total_slides == 1
 
-    async def test_update_background(
-        self, outline_service, mock_db_session, sample_outline
-    ):
+    async def test_update_background(self, outline_service, mock_db_session, sample_outline):
         """测试更新背景"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_outline
@@ -328,9 +314,7 @@ class TestOutlineServiceUpdate:
 
         assert result.background == new_background
 
-    async def test_update_status(
-        self, outline_service, mock_db_session, sample_outline
-    ):
+    async def test_update_status(self, outline_service, mock_db_session, sample_outline):
         """测试更新状态"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_outline
@@ -348,9 +332,7 @@ class TestOutlineServiceUpdate:
 class TestOutlineServiceDelete:
     """测试删除大纲"""
 
-    async def test_delete_success(
-        self, outline_service, mock_db_session, sample_outline
-    ):
+    async def test_delete_success(self, outline_service, mock_db_session, sample_outline):
         """测试成功删除"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_outline
@@ -422,15 +404,11 @@ class TestOutlineServiceGenerate:
         mock_generation_service.generate_outline.assert_called_once()
         mock_generation_service.close.assert_called_once()
 
-    async def test_generate_creates_generation_service(
-        self, outline_service, mock_db_session
-    ):
+    async def test_generate_creates_generation_service(self, outline_service, mock_db_session):
         """测试自动生成服务实例"""
         user_id = uuid.uuid4()
 
-        with patch(
-            "ai_ppt.services.outline_service.OutlineGenerationService"
-        ) as mock_gen_class:
+        with patch("ai_ppt.services.outline_service.OutlineGenerationService") as mock_gen_class:
             mock_instance = AsyncMock()
             mock_instance.generate_outline.return_value = {
                 "title": "Test",
@@ -499,9 +477,7 @@ class TestOutlineServiceGenerate:
         user_id = uuid.uuid4()
 
         mock_generation_service = AsyncMock()
-        mock_generation_service.generate_outline.side_effect = Exception(
-            "Generation failed"
-        )
+        mock_generation_service.generate_outline.side_effect = Exception("Generation failed")
         mock_generation_service.close = AsyncMock()
 
         outline_service._generation_service = mock_generation_service

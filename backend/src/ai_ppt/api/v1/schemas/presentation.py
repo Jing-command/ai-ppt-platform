@@ -71,9 +71,7 @@ class Slide(BaseModel):
     notes: Optional[str] = None
     order_index: int = Field(default=0, alias="orderIndex")
 
-    model_config = ConfigDict(
-        extra="allow", populate_by_name=True, arbitrary_types_allowed=True
-    )
+    model_config = ConfigDict(extra="allow", populate_by_name=True, arbitrary_types_allowed=True)
 
     @model_validator(mode="before")
     @classmethod
@@ -105,9 +103,7 @@ class PresentationCreate(PresentationBase):
 
     description: Optional[str] = Field(None, max_length=1000, description="PPT 描述")
     template_id: Optional[str] = Field(None, alias="templateId", description="模板 ID")
-    outline_id: Optional[UUID] = Field(
-        None, alias="outlineId", description="关联的大纲ID"
-    )
+    outline_id: Optional[UUID] = Field(None, alias="outlineId", description="关联的大纲ID")
     slides: Optional[List[Slide]] = Field(default_factory=list)
 
     model_config = ConfigDict(

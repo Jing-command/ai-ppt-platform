@@ -65,9 +65,7 @@ def _user_to_response(user: User) -> UserResponse:
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def register(
-    data: RegisterRequest, db: AsyncSession = Depends(get_db)
-) -> RegisterResponse:
+async def register(data: RegisterRequest, db: AsyncSession = Depends(get_db)) -> RegisterResponse:
     """
     注册新用户
 
@@ -125,9 +123,7 @@ async def register(
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def login(
-    data: LoginRequest, db: AsyncSession = Depends(get_db)
-) -> LoginResponse:
+async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)) -> LoginResponse:
     """
     用户登录
 
@@ -167,9 +163,7 @@ async def login(
     # 生成令牌
     access_token = create_access_token(user.id)
 
-    return LoginResponse(
-        accessToken=access_token, tokenType="bearer", user=_user_to_response(user)
-    )
+    return LoginResponse(accessToken=access_token, tokenType="bearer", user=_user_to_response(user))
 
 
 @router.post(
@@ -181,9 +175,7 @@ async def login(
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def refresh(
-    data: RefreshRequest, db: AsyncSession = Depends(get_db)
-) -> RefreshResponse:
+async def refresh(data: RefreshRequest, db: AsyncSession = Depends(get_db)) -> RefreshResponse:
     """
     使用刷新令牌获取新的访问令牌
 
@@ -201,9 +193,7 @@ async def refresh(
             detail={
                 "code": code,
                 "message": (
-                    "无效的刷新令牌"
-                    if code == "INVALID_TOKEN"
-                    else "刷新令牌已过期，请重新登录"
+                    "无效的刷新令牌" if code == "INVALID_TOKEN" else "刷新令牌已过期，请重新登录"
                 ),
             },
             headers={"WWW-Authenticate": "Bearer"},

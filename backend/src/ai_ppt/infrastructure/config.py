@@ -15,9 +15,7 @@ class DatabaseSettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="DB_")
 
-    url: str = Field(
-        default="postgresql+asyncpg://postgres:postgres@localhost:5432/ai_ppt"
-    )
+    url: str = Field(default="postgresql+asyncpg://postgres:postgres@localhost:5432/ai_ppt")
     pool_size: int = Field(default=10, ge=1, le=100)
     max_overflow: int = Field(default=20, ge=0, le=100)
     pool_timeout: int = Field(default=30, ge=1)
@@ -88,9 +86,7 @@ class Settings(BaseSettings):
     app_name: str = Field(default="AI PPT Platform")
     app_version: str = Field(default="0.1.0")
     debug: bool = Field(default=False)
-    environment: Literal["development", "staging", "production"] = Field(
-        default="development"
-    )
+    environment: Literal["development", "staging", "production"] = Field(default="development")
 
     # API 配置
     api_v1_prefix: str = Field(default="/api/v1")

@@ -23,9 +23,7 @@ class OutlinePage(BaseModel):
     )
     layout: Optional[str] = Field(None, description="布局模板")
     notes: Optional[str] = Field(None, description="演讲备注")
-    image_prompt: Optional[str] = Field(
-        None, alias="imagePrompt", description="插图提示词"
-    )
+    image_prompt: Optional[str] = Field(None, alias="imagePrompt", description="插图提示词")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -89,9 +87,7 @@ class OutlineGenerateRequest(BaseModel):
     """AI 生成大纲请求"""
 
     prompt: str = Field(..., min_length=10, max_length=2000, description="主题描述")
-    num_slides: int = Field(
-        default=10, ge=3, le=50, alias="numSlides", description="PPT总页数"
-    )
+    num_slides: int = Field(default=10, ge=3, le=50, alias="numSlides", description="PPT总页数")
     language: str = Field(default="zh", pattern="^(zh|en)$")
     style: str = Field(
         default="business", description="风格: business, education, creative, technical"
@@ -99,9 +95,7 @@ class OutlineGenerateRequest(BaseModel):
     context_data: Optional[Dict[str, Any]] = Field(
         None, alias="contextData", description="上下文数据"
     )
-    connector_id: Optional[UUID] = Field(
-        None, alias="connectorId", description="关联的数据源ID"
-    )
+    connector_id: Optional[UUID] = Field(None, alias="connectorId", description="关联的数据源ID")
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -121,9 +115,7 @@ class OutlineGenerateResponse(BaseModel):
 
     task_id: UUID = Field(..., alias="taskId")
     status: str = Field(..., description="状态: pending, processing, completed, failed")
-    estimated_time: int = Field(
-        ..., ge=0, alias="estimatedTime", description="预估时间(秒)"
-    )
+    estimated_time: int = Field(..., ge=0, alias="estimatedTime", description="预估时间(秒)")
     message: str
 
     model_config = ConfigDict(populate_by_name=True)
@@ -136,9 +128,7 @@ class OutlineUpdate(BaseModel):
     description: Optional[str] = Field(None, max_length=1000)
     pages: Optional[List[OutlinePage]] = None
     background: Optional[OutlineBackground] = None
-    status: Optional[str] = Field(
-        None, description="状态: draft, generating, completed, archived"
-    )
+    status: Optional[str] = Field(None, description="状态: draft, generating, completed, archived")
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -151,9 +141,7 @@ class OutlineResponse(OutlineBase):
     pages: List[OutlinePage] = Field(default_factory=list)
     background: Optional[OutlineBackground] = None
     total_slides: int = Field(default=0, alias="totalSlides", description="总页数")
-    status: str = Field(
-        default="draft", description="状态: draft, generating, completed, archived"
-    )
+    status: str = Field(default="draft", description="状态: draft, generating, completed, archived")
     ai_prompt: Optional[str] = Field(None, alias="aiPrompt")
     ai_parameters: Optional[Dict[str, Any]] = Field(None, alias="aiParameters")
     created_at: datetime = Field(..., alias="createdAt")

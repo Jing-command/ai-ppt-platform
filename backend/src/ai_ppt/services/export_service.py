@@ -208,9 +208,7 @@ class ExportService:
             task.error_message = str(e)
             task.progress = 0
 
-    async def _get_presentation(
-        self, presentation_id: UUID
-    ) -> Optional["Presentation"]:
+    async def _get_presentation(self, presentation_id: UUID) -> Optional["Presentation"]:
         """获取演示文稿"""
         from ai_ppt.domain.models.presentation import Presentation
 
@@ -415,18 +413,14 @@ class ExportService:
             # 标题
             if content.get("title"):
                 title_color = theme_colors["title"]
-                c.setFillColorRGB(
-                    title_color[0] / 255, title_color[1] / 255, title_color[2] / 255
-                )
+                c.setFillColorRGB(title_color[0] / 255, title_color[1] / 255, title_color[2] / 255)
                 c.setFont(font_name, 28 if idx == 0 else 24)
                 c.drawString(40, height - 60, content["title"])
 
             # 副标题
             if content.get("subtitle"):
                 text_color = theme_colors["text"]
-                c.setFillColorRGB(
-                    text_color[0] / 255, text_color[1] / 255, text_color[2] / 255
-                )
+                c.setFillColorRGB(text_color[0] / 255, text_color[1] / 255, text_color[2] / 255)
                 c.setFont(font_name, 16)
                 c.drawString(40, height - 100, content["subtitle"])
 
@@ -434,9 +428,7 @@ class ExportService:
             y_pos = height - 150
             if content.get("text"):
                 text_color = theme_colors["text"]
-                c.setFillColorRGB(
-                    text_color[0] / 255, text_color[1] / 255, text_color[2] / 255
-                )
+                c.setFillColorRGB(text_color[0] / 255, text_color[1] / 255, text_color[2] / 255)
                 c.setFont(font_name, 12)
 
                 # 简单的文本换行
@@ -456,9 +448,7 @@ class ExportService:
             # 项目符号
             if content.get("bullets"):
                 text_color = theme_colors["text"]
-                c.setFillColorRGB(
-                    text_color[0] / 255, text_color[1] / 255, text_color[2] / 255
-                )
+                c.setFillColorRGB(text_color[0] / 255, text_color[1] / 255, text_color[2] / 255)
                 c.setFont(font_name, 12)
 
                 for bullet in content["bullets"]:
@@ -531,9 +521,7 @@ class ExportService:
                 subtitle_font = ImageFont.truetype(
                     "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", 28
                 )
-                text_font = ImageFont.truetype(
-                    "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", 20
-                )
+                text_font = ImageFont.truetype("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", 20)
             except Exception:
                 title_font = ImageFont.load_default()
                 subtitle_font = ImageFont.load_default()
@@ -571,15 +559,11 @@ class ExportService:
                     if bbox[2] < width - 80:
                         line += " " + word if line else word
                     else:
-                        draw.text(
-                            (40, y_pos), line, fill=theme_colors["text"], font=text_font
-                        )
+                        draw.text((40, y_pos), line, fill=theme_colors["text"], font=text_font)
                         y_pos += 30
                         line = word
                 if line:
-                    draw.text(
-                        (40, y_pos), line, fill=theme_colors["text"], font=text_font
-                    )
+                    draw.text((40, y_pos), line, fill=theme_colors["text"], font=text_font)
 
             # 项目符号
             if content.get("bullets"):
