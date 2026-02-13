@@ -57,7 +57,7 @@ jobs:
       - name: Install dependencies
         working-directory: backend
         run: |
-          pip install black isort mypy flake8 bandit pytest pytest-cov
+          pip install black isort mypy flake8 bandit pytest pytest-cov pytest-asyncio
           pip install -r requirements.txt
 
       - name: 🖤 Check Black Formatting
