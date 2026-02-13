@@ -11,9 +11,15 @@ from uuid import UUID
 from sqlalchemy import Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ai_ppt.domain.models.base import (Base, BoolTrue, DateTimeAuto,
-                                       DateTimeUpdated, Str255, TextOptional,
-                                       UUIDPk)
+from ai_ppt.domain.models.base import (
+    Base,
+    BoolTrue,
+    DateTimeAuto,
+    DateTimeUpdated,
+    Str255,
+    TextOptional,
+    UUIDPk,
+)
 
 if TYPE_CHECKING:
     from ai_ppt.domain.models.outline import Outline

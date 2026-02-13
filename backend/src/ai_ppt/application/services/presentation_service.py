@@ -9,9 +9,12 @@ from uuid import UUID
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ai_ppt.api.v1.schemas.presentation import (PresentationCreate,
-                                                PresentationUpdate,
-                                                SlideCreate, SlideUpdate)
+from ai_ppt.api.v1.schemas.presentation import (
+    PresentationCreate,
+    PresentationUpdate,
+    SlideCreate,
+    SlideUpdate,
+)
 from ai_ppt.domain.models.presentation import Presentation, PresentationStatus
 from ai_ppt.domain.models.slide import Slide, SlideLayoutType
 from ai_ppt.infrastructure.repositories.slide import SlideRepository

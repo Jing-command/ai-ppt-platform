@@ -5,8 +5,14 @@ API v1 路由聚合
 
 from fastapi import APIRouter
 
-from ai_ppt.api.v1.endpoints import (auth, connectors, exports, outlines,
-                                     presentations, slides)
+from ai_ppt.api.v1.endpoints import (
+    auth,
+    connectors,
+    exports,
+    outlines,
+    presentations,
+    slides,
+)
 
 # 创建 v1 主路由
 router = APIRouter(prefix="/api/v1")
