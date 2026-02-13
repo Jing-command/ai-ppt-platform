@@ -111,6 +111,7 @@ source = ["src"]
 omit = ["*/tests/*", "*/test_*"]
 
 [tool.coverage.report]
+fail_under = 80
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
@@ -122,6 +123,18 @@ exclude_lines = [
 line-length = 88
 target-version = ['py311']
 include = '\.pyi?$'
+extend-exclude = '''
+/(
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
 
 [tool.isort]
 profile = "black"
