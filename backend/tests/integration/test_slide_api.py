@@ -30,7 +30,9 @@ class TestSlideAPI:
 
         assert response.status_code == 403
 
-    async def test_list_slides_presentation_not_found(self, client: AsyncClient, auth_headers):
+    async def test_list_slides_presentation_not_found(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试获取不存在 PPT 的幻灯片"""
         response = await client.get(
             f"/api/v1/presentations/{uuid.uuid4()}/slides",
@@ -266,7 +268,9 @@ class TestSlideContentValidation:
         # 空内容应该被接受
         assert response.status_code in [200, 404, 500]
 
-    async def test_update_slide_complex_content(self, client: AsyncClient, auth_headers):
+    async def test_update_slide_complex_content(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试更新幻灯片时提供复杂内容"""
         ppt_id = uuid.uuid4()
         slide_id = uuid.uuid4()

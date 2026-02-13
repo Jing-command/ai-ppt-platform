@@ -124,7 +124,9 @@ class CommandHistory:
         try:
             await command.execute()
         except Exception as e:
-            raise CommandExecutionError(f"Command execution failed: {e}", command=command) from e
+            raise CommandExecutionError(
+                f"Command execution failed: {e}", command=command
+            ) from e
 
         # 如果有被撤销的命令，清除它们
         if self._current_index < len(self._history) - 1:
@@ -184,7 +186,9 @@ class CommandHistory:
             # 重做就是再次执行命令
             await command.execute()
         except Exception as e:
-            raise CommandExecutionError(f"Command redo failed: {e}", command=command) from e
+            raise CommandExecutionError(
+                f"Command redo failed: {e}", command=command
+            ) from e
 
         self._current_index = next_index
         return command
@@ -251,7 +255,9 @@ class CommandHistory:
                     "executed_at": (
                         command.executed_at.isoformat() if command.executed_at else None
                     ),
-                    "undone_at": (command.undone_at.isoformat() if command.undone_at else None),
+                    "undone_at": (
+                        command.undone_at.isoformat() if command.undone_at else None
+                    ),
                 }
             )
         return summary
@@ -270,7 +276,9 @@ class CommandHistory:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any], command_factory: Any = None) -> "CommandHistory":
+    def from_dict(
+        cls, data: Dict[str, Any], command_factory: Any = None
+    ) -> "CommandHistory":
         """
         从字典反序列化历史记录
 

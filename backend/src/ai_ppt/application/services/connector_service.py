@@ -91,7 +91,9 @@ class ConnectorService:
         # 检查名称是否已存在
         exists = await self._repository.name_exists(user_id, data.name)
         if exists:
-            raise ConnectorNameExistsError(f"Connector with name '{data.name}' already exists")
+            raise ConnectorNameExistsError(
+                f"Connector with name '{data.name}' already exists"
+            )
 
         # 创建连接器实体
         connector = Connector(
@@ -127,7 +129,9 @@ class ConnectorService:
         connector = await self._repository.get_by_id(connector_id)
 
         if not connector or connector.user_id != user_id:
-            raise ConnectorNotFoundError(f"Connector with id '{connector_id}' not found")
+            raise ConnectorNotFoundError(
+                f"Connector with id '{connector_id}' not found"
+            )
 
         return connector
 
@@ -188,9 +192,13 @@ class ConnectorService:
 
         # 检查名称是否冲突
         if data.name and data.name != connector.name:
-            exists = await self._repository.name_exists(user_id, data.name, exclude_id=connector_id)
+            exists = await self._repository.name_exists(
+                user_id, data.name, exclude_id=connector_id
+            )
             if exists:
-                raise ConnectorNameExistsError(f"Connector with name '{data.name}' already exists")
+                raise ConnectorNameExistsError(
+                    f"Connector with name '{data.name}' already exists"
+                )
             connector.name = data.name
 
         # 更新字段
@@ -262,11 +270,15 @@ class ConnectorService:
         connector = await self._repository.get_by_id(connector_id)
 
         if not connector:
-            raise ConnectorNotFoundError(f"Connector with id '{connector_id}' not found")
+            raise ConnectorNotFoundError(
+                f"Connector with id '{connector_id}' not found"
+            )
 
         # 验证所有权
         if user_id and connector.user_id != user_id:
-            raise ConnectorNotFoundError(f"Connector with id '{connector_id}' not found")
+            raise ConnectorNotFoundError(
+                f"Connector with id '{connector_id}' not found"
+            )
 
         # 使用临时配置或保存的配置
         config = test_config or connector.config

@@ -59,7 +59,11 @@ class ConnectorRepository(BaseRepository[Connector], IConnectorRepository):
         connector_type: str | None = None,
     ) -> int:
         """统计用户的连接器数量"""
-        stmt = select(func.count()).select_from(Connector).where(Connector.user_id == user_id)
+        stmt = (
+            select(func.count())
+            .select_from(Connector)
+            .where(Connector.user_id == user_id)
+        )
 
         if connector_type:
             stmt = stmt.where(Connector.type == connector_type)

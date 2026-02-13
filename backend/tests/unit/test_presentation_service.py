@@ -169,7 +169,9 @@ class TestPresentationServiceGet:
         mock_result.scalar_one_or_none.return_value = None  # 查询条件包含 owner_id
         mock_db_session.execute.return_value = mock_result
 
-        result = await presentation_service.get_by_id(sample_presentation.id, uuid.uuid4())
+        result = await presentation_service.get_by_id(
+            sample_presentation.id, uuid.uuid4()
+        )
 
         assert result is None
 
@@ -187,7 +189,9 @@ class TestPresentationServiceGet:
 
         assert result.id == sample_presentation.id
 
-    async def test_get_by_id_or_raise_not_found(self, presentation_service, mock_db_session):
+    async def test_get_by_id_or_raise_not_found(
+        self, presentation_service, mock_db_session
+    ):
         """测试获取不存在时抛出"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = None
@@ -202,7 +206,9 @@ class TestPresentationServiceGet:
         """测试获取用户演示文稿列表"""
         user_id = uuid.uuid4()
         presentations = [
-            Presentation(id=uuid.uuid4(), title=f"PPT {i}", owner_id=user_id, theme="default")
+            Presentation(
+                id=uuid.uuid4(), title=f"PPT {i}", owner_id=user_id, theme="default"
+            )
             for i in range(3)
         ]
 
@@ -214,12 +220,16 @@ class TestPresentationServiceGet:
 
         mock_db_session.execute.side_effect = [mock_count_result, mock_data_result]
 
-        result, total = await presentation_service.get_by_user(user_id, page=1, page_size=10)
+        result, total = await presentation_service.get_by_user(
+            user_id, page=1, page_size=10
+        )
 
         assert len(result) == 3
         assert total == 3
 
-    async def test_get_by_user_with_status_filter(self, presentation_service, mock_db_session):
+    async def test_get_by_user_with_status_filter(
+        self, presentation_service, mock_db_session
+    ):
         """测试带状态过滤的获取"""
         user_id = uuid.uuid4()
 
@@ -242,7 +252,9 @@ class TestPresentationServiceGet:
 class TestPresentationServiceUpdate:
     """测试更新演示文稿"""
 
-    async def test_update_title(self, presentation_service, mock_db_session, sample_presentation):
+    async def test_update_title(
+        self, presentation_service, mock_db_session, sample_presentation
+    ):
         """测试更新标题"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_presentation
@@ -270,7 +282,9 @@ class TestPresentationServiceUpdate:
 
         assert result.description == "New description"
 
-    async def test_update_status(self, presentation_service, mock_db_session, sample_presentation):
+    async def test_update_status(
+        self, presentation_service, mock_db_session, sample_presentation
+    ):
         """测试更新状态"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_presentation
@@ -313,7 +327,9 @@ class TestPresentationServiceUpdate:
 class TestPresentationServiceDelete:
     """测试删除演示文稿"""
 
-    async def test_delete_success(self, presentation_service, mock_db_session, sample_presentation):
+    async def test_delete_success(
+        self, presentation_service, mock_db_session, sample_presentation
+    ):
         """测试成功删除"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_presentation
@@ -340,7 +356,9 @@ class TestPresentationServiceDelete:
 class TestPresentationServiceSlides:
     """测试幻灯片操作"""
 
-    async def test_add_slide(self, presentation_service, mock_db_session, sample_presentation):
+    async def test_add_slide(
+        self, presentation_service, mock_db_session, sample_presentation
+    ):
         """测试添加幻灯片"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_presentation
@@ -399,7 +417,9 @@ class TestPresentationServiceSlides:
         assert result is not None
         assert len(result) == 1
 
-    async def test_get_slides_ppt_not_found(self, presentation_service, mock_db_session):
+    async def test_get_slides_ppt_not_found(
+        self, presentation_service, mock_db_session
+    ):
         """测试获取不存在的 PPT 的幻灯片"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = None

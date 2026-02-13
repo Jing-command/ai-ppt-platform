@@ -492,11 +492,17 @@ class PresentationService:
         """
         content_dict = {}
         if hasattr(slide_data, "content") and slide_data.content:
-            content_dict = slide_data.content.model_dump(by_alias=True, exclude_none=True)
+            content_dict = slide_data.content.model_dump(
+                by_alias=True, exclude_none=True
+            )
 
         # 确定布局类型
         layout_type = SlideLayoutType.TITLE_CONTENT
-        if hasattr(slide_data, "layout") and slide_data.layout and slide_data.layout.type:
+        if (
+            hasattr(slide_data, "layout")
+            and slide_data.layout
+            and slide_data.layout.type
+        ):
             try:
                 layout_type = SlideLayoutType(slide_data.layout.type)
             except ValueError:

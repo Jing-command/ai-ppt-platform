@@ -28,7 +28,9 @@ def get_password_hash(password: str) -> str:
     return result
 
 
-def create_access_token(user_id: UUID, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(
+    user_id: UUID, expires_delta: Optional[timedelta] = None
+) -> str:
     """
     创建 JWT 访问令牌
 
@@ -53,7 +55,9 @@ def create_access_token(user_id: UUID, expires_delta: Optional[timedelta] = None
         "iat": datetime.now(timezone.utc),
     }
 
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
+    )
     return encoded_jwt
 
 
@@ -67,7 +71,9 @@ def create_refresh_token(user_id: UUID) -> str:
     Returns:
         JWT 刷新令牌字符串
     """
-    expire = datetime.now(timezone.utc) + timedelta(days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS)
+    expire = datetime.now(timezone.utc) + timedelta(
+        days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
+    )
 
     to_encode = {
         "sub": str(user_id),
@@ -76,11 +82,15 @@ def create_refresh_token(user_id: UUID) -> str:
         "iat": datetime.now(timezone.utc),
     }
 
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
+    )
     return encoded_jwt
 
 
-def decode_token(token: str, expected_type: str = "access") -> Tuple[Optional[UUID], Optional[str]]:
+def decode_token(
+    token: str, expected_type: str = "access"
+) -> Tuple[Optional[UUID], Optional[str]]:
     """
     解码并验证 JWT 令牌
 
@@ -94,7 +104,9 @@ def decode_token(token: str, expected_type: str = "access") -> Tuple[Optional[UU
         - 失败时：user_id 为 None，error_message 为错误描述
     """
     try:
-        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+        payload = jwt.decode(
+            token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
+        )
 
         # 验证令牌类型
         token_type = payload.get("type")

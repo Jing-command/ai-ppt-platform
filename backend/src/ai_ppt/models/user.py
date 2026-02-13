@@ -23,7 +23,9 @@ class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
 
     # 基本信息
-    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    email: Mapped[str] = mapped_column(
+        String(255), unique=True, nullable=False, index=True
+    )
     username: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
 
@@ -32,7 +34,9 @@ class User(Base):
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # 时间戳
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow_aware)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow_aware
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow_aware, onupdate=utcnow_aware
     )

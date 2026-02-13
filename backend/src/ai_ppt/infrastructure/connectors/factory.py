@@ -125,7 +125,9 @@ class ConnectorFactory:
             )
             # 如果提供了 OAuth 凭证，设置 OAuth 凭证
             if config.get("client_id") and config.get("client_secret"):
-                connector.set_oauth_credentials(config["client_id"], config["client_secret"])
+                connector.set_oauth_credentials(
+                    config["client_id"], config["client_secret"]
+                )
             return connector
 
         elif connector_type == ConnectorType.POSTGRESQL:

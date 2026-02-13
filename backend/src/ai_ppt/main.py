@@ -36,7 +36,9 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # 启动
     try:
         await init_db()
-        print(f"[START] {settings.APP_NAME} v{settings.APP_VERSION} started successfully")
+        print(
+            f"[START] {settings.APP_NAME} v{settings.APP_VERSION} started successfully"
+        )
     except Exception as e:
         print(f"[ERROR] Failed to initialize database: {e}")
         raise

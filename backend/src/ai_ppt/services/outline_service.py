@@ -68,7 +68,9 @@ class OutlineService:
 
         return outline
 
-    async def get_by_id_or_raise(self, outline_id: UUID, user_id: Optional[UUID] = None) -> Outline:
+    async def get_by_id_or_raise(
+        self, outline_id: UUID, user_id: Optional[UUID] = None
+    ) -> Outline:
         """
         根据 ID 获取大纲，不存在则抛出异常
 
@@ -109,7 +111,9 @@ class OutlineService:
         """
         # 构建查询
         query = select(Outline).where(Outline.user_id == user_id)
-        count_query = select(func.count()).select_from(Outline).where(Outline.user_id == user_id)
+        count_query = (
+            select(func.count()).select_from(Outline).where(Outline.user_id == user_id)
+        )
 
         if status:
             query = query.where(Outline.status == status)

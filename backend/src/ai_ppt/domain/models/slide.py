@@ -49,7 +49,9 @@ class Slide(Base):
     __tablename__ = "slides"
 
     # 索引
-    __table_args__ = (Index("ix_slides_presentation_order", "presentation_id", "order_index"),)
+    __table_args__ = (
+        Index("ix_slides_presentation_order", "presentation_id", "order_index"),
+    )
 
     # 主键
     id: Mapped[UUIDPk]

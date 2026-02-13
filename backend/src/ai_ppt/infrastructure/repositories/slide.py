@@ -30,7 +30,9 @@ class SlideRepository(BaseRepository[Slide], ISlideRepository):
 
     async def get_max_order(self, presentation_id: UUID) -> int:
         """获取最大排序索引"""
-        stmt = select(func.max(Slide.order_index)).where(Slide.presentation_id == presentation_id)
+        stmt = select(func.max(Slide.order_index)).where(
+            Slide.presentation_id == presentation_id
+        )
         result = await self._session.execute(stmt)
         max_order = result.scalar_one_or_none()
         return max_order or 0

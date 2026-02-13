@@ -28,7 +28,9 @@ class TestConnectorAPI:
 
         assert response.status_code == 403
 
-    async def test_list_connectors_with_type_filter(self, client: AsyncClient, auth_headers):
+    async def test_list_connectors_with_type_filter(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试带类型过滤的连接器列表"""
         response = await client.get(
             "/api/v1/connectors?connector_type=mysql",
@@ -71,7 +73,9 @@ class TestConnectorAPI:
 
         assert response.status_code == 403
 
-    async def test_create_connector_missing_name(self, client: AsyncClient, auth_headers):
+    async def test_create_connector_missing_name(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试创建连接器时缺少名称"""
         response = await client.post(
             "/api/v1/connectors",
@@ -84,7 +88,9 @@ class TestConnectorAPI:
 
         assert response.status_code == 422
 
-    async def test_create_connector_name_too_long(self, client: AsyncClient, auth_headers):
+    async def test_create_connector_name_too_long(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试创建连接器时名称太长"""
         response = await client.post(
             "/api/v1/connectors",
@@ -208,7 +214,9 @@ class TestConnectorTestAPI:
 class TestConnectorSchemaAPI:
     """测试连接器 Schema API"""
 
-    async def test_get_connector_schema_not_implemented(self, client: AsyncClient, auth_headers):
+    async def test_get_connector_schema_not_implemented(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试获取连接器 Schema（未实现）"""
         connector_id = uuid.uuid4()
 
@@ -225,7 +233,9 @@ class TestConnectorSchemaAPI:
 class TestConnectorQueryAPI:
     """测试连接器查询 API"""
 
-    async def test_execute_query_not_implemented(self, client: AsyncClient, auth_headers):
+    async def test_execute_query_not_implemented(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试执行查询（未实现）"""
         connector_id = uuid.uuid4()
 
@@ -255,7 +265,9 @@ class TestConnectorPagination:
 
         assert response.status_code in [200, 500]
 
-    async def test_list_connectors_invalid_page(self, client: AsyncClient, auth_headers):
+    async def test_list_connectors_invalid_page(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试无效的分页参数"""
         response = await client.get(
             "/api/v1/connectors?page=0&pageSize=10",
@@ -269,7 +281,9 @@ class TestConnectorPagination:
 class TestConnectorValidation:
     """测试连接器数据验证"""
 
-    async def test_create_connector_invalid_config(self, client: AsyncClient, auth_headers):
+    async def test_create_connector_invalid_config(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试创建连接器时提供无效配置"""
         response = await client.post(
             "/api/v1/connectors",
@@ -283,7 +297,9 @@ class TestConnectorValidation:
 
         assert response.status_code == 422
 
-    async def test_update_connector_invalid_is_active(self, client: AsyncClient, auth_headers):
+    async def test_update_connector_invalid_is_active(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试更新连接器时提供无效 isActive"""
         connector_id = uuid.uuid4()
 

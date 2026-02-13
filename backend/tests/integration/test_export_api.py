@@ -46,7 +46,9 @@ class TestExportAPI:
 
         assert response.status_code == 403
 
-    async def test_export_pptx_presentation_not_found(self, client: AsyncClient, auth_headers):
+    async def test_export_pptx_presentation_not_found(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试导出不存在的 PPT"""
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
@@ -137,7 +139,9 @@ class TestExportAPI:
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_images_invalid_format(self, client: AsyncClient, auth_headers):
+    async def test_export_images_invalid_format(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试导出图片时提供无效格式"""
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"
@@ -212,7 +216,9 @@ class TestExportAPI:
             mock_task.file_path = "test.pptx"
             mock_task.expires_at = None
             mock_export_instance.get_task.return_value = mock_task
-            mock_export_instance.get_full_path.return_value = MagicMock(exists=lambda: True)
+            mock_export_instance.get_full_path.return_value = MagicMock(
+                exists=lambda: True
+            )
             mock_export.return_value = mock_export_instance
 
             # 注意：FileResponse 在测试环境中可能不会实际返回文件内容
@@ -223,7 +229,9 @@ class TestExportAPI:
 
         assert response.status_code in [200, 404, 410, 500]
 
-    async def test_download_export_not_completed(self, client: AsyncClient, auth_headers):
+    async def test_download_export_not_completed(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试下载未完成的导出"""
         task_id = uuid.uuid4()
 
@@ -300,7 +308,9 @@ class TestExportFormats:
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_with_quality_standard(self, client: AsyncClient, auth_headers):
+    async def test_export_with_quality_standard(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试导出标准质量"""
         with patch(
             "ai_ppt.application.services.presentation_service.PresentationService"

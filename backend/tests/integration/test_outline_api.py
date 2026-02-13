@@ -87,7 +87,9 @@ class TestOutlineAPI:
 
     async def test_generate_outline_success(self, client: AsyncClient, auth_headers):
         """测试 AI 生成大纲"""
-        with patch("ai_ppt.services.outline_service.OutlineGenerationService") as mock_gen:
+        with patch(
+            "ai_ppt.services.outline_service.OutlineGenerationService"
+        ) as mock_gen:
             mock_instance = AsyncMock()
             mock_instance.generate_outline.return_value = {
                 "title": "Generated Outline",
@@ -131,7 +133,9 @@ class TestOutlineAPI:
 
         assert response.status_code == 403
 
-    async def test_generate_outline_invalid_prompt(self, client: AsyncClient, auth_headers):
+    async def test_generate_outline_invalid_prompt(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试提示词太短"""
         response = await client.post(
             "/api/v1/outlines/generate",
@@ -144,7 +148,9 @@ class TestOutlineAPI:
 
         assert response.status_code == 422
 
-    async def test_get_outline_success(self, client: AsyncClient, auth_headers, db_session):
+    async def test_get_outline_success(
+        self, client: AsyncClient, auth_headers, db_session
+    ):
         """测试成功获取大纲详情"""
         outline_id = uuid.uuid4()
 
@@ -219,7 +225,9 @@ class TestOutlineAPI:
 
         assert response.status_code == 403
 
-    async def test_create_presentation_from_outline(self, client: AsyncClient, auth_headers):
+    async def test_create_presentation_from_outline(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试基于大纲创建 PPT"""
         outline_id = uuid.uuid4()
 
@@ -275,7 +283,9 @@ class TestOutlinePagination:
         # 应该返回 422 验证错误，但实现可能不同
         assert response.status_code in [200, 422, 500]
 
-    async def test_list_outlines_with_status_filter(self, client: AsyncClient, auth_headers):
+    async def test_list_outlines_with_status_filter(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试带状态过滤的列表"""
         response = await client.get(
             "/api/v1/outlines?status=draft",
@@ -302,7 +312,9 @@ class TestOutlineValidation:
 
         assert response.status_code in [201, 200, 500]
 
-    async def test_create_outline_invalid_page_type(self, client: AsyncClient, auth_headers):
+    async def test_create_outline_invalid_page_type(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试无效的页面类型"""
         response = await client.post(
             "/api/v1/outlines",
@@ -322,7 +334,9 @@ class TestOutlineValidation:
         # Pydantic 可能允许任何字符串
         assert response.status_code in [201, 200, 422, 500]
 
-    async def test_update_outline_invalid_background(self, client: AsyncClient, auth_headers):
+    async def test_update_outline_invalid_background(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试无效的背景设置"""
         outline_id = uuid.uuid4()
 

@@ -116,7 +116,9 @@ class LLMClient:
             _api_key = settings.ai.api_key.get_secret_value()
         if not _api_key:
             # 尝试从环境变量直接读取（兼容不同的环境变量命名）
-            _api_key = os.environ.get("AI_API_KEY") or os.environ.get("DEEPSEEK_API_KEY") or ""
+            _api_key = (
+                os.environ.get("AI_API_KEY") or os.environ.get("DEEPSEEK_API_KEY") or ""
+            )
 
         self.api_key = _api_key
         self.base_url = base_url or self.DEFAULT_BASE_URLS[self.provider]
@@ -233,7 +235,9 @@ class LLMClient:
         except (KeyError, IndexError) as e:
             raise LLMFormatError(f"Invalid LLM response format: {e}") from e
 
-    async def complete_stream(self, request: LLMRequest) -> AsyncIterator[StreamingChunk]:
+    async def complete_stream(
+        self, request: LLMRequest
+    ) -> AsyncIterator[StreamingChunk]:
         """
         发送流式完成请求
 
@@ -248,7 +252,9 @@ class LLMClient:
         index = 0
 
         try:
-            async with self._client.stream("POST", "/chat/completions", json=body) as response:
+            async with self._client.stream(
+                "POST", "/chat/completions", json=body
+            ) as response:
                 response.raise_for_status()
 
                 async for line in response.aiter_lines():
@@ -264,7 +270,9 @@ class LLMClient:
 
                         # 流结束标记
                         if data_str == "[DONE]":
-                            yield StreamingChunk(content="", is_finished=True, index=index)
+                            yield StreamingChunk(
+                                content="", is_finished=True, index=index
+                            )
                             break
 
                         try:

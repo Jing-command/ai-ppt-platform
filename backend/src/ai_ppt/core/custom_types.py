@@ -30,7 +30,9 @@ class GUID(TypeDecorator):
         else:
             return dialect.type_descriptor(String(36))
 
-    def process_bind_param(self, value: Optional[uuid.UUID], dialect: Dialect) -> Optional[str]:
+    def process_bind_param(
+        self, value: Optional[uuid.UUID], dialect: Dialect
+    ) -> Optional[str]:
         if value is None:
             return value
         elif dialect.name == "postgresql":
@@ -40,7 +42,9 @@ class GUID(TypeDecorator):
                 return str(value)
             return value
 
-    def process_result_value(self, value: Optional[str], dialect: Dialect) -> Optional[uuid.UUID]:
+    def process_result_value(
+        self, value: Optional[str], dialect: Dialect
+    ) -> Optional[uuid.UUID]:
         if value is None:
             return None
         if isinstance(value, uuid.UUID):

@@ -51,7 +51,9 @@ class TestPresentationAPI:
 
         assert response.status_code == 403
 
-    async def test_create_presentation_invalid_data(self, client: AsyncClient, auth_headers):
+    async def test_create_presentation_invalid_data(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试创建 PPT 时提供无效数据"""
         response = await client.post(
             "/api/v1/presentations",
@@ -99,7 +101,9 @@ class TestPresentationAPI:
 
         assert response.status_code in [200, 404, 500]
 
-    async def test_update_presentation_invalid_status(self, client: AsyncClient, auth_headers):
+    async def test_update_presentation_invalid_status(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试更新 PPT 时提供无效状态"""
         ppt_id = uuid.uuid4()
 
@@ -214,7 +218,9 @@ class TestPresentationSlidesAPI:
 class TestGeneratePresentationAPI:
     """测试生成 PPT API"""
 
-    async def test_generate_presentation_not_implemented(self, client: AsyncClient, auth_headers):
+    async def test_generate_presentation_not_implemented(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试生成 PPT 接口（未实现）"""
         response = await client.post(
             "/api/v1/presentations/generate",
@@ -230,7 +236,9 @@ class TestGeneratePresentationAPI:
         # 应该返回 501（未实现）或 200（如果已实现）
         assert response.status_code in [200, 202, 501]
 
-    async def test_generate_presentation_invalid_prompt(self, client: AsyncClient, auth_headers):
+    async def test_generate_presentation_invalid_prompt(
+        self, client: AsyncClient, auth_headers
+    ):
         """测试生成 PPT 时提示词太短"""
         response = await client.post(
             "/api/v1/presentations/generate",

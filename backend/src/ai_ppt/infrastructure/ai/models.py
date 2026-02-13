@@ -34,8 +34,12 @@ class LLMRequest(BaseModel):
     messages: List[Dict[str, str]] = Field(
         ..., description="消息列表，格式: [{role: system|user|assistant, content: str}]"
     )
-    temperature: float = Field(default=0.7, ge=0.0, le=2.0, description="采样温度，越高越随机")
-    max_tokens: int = Field(default=4096, ge=1, le=128000, description="最大生成 token 数")
+    temperature: float = Field(
+        default=0.7, ge=0.0, le=2.0, description="采样温度，越高越随机"
+    )
+    max_tokens: int = Field(
+        default=4096, ge=1, le=128000, description="最大生成 token 数"
+    )
     response_format: Optional[Dict[str, str]] = Field(
         default=None, description="响应格式，如 {'type': 'json_object'}"
     )
@@ -49,7 +53,9 @@ class LLMResponse(BaseModel):
 
     content: str = Field(..., description="生成的内容")
     model: str = Field(..., description="使用的模型名称")
-    provider: Literal["openai", "deepseek", "kimi"] = Field(..., description="LLM 提供商")
+    provider: Literal["openai", "deepseek", "kimi"] = Field(
+        ..., description="LLM 提供商"
+    )
     usage: Usage = Field(default_factory=Usage, description="Token 使用统计")
     finish_reason: Optional[str] = Field(
         default=None, description="完成原因: stop, length, content_filter 等"
@@ -120,8 +126,8 @@ class SlideEnhancementRequest(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     content: Dict[str, Any] = Field(..., description="原始内容")
-    enhancement_type: Literal["professional", "concise", "storytelling", "creative"] = Field(
-        default="professional", description="增强类型"
+    enhancement_type: Literal["professional", "concise", "storytelling", "creative"] = (
+        Field(default="professional", description="增强类型")
     )
     target_audience: Optional[str] = Field(default=None, description="目标受众")
     tone: Optional[str] = Field(default=None, description="语气风格")

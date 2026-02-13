@@ -37,7 +37,9 @@ class UndoRedoResponse(BaseModel):
 class SlideBulkUpdateRequest(BaseModel):
     """批量更新幻灯片请求"""
 
-    slides: List[Dict[str, Any]] = Field(..., min_length=1, description="幻灯片数据列表")
+    slides: List[Dict[str, Any]] = Field(
+        ..., min_length=1, description="幻灯片数据列表"
+    )
 
     model_config = ConfigDict(populate_by_name=True)
 

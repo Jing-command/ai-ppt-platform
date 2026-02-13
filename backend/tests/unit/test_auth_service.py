@@ -100,7 +100,9 @@ class TestJWTToken:
 
         user_id = uuid.uuid4()
         # 创建已经过期的令牌
-        expired_token = create_access_token(user_id, expires_delta=timedelta(seconds=-1))
+        expired_token = create_access_token(
+            user_id, expires_delta=timedelta(seconds=-1)
+        )
 
         decoded_id, error = decode_token(expired_token)
 
@@ -150,7 +152,9 @@ class TestUserModel:
 
     def test_user_repr(self):
         """测试 User 的 __repr__ 方法"""
-        user = User(email="test@example.com", username="testuser", hashed_password="hashed")
+        user = User(
+            email="test@example.com", username="testuser", hashed_password="hashed"
+        )
 
         repr_str = repr(user)
         assert "User" in repr_str
@@ -501,9 +505,13 @@ class TestAuthDependencies:
         from ai_ppt.api.deps import get_current_user
 
         user_id = uuid.uuid4()
-        expired_token = create_access_token(user_id, expires_delta=timedelta(seconds=-1))
+        expired_token = create_access_token(
+            user_id, expires_delta=timedelta(seconds=-1)
+        )
 
-        credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=expired_token)
+        credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=expired_token
+        )
 
         with pytest.raises(HTTPException) as exc_info:
             await get_current_user(credentials, mock_db)
@@ -583,7 +591,9 @@ class TestAuthDependencies:
 
         from ai_ppt.api.deps import get_optional_user
 
-        credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials="invalid.token")
+        credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials="invalid.token"
+        )
 
         user = await get_optional_user(credentials, mock_db)
 

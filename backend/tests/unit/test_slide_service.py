@@ -64,7 +64,9 @@ class TestSlideServiceUpdateSlide:
         user_id = uuid.uuid4()
 
         # 模拟演示文稿服务
-        with patch.object(slide_service._presentation_service, "update_slide") as mock_update:
+        with patch.object(
+            slide_service._presentation_service, "update_slide"
+        ) as mock_update:
             mock_update.return_value = sample_slide
 
             result = await slide_service.update_slide(
@@ -86,7 +88,9 @@ class TestSlideServiceUpdateSlide:
 
         from ai_ppt.api.v1.schemas.presentation import SlideUpdate
 
-        with patch.object(slide_service._presentation_service, "update_slide") as mock_update:
+        with patch.object(
+            slide_service._presentation_service, "update_slide"
+        ) as mock_update:
             mock_update.return_value = Slide(
                 id=uuid.uuid4(),
                 title="Updated",
@@ -111,7 +115,9 @@ class TestSlideServiceUpdateSlide:
 class TestSlideServiceUndo:
     """测试撤销操作"""
 
-    async def test_undo_success(self, slide_service, mock_db_session, sample_presentation):
+    async def test_undo_success(
+        self, slide_service, mock_db_session, sample_presentation
+    ):
         """测试成功撤销"""
         ppt_id = sample_presentation.id
         slide_id = uuid.uuid4()
@@ -156,7 +162,9 @@ class TestSlideServiceUndo:
 
     async def test_undo_presentation_not_found(self, slide_service, mock_db_session):
         """测试演示文稿不存在时撤销"""
-        with patch.object(slide_service._presentation_service, "get_by_id_or_raise") as mock_get:
+        with patch.object(
+            slide_service._presentation_service, "get_by_id_or_raise"
+        ) as mock_get:
             mock_get.side_effect = PresentationNotFoundError("Not found")
 
             with pytest.raises(PresentationNotFoundError):
@@ -166,7 +174,9 @@ class TestSlideServiceUndo:
 class TestSlideServiceRedo:
     """测试重做操作"""
 
-    async def test_redo_success(self, slide_service, mock_db_session, sample_presentation):
+    async def test_redo_success(
+        self, slide_service, mock_db_session, sample_presentation
+    ):
         """测试成功重做"""
         ppt_id = sample_presentation.id
         slide_id = uuid.uuid4()

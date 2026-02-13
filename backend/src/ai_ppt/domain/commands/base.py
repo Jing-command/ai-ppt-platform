@@ -165,10 +165,14 @@ class CommandMetadata(BaseModel):
             target_type=data["target_type"],
             created_at=datetime.fromisoformat(data["created_at"]),
             executed_at=(
-                datetime.fromisoformat(data["executed_at"]) if data.get("executed_at") else None
+                datetime.fromisoformat(data["executed_at"])
+                if data.get("executed_at")
+                else None
             ),
             undone_at=(
-                datetime.fromisoformat(data["undone_at"]) if data.get("undone_at") else None
+                datetime.fromisoformat(data["undone_at"])
+                if data.get("undone_at")
+                else None
             ),
             payload=data.get("payload", {}),
         )

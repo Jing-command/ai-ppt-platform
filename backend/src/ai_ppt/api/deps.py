@@ -46,7 +46,9 @@ async def get_current_user(
             detail={
                 "code": code,
                 "message": (
-                    "无效的认证令牌" if code == "INVALID_TOKEN" else "登录已过期，请重新登录"
+                    "无效的认证令牌"
+                    if code == "INVALID_TOKEN"
+                    else "登录已过期，请重新登录"
                 ),
                 "details": {"error": error},
             },

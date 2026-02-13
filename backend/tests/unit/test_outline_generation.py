@@ -142,7 +142,9 @@ class TestOutlineGenerationGenerateOutline:
 
         mock_llm_client.complete.assert_called_once()
 
-    async def test_generate_outline_missing_pages(self, generation_service, mock_llm_client):
+    async def test_generate_outline_missing_pages(
+        self, generation_service, mock_llm_client
+    ):
         """测试缺少 pages 字段的响应"""
         mock_response_data = {
             "title": "Invalid Response",
@@ -160,7 +162,9 @@ class TestOutlineGenerationGenerateOutline:
 
         assert "pages" in str(exc_info.value)
 
-    async def test_generate_outline_adds_missing_ids(self, generation_service, mock_llm_client):
+    async def test_generate_outline_adds_missing_ids(
+        self, generation_service, mock_llm_client
+    ):
         """测试为页面添加缺失的 ID"""
         mock_response_data = {
             "title": "Test",
@@ -206,7 +210,9 @@ class TestOutlineGenerationGenerateOutline:
         assert result["pages"][0]["pageNumber"] == 1
         assert result["pages"][1]["pageNumber"] == 2
 
-    async def test_generate_outline_json_decode_error(self, generation_service, mock_llm_client):
+    async def test_generate_outline_json_decode_error(
+        self, generation_service, mock_llm_client
+    ):
         """测试 JSON 解析错误"""
         mock_llm_client.complete.return_value = LLMResponse(
             content="Invalid JSON",
@@ -219,7 +225,9 @@ class TestOutlineGenerationGenerateOutline:
 
         assert "解析" in str(exc_info.value) or "JSON" in str(exc_info.value)
 
-    async def test_generate_outline_llm_error(self, generation_service, mock_llm_client):
+    async def test_generate_outline_llm_error(
+        self, generation_service, mock_llm_client
+    ):
         """测试 LLM 调用错误"""
         mock_llm_client.complete.side_effect = Exception("LLM API Error")
 
@@ -232,7 +240,9 @@ class TestOutlineGenerationGenerateOutline:
 class TestOutlineGenerationCreateFromGeneration:
     """测试从生成结果创建大纲实体"""
 
-    async def test_create_outline_from_generation(self, generation_service, mock_llm_client):
+    async def test_create_outline_from_generation(
+        self, generation_service, mock_llm_client
+    ):
         """测试从生成结果创建大纲"""
         user_id = uuid.uuid4()
 
@@ -281,7 +291,9 @@ class TestOutlineGenerationCreateFromGeneration:
         assert result.ai_prompt == "Test Topic"
         assert result.ai_parameters is not None
 
-    async def test_create_outline_without_background(self, generation_service, mock_llm_client):
+    async def test_create_outline_without_background(
+        self, generation_service, mock_llm_client
+    ):
         """测试创建没有背景的大纲"""
         user_id = uuid.uuid4()
 
@@ -335,7 +347,9 @@ class TestOutlineGenerationLifecycle:
             mock_client_class.assert_called_once()
             assert service._llm_client is mock_instance
 
-    async def test_generate_uses_default_params(self, generation_service, mock_llm_client):
+    async def test_generate_uses_default_params(
+        self, generation_service, mock_llm_client
+    ):
         """测试使用默认参数生成"""
         mock_llm_client.complete.return_value = LLMResponse(
             content=json.dumps({"title": "Test", "pages": []}),
