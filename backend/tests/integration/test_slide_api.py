@@ -223,14 +223,38 @@ class TestSlideDeleteAPI:
 class TestSlideUndoRedoAPI:
     """测试幻灯片撤销/重做 API"""
 
-    async def test_undo_slide_success(self, client: AsyncClient, authenticated_user):
+    async def test_undo_slide_success(
+        self, client: AsyncClient, authenticated_user, db_session
+    ):
         """测试成功撤销幻灯片操作"""
         from ai_ppt.core.security import create_access_token
+        from ai_ppt.domain.models.presentation import Presentation
+        from ai_ppt.domain.models.slide import Slide
+
+        # 创建测试数据
+        ppt_id = uuid.uuid4()
+        slide_id = uuid.uuid4()
+
+        presentation = Presentation(
+            id=ppt_id,
+            title="Test PPT",
+            owner_id=authenticated_user.id,
+            status="draft",
+        )
+        db_session.add(presentation)
+        await db_session.flush()
+
+        slide = Slide(
+            id=slide_id,
+            presentation_id=ppt_id,
+            order_index=0,
+            title="Test Slide",
+        )
+        db_session.add(slide)
+        await db_session.commit()
 
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        ppt_id = uuid.uuid4()
-        slide_id = uuid.uuid4()
 
         response = await client.post(
             f"/api/v1/presentations/{ppt_id}/slides/{slide_id}/undo",
@@ -248,14 +272,38 @@ class TestSlideUndoRedoAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_undo_slide_no_history(self, client: AsyncClient, authenticated_user):
+    async def test_undo_slide_no_history(
+        self, client: AsyncClient, authenticated_user, db_session
+    ):
         """测试无历史记录时撤销"""
         from ai_ppt.core.security import create_access_token
+        from ai_ppt.domain.models.presentation import Presentation
+        from ai_ppt.domain.models.slide import Slide
+
+        # 创建测试数据
+        ppt_id = uuid.uuid4()
+        slide_id = uuid.uuid4()
+
+        presentation = Presentation(
+            id=ppt_id,
+            title="Test PPT",
+            owner_id=authenticated_user.id,
+            status="draft",
+        )
+        db_session.add(presentation)
+        await db_session.flush()
+
+        slide = Slide(
+            id=slide_id,
+            presentation_id=ppt_id,
+            order_index=0,
+            title="Test Slide",
+        )
+        db_session.add(slide)
+        await db_session.commit()
 
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        ppt_id = uuid.uuid4()
-        slide_id = uuid.uuid4()
 
         # 由于没有操作历史，应该返回 400
         response = await client.post(
@@ -265,14 +313,38 @@ class TestSlideUndoRedoAPI:
 
         assert response.status_code in [200, 400, 404, 500]
 
-    async def test_redo_slide_success(self, client: AsyncClient, authenticated_user):
+    async def test_redo_slide_success(
+        self, client: AsyncClient, authenticated_user, db_session
+    ):
         """测试成功重做幻灯片操作"""
         from ai_ppt.core.security import create_access_token
+        from ai_ppt.domain.models.presentation import Presentation
+        from ai_ppt.domain.models.slide import Slide
+
+        # 创建测试数据
+        ppt_id = uuid.uuid4()
+        slide_id = uuid.uuid4()
+
+        presentation = Presentation(
+            id=ppt_id,
+            title="Test PPT",
+            owner_id=authenticated_user.id,
+            status="draft",
+        )
+        db_session.add(presentation)
+        await db_session.flush()
+
+        slide = Slide(
+            id=slide_id,
+            presentation_id=ppt_id,
+            order_index=0,
+            title="Test Slide",
+        )
+        db_session.add(slide)
+        await db_session.commit()
 
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        ppt_id = uuid.uuid4()
-        slide_id = uuid.uuid4()
 
         response = await client.post(
             f"/api/v1/presentations/{ppt_id}/slides/{slide_id}/redo",
@@ -290,14 +362,38 @@ class TestSlideUndoRedoAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_redo_slide_no_history(self, client: AsyncClient, authenticated_user):
+    async def test_redo_slide_no_history(
+        self, client: AsyncClient, authenticated_user, db_session
+    ):
         """测试无可重做操作时"""
         from ai_ppt.core.security import create_access_token
+        from ai_ppt.domain.models.presentation import Presentation
+        from ai_ppt.domain.models.slide import Slide
+
+        # 创建测试数据
+        ppt_id = uuid.uuid4()
+        slide_id = uuid.uuid4()
+
+        presentation = Presentation(
+            id=ppt_id,
+            title="Test PPT",
+            owner_id=authenticated_user.id,
+            status="draft",
+        )
+        db_session.add(presentation)
+        await db_session.flush()
+
+        slide = Slide(
+            id=slide_id,
+            presentation_id=ppt_id,
+            order_index=0,
+            title="Test Slide",
+        )
+        db_session.add(slide)
+        await db_session.commit()
 
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
-        ppt_id = uuid.uuid4()
-        slide_id = uuid.uuid4()
 
         # 由于没有可重做的操作，应该返回 400
         response = await client.post(

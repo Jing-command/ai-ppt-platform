@@ -261,9 +261,11 @@ class TestExportAPI:
             mock_task.file_path = "test.pptx"
             mock_task.expires_at = None
             mock_export_instance.get_task.return_value = mock_task
-            mock_export_instance.get_full_path.return_value = MagicMock(
-                exists=lambda: True
-            )
+            # get_full_path is a sync method, use MagicMock instead of AsyncMock attribute
+            mock_path = MagicMock()
+            mock_path.exists.return_value = True
+            mock_path.__str__ = MagicMock(return_value="/tmp/test.pptx")
+            mock_export_instance.get_full_path = MagicMock(return_value=mock_path)
             mock_export.return_value = mock_export_instance
 
             # 注意：FileResponse 在测试环境中可能不会实际返回文件内容
