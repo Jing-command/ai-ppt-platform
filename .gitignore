@@ -89,6 +89,10 @@ exports/
 # OS files
 Thumbs.db
 
+# Agent role definitions (internal documentation)
+docs/*_ROLE.md
+docs/dev-notes/
+
 # OpenClaw 上下文压缩（不应提交到版本控制）
 .context-compression/
 CONTEXT_*.md
