@@ -248,33 +248,42 @@ class TestExportAPI:
 
     async def test_download_export_success(self, client: AsyncClient, authenticated_user):
         """测试成功下载导出文件"""
+        import tempfile
+        from pathlib import Path
+
         from ai_ppt.core.security import create_access_token
 
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
         task_id = uuid.uuid4()
 
-        with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
-            mock_export_instance = AsyncMock()
-            mock_task = MagicMock()
-            mock_task.status.value = "completed"
-            mock_task.file_path = "test.pptx"
-            mock_task.expires_at = None
-            mock_export_instance.get_task.return_value = mock_task
-            # get_full_path is a sync method, use MagicMock instead of AsyncMock attribute
-            mock_path = MagicMock()
-            mock_path.exists.return_value = True
-            mock_path.__str__ = MagicMock(return_value="/tmp/test.pptx")
-            mock_export_instance.get_full_path = MagicMock(return_value=mock_path)
-            mock_export.return_value = mock_export_instance
+        # 创建临时文件
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.pptx', delete=False) as f:
+            f.write("test content")
+            temp_file_path = f.name
 
-            # 注意：FileResponse 在测试环境中可能不会实际返回文件内容
-            response = await client.get(
-                f"/api/v1/exports/{task_id}/download",
-                headers=headers,
-            )
+        try:
+            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+                mock_export_instance = AsyncMock()
+                mock_task = MagicMock()
+                mock_task.status.value = "completed"
+                mock_task.file_path = temp_file_path
+                mock_task.expires_at = None
+                mock_export_instance.get_task.return_value = mock_task
+                # get_full_path is a sync method, use MagicMock instead of AsyncMock attribute
+                mock_path = Path(temp_file_path)
+                mock_export_instance.get_full_path = MagicMock(return_value=mock_path)
+                mock_export.return_value = mock_export_instance
 
-        assert response.status_code in [200, 404, 410, 500]
+                response = await client.get(
+                    f"/api/v1/exports/{task_id}/download",
+                    headers=headers,
+                )
+
+            assert response.status_code in [200, 404, 410, 500]
+        finally:
+            # 清理临时文件
+            Path(temp_file_path).unlink(missing_ok=True)
 
     async def test_download_export_not_completed(
         self, client: AsyncClient, authenticated_user
