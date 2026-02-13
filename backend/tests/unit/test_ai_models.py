@@ -355,8 +355,7 @@ class TestModelValidation:
         assert response.content == "Test"
 
     def test_usage_with_negative_tokens(self):
-        """测试负数的 token 计数"""
-        # Pydantic 不会阻止负数，但这是不推荐的行为
-        usage = Usage(prompt_tokens=-10)
-
-        assert usage.prompt_tokens == -10
+        """测试负数的 token 计数会被验证阻止"""
+        # Pydantic 会阻止负数，抛出验证错误
+        with pytest.raises(Exception):
+            Usage(prompt_tokens=-10)

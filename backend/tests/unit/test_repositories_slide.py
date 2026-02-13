@@ -19,8 +19,8 @@ def mock_session():
     session.execute = AsyncMock()
     session.add = MagicMock()
     session.flush = AsyncMock()
-    session.refresh = MagicMock()
-    session.delete = MagicMock()
+    session.refresh = AsyncMock()
+    session.delete = AsyncMock()
     return session
 
 

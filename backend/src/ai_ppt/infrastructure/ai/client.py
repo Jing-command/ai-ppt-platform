@@ -247,7 +247,9 @@ class LLMClient:
         Yields:
             流式响应块
         """
-        stream_request = LLMRequest(**request.model_dump(), stream=True)
+        request_dict = request.model_dump()
+        request_dict["stream"] = True
+        stream_request = LLMRequest(**request_dict)
         body = self._build_request_body(stream_request)
         index = 0
 

@@ -70,7 +70,7 @@ class StreamingChunk(BaseModel):
 
     content: str = Field(..., description="内容块")
     is_finished: bool = Field(default=False, description="是否为最后一块")
-    index: Optional[int] = Field(default=None, description="块序号")
+    index: int = Field(default=0, description="块序号")
 
 
 class DataSchema(BaseModel):

@@ -128,6 +128,7 @@ class TestOutlineGenerationGenerateOutline:
         mock_llm_client.complete.return_value = LLMResponse(
             content=json.dumps(mock_response_data),
             model="deepseek-chat",
+            provider="deepseek",
             usage={"prompt_tokens": 100, "completion_tokens": 200},
         )
 
@@ -154,6 +155,7 @@ class TestOutlineGenerationGenerateOutline:
         mock_llm_client.complete.return_value = LLMResponse(
             content=json.dumps(mock_response_data),
             model="deepseek-chat",
+            provider="deepseek",
             usage={},
         )
 
@@ -177,6 +179,7 @@ class TestOutlineGenerationGenerateOutline:
         mock_llm_client.complete.return_value = LLMResponse(
             content=json.dumps(mock_response_data),
             model="deepseek-chat",
+            provider="deepseek",
             usage={},
         )
 
@@ -201,6 +204,7 @@ class TestOutlineGenerationGenerateOutline:
         mock_llm_client.complete.return_value = LLMResponse(
             content=json.dumps(mock_response_data),
             model="deepseek-chat",
+            provider="deepseek",
             usage={},
         )
 
@@ -217,6 +221,7 @@ class TestOutlineGenerationGenerateOutline:
         mock_llm_client.complete.return_value = LLMResponse(
             content="Invalid JSON",
             model="deepseek-chat",
+            provider="deepseek",
             usage={},
         )
 
@@ -269,6 +274,7 @@ class TestOutlineGenerationCreateFromGeneration:
         mock_llm_client.complete.return_value = LLMResponse(
             content=json.dumps(mock_response_data),
             model="deepseek-chat",
+            provider="deepseek",
             usage={},
         )
 
@@ -305,6 +311,7 @@ class TestOutlineGenerationCreateFromGeneration:
         mock_llm_client.complete.return_value = LLMResponse(
             content=json.dumps(mock_response_data),
             model="deepseek-chat",
+            provider="deepseek",
             usage={},
         )
 
@@ -354,6 +361,7 @@ class TestOutlineGenerationLifecycle:
         mock_llm_client.complete.return_value = LLMResponse(
             content=json.dumps({"title": "Test", "pages": []}),
             model="deepseek-chat",
+            provider="deepseek",
             usage={},
         )
 

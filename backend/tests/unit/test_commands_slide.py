@@ -25,6 +25,7 @@ def mock_slide_repository():
     repo.update = AsyncMock()
     repo.delete = AsyncMock()
     repo.get_by_id = AsyncMock()
+    repo.reorder_slides = AsyncMock()
     return repo
 
 

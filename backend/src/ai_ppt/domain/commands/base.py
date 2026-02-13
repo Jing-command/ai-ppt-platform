@@ -200,6 +200,20 @@ class CommandFactory(ABC):
         cls._registry[command_type] = command_class
 
     @classmethod
+    def unregister(cls, command_type: str) -> None:
+        """
+        注销命令类型
+
+        Args:
+            command_type: 命令类型标识
+
+        Note:
+            如果命令类型不存在，则静默忽略
+        """
+        if command_type in cls._registry:
+            del cls._registry[command_type]
+
+    @classmethod
     def create(cls, data: Dict[str, Any]) -> Command:
         """
         创建命令实例

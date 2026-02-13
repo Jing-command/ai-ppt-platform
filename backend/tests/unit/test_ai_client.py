@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
 import pytest
+from jinja2 import Environment
 
 from ai_ppt.infrastructure.ai.client import (
     LLMAPIError,
@@ -259,9 +260,13 @@ class TestLLMClient:
                 "data: [DONE]",
             ]
 
+            async def mock_aiter_lines():
+                for line in sse_lines:
+                    yield line
+
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.aiter_lines = AsyncMock(return_value=async_iterator(sse_lines))
+            mock_response.aiter_lines = mock_aiter_lines
 
             mock_client = MagicMock()
             mock_client.stream = MagicMock(return_value=async_context_manager(mock_response))
@@ -467,19 +472,22 @@ class TestLLMClientEdgeCases:
 
     def test_default_models(self):
         """测试默认模型"""
-        client = LLMClient(
-            provider=LLMProvider.OPENAI,
-            api_key="key",
-        )
+        with patch('ai_ppt.infrastructure.ai.client.settings') as mock_settings:
+            mock_settings.ai.model = None
 
-        assert client.model == "gpt-4"
+            client = LLMClient(
+                provider=LLMProvider.OPENAI,
+                api_key="key",
+            )
 
-        client2 = LLMClient(
-            provider=LLMProvider.KIMI,
-            api_key="key",
-        )
+            assert client.model == "gpt-4"
 
-        assert client2.model == "moonshot-v1-8k"
+            client2 = LLMClient(
+                provider=LLMProvider.KIMI,
+                api_key="key",
+            )
+
+            assert client2.model == "moonshot-v1-8k"
 
     def test_default_base_urls(self):
         """测试默认基础 URL"""
