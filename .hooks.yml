@@ -1,0 +1,88 @@
+version: "1.0"
+
+hooks:
+  on_session_start:
+    enabled: true
+    description: "新会话开始时自动加载项目上下文"
+    auto_load:
+      - PROJECT_STATE.md
+      - task-queue.md
+      - API_CONTRACT.md
+    priority: high
+    max_tokens: 4000
+    
+  on_task_complete:
+    enabled: true
+    description: "任务完成时自动更新状态"
+    auto_update:
+      - task-queue.md
+      - PROJECT_STATE.md
+    notify: true
+    generate_commit_msg: true
+    
+  on_ci_complete:
+    enabled: true
+    description: "CI/CD 完成时处理结果"
+    auto_fix: false
+    notify_on_failure: true
+    create_repair_task: true
+    
+  on_error:
+    enabled: true
+    description: "错误发生时记录和恢复"
+    save_context: true
+    max_recovery_files: 5
+    notify: true
+
+# 上下文加载配置
+context:
+  project_root: "."
+  max_files: 5
+  max_tokens: 4000
+  encoding: "utf-8"
+  order:  # 加载顺序（重要程度递减）
+    - PROJECT_STATE.md
+    - task-queue.md
+    - API_CONTRACT.md
+    - decisions.md
+    - memory/latest.md
+
+# 文件匹配模式
+patterns:
+  state_files:
+    - "PROJECT_STATE.md"
+    - "task-queue.md"
+    - "API_CONTRACT.md"
+  decision_files:
+    - "decisions.md"
+    - "memory/*.md"
+  ignore:
+    - "*.tmp"
+    - "*.log"
+    - "node_modules/"
+    - "__pycache__/"
+
+# Sub-agent 配置
+subagent:
+  model: "kimi-coding/k2p5"
+  timeout_seconds: 600
+  max_concurrent: 3
+  retry_on_failure: true
+  max_retries: 2
+
+# 通知配置
+notifications:
+  enabled: false
+  channels:
+    - type: "telegram"
+      target: "6390415118"
+    - type: "console"
+      level: "info"
+
+# 日志配置
+logging:
+  enabled: true
+  file: "memory/hooks.log"
+  level: "info"  # debug, info, warn, error
+  max_size_mb: 10
+  max_files: 5
