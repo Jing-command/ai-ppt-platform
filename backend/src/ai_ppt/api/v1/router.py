@@ -8,6 +8,7 @@ from fastapi import APIRouter
 from ai_ppt.api.v1.endpoints import (
     auth,
     connectors,
+    dashboard,
     exports,
     outlines,
     presentations,
@@ -20,6 +21,7 @@ router = APIRouter(prefix="/api/v1")
 # 注册子路由
 router.include_router(auth.router)
 router.include_router(connectors.router)
+router.include_router(dashboard.router)
 router.include_router(outlines.router)
 router.include_router(presentations.router)
 # slides router 已包含在 presentations 路径下，不需要单独注册

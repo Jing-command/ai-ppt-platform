@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { getUser, clearAuthData, isAuthenticated } from '@/lib/api/auth';
+import { getDashboardStats, DashboardStats, RecentActivity } from '@/lib/api/dashboard';
 import { User } from '@/types/auth';
 import {
   FileText,
@@ -23,6 +24,8 @@ import {
   Palette,
   Plug,
   MoreHorizontal,
+  RefreshCw,
+  AlertCircle,
 } from 'lucide-react';
 
 // 动画变体配置
@@ -73,6 +76,77 @@ function AnimatedNumber({ value, duration = 2 }: { value: number; duration?: num
   return <span>{displayValue}</span>;
 }
 
+// 统计卡片骨架屏
+function StatCardSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-lg shadow-gray-200/50 border border-gray-100 animate-pulse">
+      <div className="w-12 h-12 rounded-xl bg-gray-200 mb-4" />
+      <div className="h-4 w-20 bg-gray-200 rounded mb-2" />
+      <div className="h-8 w-16 bg-gray-200 rounded" />
+    </div>
+  );
+}
+
+// 最近活动项
+function ActivityItem({ activity, index }: { activity: RecentActivity; index: number }) {
+  const getActivityHref = () => {
+    return activity.type === 'outline' 
+      ? `/outlines/${activity.id}` 
+      : `/presentations/${activity.id}`;
+  };
+
+  const getStatusText = () => {
+    const statusMap: Record<string, string> = {
+      completed: '已完成',
+      draft: '草稿',
+      published: '已发布',
+      generating: '生成中',
+      archived: '已归档',
+    };
+    return statusMap[activity.status] || activity.status;
+  };
+
+  const isCompleted = activity.status === 'completed' || activity.status === 'published';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.5 + index * 0.1 }}
+      className="group flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
+    >
+      <Link href={getActivityHref()} className="flex items-center gap-4 flex-1">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+          activity.type === 'outline'
+            ? 'bg-blue-50 text-blue-600'
+            : 'bg-purple-50 text-purple-600'
+        }`}>
+          {activity.type === 'outline' ? (
+            <FileText className="w-5 h-5" />
+          ) : (
+            <Layers className="w-5 h-5" />
+          )}
+        </div>
+        <div>
+          <h4 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+            {activity.title}
+          </h4>
+          <div className="flex items-center gap-2 mt-0.5">
+            <span className="text-xs text-gray-500">{activity.updatedAt}</span>
+            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <span className={`text-xs ${
+              isCompleted ? 'text-green-600' : 'text-amber-600'
+            }`}>
+              {getStatusText()}
+            </span>
+          </div>
+        </div>
+      </Link>
+      <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+    </motion.div>
+  );
+}
+
 // 获取个性化问候语
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -91,38 +165,8 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // 模拟统计数据（后续可对接真实 API）
-  const stats = [
-    {
-      label: '总大纲数',
-      value: 24,
-      icon: FileText,
-      gradient: 'from-blue-500 to-indigo-600',
-      bgGradient: 'from-blue-50 to-indigo-50',
-    },
-    {
-      label: '本周创建',
-      value: 5,
-      icon: TrendingUp,
-      gradient: 'from-emerald-500 to-teal-600',
-      bgGradient: 'from-emerald-50 to-teal-50',
-    },
-    {
-      label: '已完成PPT',
-      value: 12,
-      icon: Target,
-      gradient: 'from-purple-500 to-pink-600',
-      bgGradient: 'from-purple-50 to-pink-50',
-    },
-    {
-      label: '最近编辑',
-      value: 3,
-      icon: Clock,
-      gradient: 'from-orange-500 to-amber-600',
-      bgGradient: 'from-orange-50 to-amber-50',
-    },
-  ];
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // 快捷操作配置
   const quickActions = [
@@ -160,31 +204,6 @@ export default function DashboardPage() {
     },
   ];
 
-  // 最近活动模拟数据
-  const recentActivities = [
-    {
-      id: 1,
-      title: 'Q4 季度工作总结',
-      type: 'outline',
-      status: 'completed',
-      updatedAt: '2小时前',
-    },
-    {
-      id: 2,
-      title: '产品发布会策划',
-      type: 'ppt',
-      status: 'draft',
-      updatedAt: '昨天',
-    },
-    {
-      id: 3,
-      title: '团队年度培训计划',
-      type: 'outline',
-      status: 'completed',
-      updatedAt: '3天前',
-    },
-  ];
-
   // 使用技巧
   const tips = [
     {
@@ -210,6 +229,50 @@ export default function DashboardPage() {
     },
   ];
 
+  // 统计数据配置（图标和样式）
+  const statsConfig = [
+    {
+      label: '总大纲数',
+      key: 'totalOutlines' as const,
+      icon: FileText,
+      gradient: 'from-blue-500 to-indigo-600',
+      bgGradient: 'from-blue-50 to-indigo-50',
+    },
+    {
+      label: '本周创建',
+      key: 'createdThisWeek' as const,
+      icon: TrendingUp,
+      gradient: 'from-emerald-500 to-teal-600',
+      bgGradient: 'from-emerald-50 to-teal-50',
+    },
+    {
+      label: '已完成PPT',
+      key: 'completedPpts' as const,
+      icon: Target,
+      gradient: 'from-purple-500 to-pink-600',
+      bgGradient: 'from-purple-50 to-pink-50',
+    },
+    {
+      label: '最近编辑',
+      key: 'recentEdits' as const,
+      icon: Clock,
+      gradient: 'from-orange-500 to-amber-600',
+      bgGradient: 'from-orange-50 to-amber-50',
+    },
+  ];
+
+  // 获取 Dashboard 数据
+  const fetchDashboardData = async () => {
+    try {
+      setError(null);
+      const data = await getDashboardStats();
+      setStats(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '获取数据失败');
+      console.error('获取 Dashboard 数据失败:', err);
+    }
+  };
+
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push('/login');
@@ -219,11 +282,18 @@ export default function DashboardPage() {
     const currentUser = getUser();
     setUser(currentUser);
     setIsLoading(false);
+
+    // 获取 Dashboard 数据
+    fetchDashboardData();
   }, [router]);
 
   const handleLogout = () => {
     clearAuthData();
     router.push('/login');
+  };
+
+  const handleRetry = () => {
+    fetchDashboardData();
   };
 
   if (isLoading) {
@@ -353,33 +423,66 @@ export default function DashboardPage() {
 
           {/* 统计卡片区域 */}
           <motion.section variants={itemVariants} className="mb-10">
+            {/* 错误提示 */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-500" />
+                  <span className="text-sm text-red-700">{error}</span>
+                </div>
+                <button
+                  onClick={handleRetry}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-100 rounded-lg transition-colors"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  重试
+                </button>
+              </motion.div>
+            )}
+
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + index * 0.1 }}
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    className="group relative bg-white rounded-2xl p-5 sm:p-6 shadow-lg shadow-gray-200/50 border border-gray-100 hover:shadow-xl hover:border-gray-200 transition-all duration-300"
-                  >
-                    {/* 渐变背景装饰 */}
-                    <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${stat.bgGradient} rounded-bl-full opacity-50 group-hover:opacity-80 transition-opacity`} />
-                    
-                    <div className="relative">
-                      <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
-                        <Icon className="w-6 h-6 text-white" />
+              {!stats ? (
+                // 骨架屏加载状态
+                <>
+                  <StatCardSkeleton />
+                  <StatCardSkeleton />
+                  <StatCardSkeleton />
+                  <StatCardSkeleton />
+                </>
+              ) : (
+                // 真实数据展示
+                statsConfig.map((stat, index) => {
+                  const Icon = stat.icon;
+                  const value = stats[stat.key];
+                  return (
+                    <motion.div
+                      key={stat.key}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 + index * 0.1 }}
+                      whileHover={{ y: -4, scale: 1.02 }}
+                      className="group relative bg-white rounded-2xl p-5 sm:p-6 shadow-lg shadow-gray-200/50 border border-gray-100 hover:shadow-xl hover:border-gray-200 transition-all duration-300"
+                    >
+                      {/* 渐变背景装饰 */}
+                      <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${stat.bgGradient} rounded-bl-full opacity-50 group-hover:opacity-80 transition-opacity`} />
+                      
+                      <div className="relative">
+                        <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+                        <p className="text-sm text-gray-500 mb-1">{stat.label}</p>
+                        <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                          <AnimatedNumber value={value} />
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-500 mb-1">{stat.label}</p>
-                      <p className="text-2xl sm:text-3xl font-bold text-gray-900">
-                        <AnimatedNumber value={stat.value} />
-                      </p>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    </motion.div>
+                  );
+                })
+              )}
             </div>
           </motion.section>
 
@@ -478,47 +581,23 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="p-2">
-                  {recentActivities.length > 0 ? (
-                    <div className="divide-y divide-gray-50">
-                      {recentActivities.map((activity, index) => (
-                        <motion.div
-                          key={activity.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.5 + index * 0.1 }}
-                          className="group flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                              activity.type === 'outline'
-                                ? 'bg-blue-50 text-blue-600'
-                                : 'bg-purple-50 text-purple-600'
-                            }`}>
-                              {activity.type === 'outline' ? (
-                                <FileText className="w-5 h-5" />
-                              ) : (
-                                <Layers className="w-5 h-5" />
-                              )}
-                            </div>
-                            <div>
-                              <h4 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
-                                {activity.title}
-                              </h4>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-xs text-gray-500">{activity.updatedAt}</span>
-                                <span className="w-1 h-1 rounded-full bg-gray-300" />
-                                <span className={`text-xs ${
-                                  activity.status === 'completed'
-                                    ? 'text-green-600'
-                                    : 'text-amber-600'
-                                }`}>
-                                  {activity.status === 'completed' ? '已完成' : '草稿'}
-                                </span>
-                              </div>
-                            </div>
+                  {!stats ? (
+                    // 加载骨架屏
+                    <div className="space-y-2 p-2">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="flex items-center gap-4 p-4 animate-pulse">
+                          <div className="w-10 h-10 rounded-xl bg-gray-200" />
+                          <div className="flex-1">
+                            <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
+                            <div className="h-3 w-20 bg-gray-200 rounded" />
                           </div>
-                          <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
-                        </motion.div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : stats.recentActivities.length > 0 ? (
+                    <div className="divide-y divide-gray-50">
+                      {stats.recentActivities.map((activity, index) => (
+                        <ActivityItem key={activity.id} activity={activity} index={index} />
                       ))}
                     </div>
                   ) : (
