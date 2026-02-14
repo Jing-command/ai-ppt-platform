@@ -596,7 +596,7 @@ export default function DashboardPage() {
                     </div>
                   ) : stats.recentActivities.length > 0 ? (
                     <div className="divide-y divide-gray-50">
-                      {stats.recentActivities.map((activity, index) => (
+                      {stats.recentActivities.map((activity: RecentActivity, index: number) => (
                         <ActivityItem key={activity.id} activity={activity} index={index} />
                       ))}
                     </div>
