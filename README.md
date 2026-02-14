@@ -75,13 +75,18 @@
 ### 前端
 | 技术 | 版本 | 用途 |
 |------|------|------|
-| [Next.js](https://nextjs.org/) | 14.2 | React 全栈框架 |
+| [Next.js](https://nextjs.org/) | ^16.1 | React 全栈框架 |
+| [React](https://react.dev/) | ^18.2 | UI 库 |
 | [TypeScript](https://www.typescriptlang.org/) | ^5.4 | 类型安全 |
 | [Tailwind CSS](https://tailwindcss.com/) | ^3.4 | 原子化 CSS |
-| [Dnd Kit](https://dndkit.com/) | ^6.3 | 拖拽排序 |
+| [Dnd Kit](https://dndkit.com/) | ^6.3 / ^10.0 | 拖拽排序 |
 | [Framer Motion](https://www.framer.com/motion/) | ^12.34 | 动画效果 |
 | [React Hook Form](https://react-hook-form.com/) | ^7.51 | 表单管理 |
 | [Zod](https://zod.dev/) | ^3.22 | 数据验证 |
+| [Axios](https://axios-http.com/) | ^1.6 | HTTP 客户端 |
+| [Lucide React](https://lucide.dev/) | ^0.563 | 图标库 |
+| [Husky](https://typicode.github.io/husky/) | ^9.1 | Git hooks |
+| [lint-staged](https://github.com/lint-staged/lint-staged) | ^16.2 | 暂存区 lint |
 
 ---
 
