@@ -1,5 +1,11 @@
+/**
+ * @fileoverview 认证 API 模块
+ * @author Frontend Agent
+ * @date 2026-02-14
+ */
+
 import { apiClient } from './client';
-import { LoginRequest, LoginResponse, User } from '@/types/auth';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } from '@/types/auth';
 
 // localStorage keys
 const TOKEN_KEY = 'accessToken';
@@ -12,6 +18,16 @@ const USER_KEY = 'user';
  */
 export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
+  return response.data;
+}
+
+/**
+ * 用户注册
+ * @param data 注册信息
+ * @returns 注册响应
+ */
+export async function register(data: RegisterRequest): Promise<RegisterResponse> {
+  const response = await apiClient.post<RegisterResponse>('/auth/register', data);
   return response.data;
 }
 
