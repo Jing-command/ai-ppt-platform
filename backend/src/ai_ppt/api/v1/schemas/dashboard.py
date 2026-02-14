@@ -3,9 +3,7 @@ Dashboard Schema - 仪表盘数据模型
 定义 Dashboard 统计数据的请求/响应结构
 """
 
-from datetime import datetime
-from typing import List, Literal, Optional
-from uuid import UUID
+from typing import List, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
