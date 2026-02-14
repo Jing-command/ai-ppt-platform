@@ -4,7 +4,7 @@ Dashboard API - 仪表盘统计接口
 """
 
 from datetime import datetime, timedelta
-from typing import Any, List, Dict
+from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
