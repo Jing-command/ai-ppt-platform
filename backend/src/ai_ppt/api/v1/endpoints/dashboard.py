@@ -4,16 +4,16 @@ Dashboard API - 仪表盘统计接口
 """
 
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, List, Dict
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import func, or_
+from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from ai_ppt.api.deps import get_current_user
 from ai_ppt.api.v1.schemas.common import ErrorResponse
-from ai_ppt.api.v1.schemas.dashboard import DashboardStatsResponse, RecentActivity
+from ai_ppt.api.v1.schemas.dashboard import DashboardStatsResponse
 from ai_ppt.database import get_db
 from ai_ppt.domain.models.outline import Outline
 from ai_ppt.domain.models.presentation import Presentation, PresentationStatus
@@ -192,31 +192,33 @@ async def get_dashboard_stats(
         ppts_result = await db.execute(ppts_query)
 
         # 合并并排序
-        activities = []
+        activities: List[Dict[str, Any]] = []
 
+        # 处理大纲结果
         for row in outlines_result.all():
             activities.append(
                 {
-                    "id": str(row.id),
-                    "title": row.title,
+                    "id": str(row[0]),
+                    "title": row[1],
                     "type": "outline",
-                    "status": row.status,
-                    "updated_at": row.updated_at,
-                    "sort_key": row.updated_at,
+                    "status": str(row[2]),
+                    "updated_at": row[3],
+                    "sort_key": row[3],
                 }
             )
 
-        for row in ppts_result.all():
+        # 处理 PPT 结果
+        for row in ppts_result.all():  # type: ignore[assignment]
             activities.append(
                 {
-                    "id": str(row.id),
-                    "title": row.title,
+                    "id": str(row[0]),
+                    "title": row[1],
                     "type": "ppt",
                     "status": (
-                        row.status.value if hasattr(row.status, "value") else row.status
+                        str(row[2].value) if hasattr(row[2], "value") else str(row[2])
                     ),
-                    "updated_at": row.updated_at,
-                    "sort_key": row.updated_at,
+                    "updated_at": row[3],
+                    "sort_key": row[3],
                 }
             )
 
@@ -224,24 +226,24 @@ async def get_dashboard_stats(
         activities.sort(key=lambda x: x["sort_key"], reverse=True)
         activities = activities[:5]
 
-        # 构建响应
-        recent_activities = [
-            RecentActivity(
-                id=a["id"],
-                title=a["title"],
-                type=a["type"],
-                status=a["status"],
-                updated_at=format_relative_time(a["updated_at"]),
-            )
-            for a in activities
-        ]
-
-        return DashboardStatsResponse(
-            total_outlines=total_outlines,
-            created_this_week=created_this_week,
-            completed_ppts=completed_ppts,
-            recent_edits=recent_edits,
-            recent_activities=recent_activities,
+        # 构建响应 - 使用字典避免 mypy 类型检查问题
+        return DashboardStatsResponse.model_validate(
+            {
+                "totalOutlines": total_outlines,
+                "createdThisWeek": created_this_week,
+                "completedPpts": completed_ppts,
+                "recentEdits": recent_edits,
+                "recentActivities": [
+                    {
+                        "id": a["id"],
+                        "title": a["title"],
+                        "type": a["type"],
+                        "status": a["status"],
+                        "updatedAt": format_relative_time(a["updated_at"]),
+                    }
+                    for a in activities
+                ],
+            }
         )
 
     except Exception as e:
