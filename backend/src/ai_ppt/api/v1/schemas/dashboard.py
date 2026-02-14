@@ -18,10 +18,12 @@ class RecentActivity(BaseModel):
     id: str = Field(..., description="活动项 ID")
     title: str = Field(..., description="标题")
     type: Literal["outline", "ppt"] = Field(..., description="类型: outline 或 ppt")
-    status: Literal["completed", "draft", "published", "generating", "archived"] = Field(
-        ..., description="状态"
+    status: Literal["completed", "draft", "published", "generating", "archived"] = (
+        Field(..., description="状态")
     )
-    updated_at: str = Field(..., alias="updatedAt", description="更新时间（人性化格式）")
+    updated_at: str = Field(
+        ..., alias="updatedAt", description="更新时间（人性化格式）"
+    )
 
 
 class DashboardStatsResponse(BaseModel):

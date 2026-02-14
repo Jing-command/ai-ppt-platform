@@ -122,7 +122,9 @@ async def get_dashboard_stats(
         ppts_this_week_result = await db.execute(
             select(func.count())
             .select_from(Presentation)
-            .where(Presentation.owner_id == user_id, Presentation.created_at >= week_start)
+            .where(
+                Presentation.owner_id == user_id, Presentation.created_at >= week_start
+            )
         )
         ppts_this_week = ppts_this_week_result.scalar() or 0
 
@@ -150,7 +152,10 @@ async def get_dashboard_stats(
         recent_ppts_result = await db.execute(
             select(func.count())
             .select_from(Presentation)
-            .where(Presentation.owner_id == user_id, Presentation.updated_at >= seven_days_ago)
+            .where(
+                Presentation.owner_id == user_id,
+                Presentation.updated_at >= seven_days_ago,
+            )
         )
         recent_ppts = recent_ppts_result.scalar() or 0
 
@@ -207,7 +212,9 @@ async def get_dashboard_stats(
                     "id": str(row.id),
                     "title": row.title,
                     "type": "ppt",
-                    "status": row.status.value if hasattr(row.status, "value") else row.status,
+                    "status": (
+                        row.status.value if hasattr(row.status, "value") else row.status
+                    ),
                     "updated_at": row.updated_at,
                     "sort_key": row.updated_at,
                 }
