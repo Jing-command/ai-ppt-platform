@@ -24,8 +24,12 @@ class TestGetDB:
         mock_session.close = AsyncMock()
 
         with patch("ai_ppt.database.AsyncSessionLocal") as mock_session_local:
-            mock_session_local.return_value.__aenter__ = AsyncMock(return_value=mock_session)
-            mock_session_local.return_value.__aexit__ = AsyncMock(return_value=None)
+            mock_session_local.return_value.__aenter__ = AsyncMock(
+                return_value=mock_session
+            )
+            mock_session_local.return_value.__aexit__ = AsyncMock(
+                return_value=None
+            )
 
             async_gen = get_db()
             session = await anext(async_gen)
@@ -42,8 +46,12 @@ class TestGetDB:
         mock_session.close = AsyncMock()
 
         with patch("ai_ppt.database.AsyncSessionLocal") as mock_session_local:
-            mock_session_local.return_value.__aenter__ = AsyncMock(return_value=mock_session)
-            mock_session_local.return_value.__aexit__ = AsyncMock(return_value=None)
+            mock_session_local.return_value.__aenter__ = AsyncMock(
+                return_value=mock_session
+            )
+            mock_session_local.return_value.__aexit__ = AsyncMock(
+                return_value=None
+            )
 
             async_gen = get_db()
             session = await anext(async_gen)
@@ -53,7 +61,6 @@ class TestGetDB:
                 await async_gen.aclose()
             except:
                 pass
-
 
     @pytest.mark.asyncio
     async def test_get_db_rollbacks_on_exception(self):
@@ -65,8 +72,12 @@ class TestGetDB:
         mock_session.close = AsyncMock()
 
         with patch("ai_ppt.database.AsyncSessionLocal") as mock_session_local:
-            mock_session_local.return_value.__aenter__ = AsyncMock(return_value=mock_session)
-            mock_session_local.return_value.__aexit__ = AsyncMock(return_value=None)
+            mock_session_local.return_value.__aenter__ = AsyncMock(
+                return_value=mock_session
+            )
+            mock_session_local.return_value.__aexit__ = AsyncMock(
+                return_value=None
+            )
 
             async_gen = get_db()
             session = await anext(async_gen)
@@ -93,11 +104,15 @@ class TestInitDB:
 
         mock_engine = AsyncMock()
         mock_engine.begin = MagicMock()
-        mock_engine.begin.return_value.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_engine.begin.return_value.__aenter__ = AsyncMock(
+            return_value=mock_conn
+        )
         mock_engine.begin.return_value.__aexit__ = AsyncMock(return_value=None)
 
         with patch("ai_ppt.database.engine", mock_engine):
-            with patch("ai_ppt.database.Base.metadata.create_all") as mock_create_all:
+            with patch(
+                "ai_ppt.database.Base.metadata.create_all"
+            ) as mock_create_all:
                 await init_db()
                 # run_sync 应该被调用
                 assert mock_conn.run_sync.called
@@ -128,7 +143,9 @@ class TestEngineConfiguration:
             mock_settings.DATABASE_URL = "sqlite+aiosqlite:///test.db"
             mock_settings.DEBUG = False
 
-            with patch("ai_ppt.database.create_async_engine") as mock_create_engine:
+            with patch(
+                "ai_ppt.database.create_async_engine"
+            ) as mock_create_engine:
                 mock_engine = MagicMock()
                 mock_create_engine.return_value = mock_engine
 
@@ -143,12 +160,16 @@ class TestEngineConfiguration:
     def test_postgres_engine_configuration(self):
         """测试 PostgreSQL 引擎配置"""
         with patch("ai_ppt.database.settings") as mock_settings:
-            mock_settings.DATABASE_URL = "postgresql+asyncpg://user:pass@localhost/db"
+            mock_settings.DATABASE_URL = (
+                "postgresql+asyncpg://user:pass@localhost/db"
+            )
             mock_settings.DATABASE_POOL_SIZE = 5
             mock_settings.DATABASE_MAX_OVERFLOW = 10
             mock_settings.DEBUG = False
 
-            with patch("ai_ppt.database.create_async_engine") as mock_create_engine:
+            with patch(
+                "ai_ppt.database.create_async_engine"
+            ) as mock_create_engine:
                 mock_engine = MagicMock()
                 mock_create_engine.return_value = mock_engine
 

@@ -35,12 +35,24 @@ class TestConnectorFactory:
             """测试注册新连接器类型"""
 
             class MockConnector(DataConnector):
-                async def connect(self): pass
-                async def disconnect(self): pass
-                async def test_connection(self): return True
-                async def get_schema(self): return []
-                async def query(self, query, params=None, limit=None): return []
-                async def query_stream(self, query, params=None, batch_size=1000):
+                async def connect(self):
+                    pass
+
+                async def disconnect(self):
+                    pass
+
+                async def test_connection(self):
+                    return True
+
+                async def get_schema(self):
+                    return []
+
+                async def query(self, query, params=None, limit=None):
+                    return []
+
+                async def query_stream(
+                    self, query, params=None, batch_size=1000
+                ):
                     return
                     yield
 
@@ -53,22 +65,46 @@ class TestConnectorFactory:
             """测试覆盖注册"""
 
             class MockConnector1(DataConnector):
-                async def connect(self): pass
-                async def disconnect(self): pass
-                async def test_connection(self): return True
-                async def get_schema(self): return []
-                async def query(self, query, params=None, limit=None): return []
-                async def query_stream(self, query, params=None, batch_size=1000):
+                async def connect(self):
+                    pass
+
+                async def disconnect(self):
+                    pass
+
+                async def test_connection(self):
+                    return True
+
+                async def get_schema(self):
+                    return []
+
+                async def query(self, query, params=None, limit=None):
+                    return []
+
+                async def query_stream(
+                    self, query, params=None, batch_size=1000
+                ):
                     return
                     yield
 
             class MockConnector2(DataConnector):
-                async def connect(self): pass
-                async def disconnect(self): pass
-                async def test_connection(self): return True
-                async def get_schema(self): return []
-                async def query(self, query, params=None, limit=None): return []
-                async def query_stream(self, query, params=None, batch_size=1000):
+                async def connect(self):
+                    pass
+
+                async def disconnect(self):
+                    pass
+
+                async def test_connection(self):
+                    return True
+
+                async def get_schema(self):
+                    return []
+
+                async def query(self, query, params=None, limit=None):
+                    return []
+
+                async def query_stream(
+                    self, query, params=None, batch_size=1000
+                ):
                     return
                     yield
 
@@ -84,12 +120,24 @@ class TestConnectorFactory:
             """测试注销存在的连接器类型"""
 
             class MockConnector(DataConnector):
-                async def connect(self): pass
-                async def disconnect(self): pass
-                async def test_connection(self): return True
-                async def get_schema(self): return []
-                async def query(self, query, params=None, limit=None): return []
-                async def query_stream(self, query, params=None, batch_size=1000):
+                async def connect(self):
+                    pass
+
+                async def disconnect(self):
+                    pass
+
+                async def test_connection(self):
+                    return True
+
+                async def get_schema(self):
+                    return []
+
+                async def query(self, query, params=None, limit=None):
+                    return []
+
+                async def query_stream(
+                    self, query, params=None, batch_size=1000
+                ):
                     return
                     yield
 
@@ -214,7 +262,9 @@ class TestConnectorFactory:
 
         def test_create_postgresql_not_implemented(self):
             """测试创建未实现的 PostgreSQL 连接器"""
-            with pytest.raises(NotImplementedError, match="not yet implemented"):
+            with pytest.raises(
+                NotImplementedError, match="not yet implemented"
+            ):
                 ConnectorFactory.create_connector(
                     connector_type=ConnectorType.POSTGRESQL,
                     config_id="pg-1",
@@ -234,7 +284,9 @@ class TestConnectorFactory:
                 "database": "test",
             }
 
-            with patch.object(MySQLConnector, 'connect', new_callable=AsyncMock) as mock_connect:
+            with patch.object(
+                MySQLConnector, "connect", new_callable=AsyncMock
+            ) as mock_connect:
                 connector = await ConnectorFactory.create_and_connect(
                     connector_type=ConnectorType.MYSQL,
                     config_id="mysql-1",

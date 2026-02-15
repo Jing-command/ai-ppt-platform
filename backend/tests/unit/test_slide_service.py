@@ -8,8 +8,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from ai_ppt.application.services.presentation_service import PresentationNotFoundError
-from ai_ppt.application.services.slide_service import SlideService, UndoRedoError
+from ai_ppt.application.services.presentation_service import (
+    PresentationNotFoundError,
+)
+from ai_ppt.application.services.slide_service import (
+    SlideService,
+    UndoRedoError,
+)
 from ai_ppt.domain.commands.slide_commands import UpdateSlideCommand
 from ai_ppt.domain.models.slide import Slide, SlideLayoutType
 
@@ -66,7 +71,12 @@ class TestSlideServiceUpdateSlide:
     """测试更新幻灯片"""
 
     async def test_update_slide_success(
-        self, slide_service, mock_db_session, mock_slide_repo, sample_presentation, sample_slide
+        self,
+        slide_service,
+        mock_db_session,
+        mock_slide_repo,
+        sample_presentation,
+        sample_slide,
     ):
         """测试成功更新幻灯片"""
         ppt_id = uuid.uuid4()
@@ -92,7 +102,11 @@ class TestSlideServiceUpdateSlide:
         mock_update.assert_called_once()
 
     async def test_update_slide_creates_command(
-        self, slide_service, mock_db_session, mock_slide_repo, sample_presentation
+        self,
+        slide_service,
+        mock_db_session,
+        mock_slide_repo,
+        sample_presentation,
     ):
         """测试更新创建命令"""
         ppt_id = uuid.uuid4()
@@ -133,7 +147,11 @@ class TestSlideServiceUndo:
     """测试撤销操作"""
 
     async def test_undo_success(
-        self, slide_service, mock_db_session, mock_slide_repo, sample_presentation
+        self,
+        slide_service,
+        mock_db_session,
+        mock_slide_repo,
+        sample_presentation,
     ):
         """测试成功撤销"""
         ppt_id = sample_presentation.id
@@ -151,7 +169,7 @@ class TestSlideServiceUndo:
         mock_command.undo = AsyncMock()
         mock_command.mark_executed = MagicMock()
         mock_command.mark_undone = MagicMock()
-        
+
         await history.execute(mock_command)
 
         # 模拟仓储返回
@@ -164,7 +182,9 @@ class TestSlideServiceUndo:
             content={},
         )
 
-        with patch.object(slide_service._presentation_service, "get_by_id_or_raise"):
+        with patch.object(
+            slide_service._presentation_service, "get_by_id_or_raise"
+        ):
             result = await slide_service.undo(ppt_id, slide_id, user_id)
 
         assert result["success"] is True
@@ -176,13 +196,17 @@ class TestSlideServiceUndo:
         slide_id = uuid.uuid4()
         user_id = uuid.uuid4()
 
-        with patch.object(slide_service._presentation_service, "get_by_id_or_raise"):
+        with patch.object(
+            slide_service._presentation_service, "get_by_id_or_raise"
+        ):
             with pytest.raises(UndoRedoError) as exc_info:
                 await slide_service.undo(ppt_id, slide_id, user_id)
 
             assert "没有可撤销" in str(exc_info.value)
 
-    async def test_undo_presentation_not_found(self, slide_service, mock_db_session):
+    async def test_undo_presentation_not_found(
+        self, slide_service, mock_db_session
+    ):
         """测试演示文稿不存在时撤销"""
         with patch.object(
             slide_service._presentation_service, "get_by_id_or_raise"
@@ -190,14 +214,20 @@ class TestSlideServiceUndo:
             mock_get.side_effect = PresentationNotFoundError("Not found")
 
             with pytest.raises(PresentationNotFoundError):
-                await slide_service.undo(uuid.uuid4(), uuid.uuid4(), uuid.uuid4())
+                await slide_service.undo(
+                    uuid.uuid4(), uuid.uuid4(), uuid.uuid4()
+                )
 
 
 class TestSlideServiceRedo:
     """测试重做操作"""
 
     async def test_redo_success(
-        self, slide_service, mock_db_session, mock_slide_repo, sample_presentation
+        self,
+        slide_service,
+        mock_db_session,
+        mock_slide_repo,
+        sample_presentation,
     ):
         """测试成功重做"""
         ppt_id = sample_presentation.id
@@ -215,7 +245,7 @@ class TestSlideServiceRedo:
         mock_command.undo = AsyncMock()
         mock_command.mark_executed = MagicMock()
         mock_command.mark_undone = MagicMock()
-        
+
         await history.execute(mock_command)
         await history.undo()
 
@@ -229,7 +259,9 @@ class TestSlideServiceRedo:
             content={},
         )
 
-        with patch.object(slide_service._presentation_service, "get_by_id_or_raise"):
+        with patch.object(
+            slide_service._presentation_service, "get_by_id_or_raise"
+        ):
             result = await slide_service.redo(ppt_id, slide_id, user_id)
 
         assert result["success"] is True
@@ -241,7 +273,9 @@ class TestSlideServiceRedo:
         slide_id = uuid.uuid4()
         user_id = uuid.uuid4()
 
-        with patch.object(slide_service._presentation_service, "get_by_id_or_raise"):
+        with patch.object(
+            slide_service._presentation_service, "get_by_id_or_raise"
+        ):
             with pytest.raises(UndoRedoError) as exc_info:
                 await slide_service.redo(ppt_id, slide_id, user_id)
 

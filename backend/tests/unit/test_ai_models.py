@@ -229,7 +229,10 @@ class TestSlideEnhancementResult:
             suggestions=["Better formatting", "Clearer language"],
         )
 
-        assert result.content == {"title": "Enhanced Title", "body": "Enhanced body"}
+        assert result.content == {
+            "title": "Enhanced Title",
+            "body": "Enhanced body",
+        }
         assert result.changes_summary == "Improved formatting"
         assert result.suggestions == ["Better formatting", "Clearer language"]
 

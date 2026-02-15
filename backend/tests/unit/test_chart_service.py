@@ -23,7 +23,6 @@ from ai_ppt.api.v1.schemas.chart import (
 )
 from ai_ppt.services.chart_service import chart_service
 
-
 # ==================== 测试数据 ====================
 
 
@@ -131,7 +130,9 @@ class TestAnalyzeData:
         - 正确统计空值数量
         """
         # 创建请求
-        request = DataAnalyzeRequest(data=sample_data_with_nulls, sample_size=100)
+        request = DataAnalyzeRequest(
+            data=sample_data_with_nulls, sample_size=100
+        )
 
         # 执行分析
         result = chart_service.analyze_data(request)
@@ -152,7 +153,9 @@ class TestAnalyzeData:
         - 建议中包含维度字段缺失警告
         """
         # 创建请求
-        request = DataAnalyzeRequest(data=sample_data_numeric_only, sample_size=100)
+        request = DataAnalyzeRequest(
+            data=sample_data_numeric_only, sample_size=100
+        )
 
         # 执行分析
         result = chart_service.analyze_data(request)
@@ -174,7 +177,9 @@ class TestAnalyzeData:
         - 建议中包含度量字段缺失警告
         """
         # 创建请求
-        request = DataAnalyzeRequest(data=sample_data_string_only, sample_size=100)
+        request = DataAnalyzeRequest(
+            data=sample_data_string_only, sample_size=100
+        )
 
         # 执行分析
         result = chart_service.analyze_data(request)
@@ -196,7 +201,9 @@ class TestAnalyzeData:
         - 日期字段被识别为维度字段
         """
         # 创建请求
-        request = DataAnalyzeRequest(data=sample_data_date_fields, sample_size=100)
+        request = DataAnalyzeRequest(
+            data=sample_data_date_fields, sample_size=100
+        )
 
         # 执行分析
         result = chart_service.analyze_data(request)
@@ -297,7 +304,9 @@ class TestGenerateChart:
         - ECharts 配置正确
         """
         # 创建字段映射 - 饼图使用 name_field 和 value_field
-        field_mapping = FieldMapping(name_field="category", value_field="value")
+        field_mapping = FieldMapping(
+            name_field="category", value_field="value"
+        )
 
         # 生成图表
         result = chart_service.generate_chart(
@@ -509,7 +518,9 @@ class TestRecommendCharts:
         - 推荐包含柱状图
         """
         # 创建请求
-        request = ChartRecommendRequest(data=sample_data_basic, max_recommendations=5)
+        request = ChartRecommendRequest(
+            data=sample_data_basic, max_recommendations=5
+        )
 
         # 执行推荐
         result = chart_service.recommend_charts(request)
@@ -528,7 +539,9 @@ class TestRecommendCharts:
         - 推荐包含折线图
         """
         # 创建请求
-        request = ChartRecommendRequest(data=sample_data_date_fields, max_recommendations=5)
+        request = ChartRecommendRequest(
+            data=sample_data_date_fields, max_recommendations=5
+        )
 
         # 执行推荐
         result = chart_service.recommend_charts(request)
@@ -547,7 +560,9 @@ class TestRecommendCharts:
         - 推荐包含散点图
         """
         # 创建请求
-        request = ChartRecommendRequest(data=sample_data_numeric_only, max_recommendations=5)
+        request = ChartRecommendRequest(
+            data=sample_data_numeric_only, max_recommendations=5
+        )
 
         # 执行推荐
         result = chart_service.recommend_charts(request)
@@ -566,7 +581,9 @@ class TestRecommendCharts:
         - 返回的推荐数量不超过限制
         """
         # 创建请求 - 限制为 2 个推荐
-        request = ChartRecommendRequest(data=sample_data_basic, max_recommendations=2)
+        request = ChartRecommendRequest(
+            data=sample_data_basic, max_recommendations=2
+        )
 
         # 执行推荐
         result = chart_service.recommend_charts(request)
@@ -582,7 +599,9 @@ class TestRecommendCharts:
         - 推荐按置信度降序排列
         """
         # 创建请求
-        request = ChartRecommendRequest(data=sample_data_basic, max_recommendations=5)
+        request = ChartRecommendRequest(
+            data=sample_data_basic, max_recommendations=5
+        )
 
         # 执行推荐
         result = chart_service.recommend_charts(request)
@@ -601,7 +620,9 @@ class TestRecommendCharts:
         - 每个推荐包含字段映射建议
         """
         # 创建请求
-        request = ChartRecommendRequest(data=sample_data_basic, max_recommendations=3)
+        request = ChartRecommendRequest(
+            data=sample_data_basic, max_recommendations=3
+        )
 
         # 执行推荐
         result = chart_service.recommend_charts(request)
@@ -684,7 +705,7 @@ class TestEdgeCases:
         special_data = [
             {"category": "类别<特殊>", "value": 100},
             {"category": "类别&符号", "value": 200},
-            {"category": "类别\"引号", "value": 150},
+            {"category": '类别"引号', "value": 150},
         ]
 
         # 创建字段映射

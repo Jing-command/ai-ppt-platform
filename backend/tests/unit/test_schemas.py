@@ -89,7 +89,9 @@ class TestAuthSchemas:
     def test_register_request_password_too_short(self):
         """测试密码太短"""
         with pytest.raises(ValidationError):
-            RegisterRequest(email="test@example.com", password="123", name="Test")
+            RegisterRequest(
+                email="test@example.com", password="123", name="Test"
+            )
 
     def test_register_request_name_too_long(self):
         """测试名称太长"""
@@ -419,7 +421,11 @@ class TestPresentationSchemas:
 
     def test_slide_layout_valid(self):
         """测试有效的幻灯片布局"""
-        data = {"type": "title_content", "background": "blue", "theme": "modern"}
+        data = {
+            "type": "title_content",
+            "background": "blue",
+            "theme": "modern",
+        }
         layout = SlideLayout(**data)
         assert layout.type == "title_content"
 

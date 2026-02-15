@@ -34,7 +34,9 @@ class TestConfigSecurity:
             pytest.skip("JWT_SECRET_KEY already set in environment")
 
         # 清除 JWT_SECRET_KEY 环境变量和 .env 文件影响
-        env_without_jwt = {k: v for k, v in os.environ.items() if k != "JWT_SECRET_KEY"}
+        env_without_jwt = {
+            k: v for k, v in os.environ.items() if k != "JWT_SECRET_KEY"
+        }
 
         with patch.dict(os.environ, env_without_jwt, clear=True):
             from pydantic import ValidationError
@@ -103,7 +105,9 @@ class TestJWTFunctions:
 
         user_id = uuid4()
         # 创建已经过期的令牌
-        token = create_access_token(user_id, expires_delta=timedelta(seconds=-1))
+        token = create_access_token(
+            user_id, expires_delta=timedelta(seconds=-1)
+        )
 
         decoded_user_id, error = decode_token(token)
 
@@ -129,7 +133,9 @@ class TestJWTFunctions:
         refresh_token = create_refresh_token(user_id)
 
         # 使用 access 类型解码 refresh 令牌
-        decoded_user_id, error = decode_token(refresh_token, expected_type="access")
+        decoded_user_id, error = decode_token(
+            refresh_token, expected_type="access"
+        )
 
         assert decoded_user_id is None
         assert "type" in error.lower()

@@ -67,7 +67,9 @@ class TestConnectorRepository:
             assert len(result) == 1
             assert result[0] == sample_connector
 
-        async def test_get_by_user_empty_result(self, repository, mock_session):
+        async def test_get_by_user_empty_result(
+            self, repository, mock_session
+        ):
             """测试用户无连接器"""
             user_id = uuid.uuid4()
 
@@ -93,11 +95,15 @@ class TestConnectorRepository:
             mock_result.scalars.return_value = mock_scalars
             mock_session.execute.return_value = mock_result
 
-            result = await repository.get_by_user(user_id, connector_type="mysql")
+            result = await repository.get_by_user(
+                user_id, connector_type="mysql"
+            )
 
             assert len(result) == 1
 
-        async def test_get_by_user_with_pagination(self, repository, mock_session):
+        async def test_get_by_user_with_pagination(
+            self, repository, mock_session
+        ):
             """测试分页参数"""
             user_id = uuid.uuid4()
 
@@ -129,7 +135,9 @@ class TestConnectorRepository:
 
             assert result == sample_connector
 
-        async def test_get_by_user_and_name_not_found(self, repository, mock_session):
+        async def test_get_by_user_and_name_not_found(
+            self, repository, mock_session
+        ):
             """测试获取不存在的连接器"""
             user_id = uuid.uuid4()
             name = "NonExistent"
@@ -157,7 +165,9 @@ class TestConnectorRepository:
 
             assert result == 5
 
-        async def test_count_by_user_with_type_filter(self, repository, mock_session):
+        async def test_count_by_user_with_type_filter(
+            self, repository, mock_session
+        ):
             """测试带类型过滤的统计"""
             user_id = uuid.uuid4()
 
@@ -165,7 +175,9 @@ class TestConnectorRepository:
             mock_result.scalar_one.return_value = 2
             mock_session.execute.return_value = mock_result
 
-            result = await repository.count_by_user(user_id, connector_type="mysql")
+            result = await repository.count_by_user(
+                user_id, connector_type="mysql"
+            )
 
             assert result == 2
 
@@ -220,7 +232,9 @@ class TestConnectorRepository:
             mock_result.scalar_one.return_value = 1
             mock_session.execute.return_value = mock_result
 
-            result = await repository.name_exists(user_id, name, exclude_id=exclude_id)
+            result = await repository.name_exists(
+                user_id, name, exclude_id=exclude_id
+            )
 
             assert result is True
 
@@ -261,7 +275,9 @@ class TestConnectorRepositoryEdgeCases:
         assert repo._session == mock_session
         assert repo._model_class == Connector
 
-    async def test_get_by_user_with_negative_skip(self, repository, mock_session):
+    async def test_get_by_user_with_negative_skip(
+        self, repository, mock_session
+    ):
         """测试负数的 skip 参数"""
         user_id = uuid.uuid4()
 

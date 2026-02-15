@@ -103,7 +103,9 @@ class TestSalesforceConnector:
 
         def test_set_oauth_credentials(self, connector):
             """测试设置 OAuth 凭证"""
-            connector.set_oauth_credentials("client_id_123", "client_secret_456")
+            connector.set_oauth_credentials(
+                "client_id_123", "client_secret_456"
+            )
 
             assert connector._client_id == "client_id_123"
             assert connector._client_secret == "client_secret_456"
@@ -115,16 +117,18 @@ class TestSalesforceConnector:
             """测试成功连接"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "access_token": "test_token",
-                "instance_url": "https://test.salesforce.com",
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "access_token": "test_token",
+                    "instance_url": "https://test.salesforce.com",
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 await connector.connect()
 
                 assert connector.is_connected is True
@@ -134,28 +138,37 @@ class TestSalesforceConnector:
         async def test_connect_http_error(self, connector):
             """测试 HTTP 错误"""
             mock_client = MagicMock()
-            mock_client.post = AsyncMock(side_effect=httpx.HTTPError("Connection failed"))
+            mock_client.post = AsyncMock(
+                side_effect=httpx.HTTPError("Connection failed")
+            )
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
-                with pytest.raises(ConnectionError, match="Failed to authenticate"):
+            with patch("httpx.AsyncClient", return_value=mock_client):
+                with pytest.raises(
+                    ConnectionError, match="Failed to authenticate"
+                ):
                     await connector.connect()
 
         async def test_connect_missing_access_token(self, connector):
             """测试响应中缺少 access_token"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "instance_url": "https://test.salesforce.com",
-                # 缺少 access_token
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "instance_url": "https://test.salesforce.com",
+                    # 缺少 access_token
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
-                with pytest.raises(AuthenticationError, match="Invalid authentication response"):
+            with patch("httpx.AsyncClient", return_value=mock_client):
+                with pytest.raises(
+                    AuthenticationError,
+                    match="Invalid authentication response",
+                ):
                     await connector.connect()
 
     class TestDisconnect:
@@ -165,16 +178,18 @@ class TestSalesforceConnector:
             """测试成功断开"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "access_token": "token",
-                "instance_url": "https://test.salesforce.com",
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "access_token": "token",
+                    "instance_url": "https://test.salesforce.com",
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 await connector.connect()
 
             await connector.disconnect()
@@ -196,17 +211,24 @@ class TestSalesforceConnector:
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
             mock_response.json = MagicMock(return_value={})
-            mock_response.content = b'{}'
+            mock_response.content = b"{}"
 
             mock_client = MagicMock()
-            mock_client.post = AsyncMock(return_value=MagicMock(
-                raise_for_status=MagicMock(),
-                json=MagicMock(return_value={"access_token": "token", "instance_url": "https://test.salesforce.com"})
-            ))
+            mock_client.post = AsyncMock(
+                return_value=MagicMock(
+                    raise_for_status=MagicMock(),
+                    json=MagicMock(
+                        return_value={
+                            "access_token": "token",
+                            "instance_url": "https://test.salesforce.com",
+                        }
+                    ),
+                )
+            )
             mock_client.request = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 await connector.connect()
 
             result = await connector.test_connection()
@@ -226,26 +248,32 @@ class TestSalesforceConnector:
             """测试成功查询"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "access_token": "token",
-                "instance_url": "https://test.salesforce.com",
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "access_token": "token",
+                    "instance_url": "https://test.salesforce.com",
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
-            mock_client.request = AsyncMock(return_value=MagicMock(
-                raise_for_status=MagicMock(),
-                json=MagicMock(return_value={
-                    "records": [
-                        {"Id": "001", "Name": "Test Account"},
-                        {"Id": "002", "Name": "Test Account 2"},
-                    ]
-                }),
-                content=b'{}',
-            ))
+            mock_client.request = AsyncMock(
+                return_value=MagicMock(
+                    raise_for_status=MagicMock(),
+                    json=MagicMock(
+                        return_value={
+                            "records": [
+                                {"Id": "001", "Name": "Test Account"},
+                                {"Id": "002", "Name": "Test Account 2"},
+                            ]
+                        }
+                    ),
+                    content=b"{}",
+                )
+            )
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 await connector.connect()
 
             results = await connector.query("SELECT Id, Name FROM Account")
@@ -258,26 +286,30 @@ class TestSalesforceConnector:
             """测试带参数的查询"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "access_token": "token",
-                "instance_url": "https://test.salesforce.com",
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "access_token": "token",
+                    "instance_url": "https://test.salesforce.com",
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
-            mock_client.request = AsyncMock(return_value=MagicMock(
-                raise_for_status=MagicMock(),
-                json=MagicMock(return_value={"records": []}),
-                content=b'{}',
-            ))
+            mock_client.request = AsyncMock(
+                return_value=MagicMock(
+                    raise_for_status=MagicMock(),
+                    json=MagicMock(return_value={"records": []}),
+                    content=b"{}",
+                )
+            )
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 await connector.connect()
 
             results = await connector.query(
                 "SELECT Id FROM Account WHERE Name = :name",
-                params={"name": "Test"}
+                params={"name": "Test"},
             )
 
             assert results == []
@@ -291,17 +323,21 @@ class TestSalesforceConnector:
             """测试 HTTP 错误"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "access_token": "token",
-                "instance_url": "https://test.salesforce.com",
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "access_token": "token",
+                    "instance_url": "https://test.salesforce.com",
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
-            mock_client.request = AsyncMock(side_effect=httpx.HTTPError("Query failed"))
+            mock_client.request = AsyncMock(
+                side_effect=httpx.HTTPError("Query failed")
+            )
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 await connector.connect()
 
             with pytest.raises(QueryError, match="SOQL query failed"):
@@ -354,4 +390,7 @@ class TestSalesforceConnectorEdgeCases:
     def test_unknown_type_mapping(self):
         """测试未知类型映射"""
         # 未知类型应该映射为 STRING
-        assert SF_TYPE_MAPPING.get("unknown_type", DataType.STRING) == DataType.STRING
+        assert (
+            SF_TYPE_MAPPING.get("unknown_type", DataType.STRING)
+            == DataType.STRING
+        )

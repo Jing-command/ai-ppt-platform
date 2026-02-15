@@ -14,7 +14,9 @@ from httpx import AsyncClient
 class TestOutlineAPI:
     """测试大纲 API 端点"""
 
-    async def test_list_outlines_success(self, client: AsyncClient, authenticated_user):
+    async def test_list_outlines_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功获取大纲列表"""
         from ai_ppt.core.security import create_access_token
 
@@ -36,7 +38,9 @@ class TestOutlineAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_create_outline_success(self, client: AsyncClient, authenticated_user):
+    async def test_create_outline_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功创建大纲"""
         from ai_ppt.core.security import create_access_token
 
@@ -84,7 +88,9 @@ class TestOutlineAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_create_outline_invalid_data(self, client: AsyncClient, authenticated_user):
+    async def test_create_outline_invalid_data(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试创建大纲时提供无效数据"""
         from ai_ppt.core.security import create_access_token
 
@@ -102,7 +108,9 @@ class TestOutlineAPI:
 
         assert response.status_code == 422
 
-    async def test_generate_outline_success(self, client: AsyncClient, authenticated_user):
+    async def test_generate_outline_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试 AI 生成大纲"""
         from ai_ppt.core.security import create_access_token
 
@@ -208,7 +216,9 @@ class TestOutlineAPI:
         assert data["id"] == str(outline_id)
         assert data["title"] == "Test Outline"
 
-    async def test_get_outline_not_found(self, client: AsyncClient, authenticated_user):
+    async def test_get_outline_not_found(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试获取不存在的大纲"""
         from ai_ppt.core.security import create_access_token
 
@@ -223,7 +233,9 @@ class TestOutlineAPI:
         # 应该返回 404
         assert response.status_code in [404, 500]
 
-    async def test_update_outline_success(self, client: AsyncClient, authenticated_user):
+    async def test_update_outline_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功更新大纲"""
         from ai_ppt.core.security import create_access_token
 
@@ -252,7 +264,9 @@ class TestOutlineAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_delete_outline_success(self, client: AsyncClient, authenticated_user):
+    async def test_delete_outline_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功删除大纲"""
         from ai_ppt.core.security import create_access_token
 
@@ -321,7 +335,9 @@ class TestOutlineAPI:
 class TestOutlinePagination:
     """测试大纲分页"""
 
-    async def test_list_outlines_pagination(self, client: AsyncClient, authenticated_user):
+    async def test_list_outlines_pagination(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试大纲分页"""
         from ai_ppt.core.security import create_access_token
 
@@ -336,7 +352,9 @@ class TestOutlinePagination:
         # 验证分页参数被接受
         assert response.status_code in [200, 500]
 
-    async def test_list_outlines_invalid_page(self, client: AsyncClient, authenticated_user):
+    async def test_list_outlines_invalid_page(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试无效的分页参数"""
         from ai_ppt.core.security import create_access_token
 
@@ -372,7 +390,9 @@ class TestOutlinePagination:
 class TestOutlineValidation:
     """测试大纲数据验证"""
 
-    async def test_create_outline_empty_pages(self, client: AsyncClient, authenticated_user):
+    async def test_create_outline_empty_pages(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试创建空页面的大纲"""
         from ai_ppt.core.security import create_access_token
 

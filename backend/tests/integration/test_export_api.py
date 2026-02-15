@@ -13,7 +13,9 @@ from httpx import AsyncClient
 class TestExportAPI:
     """测试导出 API 端点"""
 
-    async def test_export_pptx_success(self, client: AsyncClient, authenticated_user):
+    async def test_export_pptx_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功导出 PPTX"""
         from ai_ppt.core.security import create_access_token
 
@@ -27,7 +29,9 @@ class TestExportAPI:
             mock_instance.get_by_id.return_value = MagicMock(id=uuid.uuid4())
             mock_service.return_value = mock_instance
 
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.id = uuid.uuid4()
@@ -37,7 +41,8 @@ class TestExportAPI:
                 mock_export.return_value = mock_export_instance
 
                 response = await client.post(
-                    "/api/v1/exports/pptx?presentation_id=" + str(uuid.uuid4()),
+                    "/api/v1/exports/pptx?presentation_id="
+                    + str(uuid.uuid4()),
                     headers=headers,
                 )
 
@@ -75,7 +80,9 @@ class TestExportAPI:
 
         assert response.status_code == 404
 
-    async def test_export_pdf_success(self, client: AsyncClient, authenticated_user):
+    async def test_export_pdf_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功导出 PDF"""
         from ai_ppt.core.security import create_access_token
 
@@ -89,7 +96,9 @@ class TestExportAPI:
             mock_instance.get_by_id.return_value = MagicMock(id=uuid.uuid4())
             mock_service.return_value = mock_instance
 
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.id = uuid.uuid4()
@@ -105,7 +114,9 @@ class TestExportAPI:
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_pdf_with_options(self, client: AsyncClient, authenticated_user):
+    async def test_export_pdf_with_options(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试带选项导出 PDF"""
         from ai_ppt.core.security import create_access_token
 
@@ -119,7 +130,9 @@ class TestExportAPI:
             mock_instance.get_by_id.return_value = MagicMock(id=uuid.uuid4())
             mock_service.return_value = mock_instance
 
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.id = uuid.uuid4()
@@ -135,7 +148,9 @@ class TestExportAPI:
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_images_success(self, client: AsyncClient, authenticated_user):
+    async def test_export_images_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功导出图片"""
         from ai_ppt.core.security import create_access_token
 
@@ -149,7 +164,9 @@ class TestExportAPI:
             mock_instance.get_by_id.return_value = MagicMock(id=uuid.uuid4())
             mock_service.return_value = mock_instance
 
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.id = uuid.uuid4()
@@ -188,7 +205,9 @@ class TestExportAPI:
 
         assert response.status_code == 400
 
-    async def test_get_export_status_success(self, client: AsyncClient, authenticated_user):
+    async def test_get_export_status_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功获取导出状态"""
         from ai_ppt.core.security import create_access_token
 
@@ -196,7 +215,9 @@ class TestExportAPI:
         headers = {"Authorization": f"Bearer {token}"}
         task_id = uuid.uuid4()
 
-        with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+        with patch(
+            "ai_ppt.api.v1.endpoints.exports.ExportService"
+        ) as mock_export:
             mock_export_instance = AsyncMock()
             mock_task = MagicMock()
             mock_task.id = task_id
@@ -227,14 +248,18 @@ class TestExportAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_get_export_status_not_found(self, client: AsyncClient, authenticated_user):
+    async def test_get_export_status_not_found(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试获取不存在的导出任务状态"""
         from ai_ppt.core.security import create_access_token
 
         token = create_access_token(authenticated_user.id)
         headers = {"Authorization": f"Bearer {token}"}
 
-        with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+        with patch(
+            "ai_ppt.api.v1.endpoints.exports.ExportService"
+        ) as mock_export:
             mock_export_instance = AsyncMock()
             mock_export_instance.get_task.return_value = None
             mock_export.return_value = mock_export_instance
@@ -246,7 +271,9 @@ class TestExportAPI:
 
         assert response.status_code == 404
 
-    async def test_download_export_success(self, client: AsyncClient, authenticated_user):
+    async def test_download_export_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功下载导出文件"""
         import tempfile
         from pathlib import Path
@@ -258,12 +285,16 @@ class TestExportAPI:
         task_id = uuid.uuid4()
 
         # 创建临时文件
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.pptx', delete=False) as f:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".pptx", delete=False
+        ) as f:
             f.write("test content")
             temp_file_path = f.name
 
         try:
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.status.value = "completed"
@@ -272,7 +303,9 @@ class TestExportAPI:
                 mock_export_instance.get_task.return_value = mock_task
                 # get_full_path is a sync method, use MagicMock instead of AsyncMock attribute
                 mock_path = Path(temp_file_path)
-                mock_export_instance.get_full_path = MagicMock(return_value=mock_path)
+                mock_export_instance.get_full_path = MagicMock(
+                    return_value=mock_path
+                )
                 mock_export.return_value = mock_export_instance
 
                 response = await client.get(
@@ -295,7 +328,9 @@ class TestExportAPI:
         headers = {"Authorization": f"Bearer {token}"}
         task_id = uuid.uuid4()
 
-        with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+        with patch(
+            "ai_ppt.api.v1.endpoints.exports.ExportService"
+        ) as mock_export:
             mock_export_instance = AsyncMock()
             mock_task = MagicMock()
             mock_task.status.value = "processing"
@@ -310,7 +345,9 @@ class TestExportAPI:
 
         assert response.status_code == 400
 
-    async def test_download_export_expired(self, client: AsyncClient, authenticated_user):
+    async def test_download_export_expired(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试下载已过期的导出"""
         from datetime import datetime, timedelta, timezone
         from ai_ppt.core.security import create_access_token
@@ -319,12 +356,16 @@ class TestExportAPI:
         headers = {"Authorization": f"Bearer {token}"}
         task_id = uuid.uuid4()
 
-        with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+        with patch(
+            "ai_ppt.api.v1.endpoints.exports.ExportService"
+        ) as mock_export:
             mock_export_instance = AsyncMock()
             mock_task = MagicMock()
             mock_task.status.value = "completed"
             mock_task.file_path = "test.pptx"
-            mock_task.expires_at = datetime.now(timezone.utc) - timedelta(days=1)
+            mock_task.expires_at = datetime.now(timezone.utc) - timedelta(
+                days=1
+            )
             mock_export_instance.get_task.return_value = mock_task
             mock_export.return_value = mock_export_instance
 
@@ -347,7 +388,9 @@ class TestExportAPI:
 class TestExportFormats:
     """测试不同导出格式"""
 
-    async def test_export_jpg_success(self, client: AsyncClient, authenticated_user):
+    async def test_export_jpg_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功导出 JPG"""
         from ai_ppt.core.security import create_access_token
 
@@ -361,7 +404,9 @@ class TestExportFormats:
             mock_instance.get_by_id.return_value = MagicMock(id=uuid.uuid4())
             mock_service.return_value = mock_instance
 
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.id = uuid.uuid4()
@@ -393,7 +438,9 @@ class TestExportFormats:
             mock_instance.get_by_id.return_value = MagicMock(id=uuid.uuid4())
             mock_service.return_value = mock_instance
 
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.id = uuid.uuid4()
@@ -409,7 +456,9 @@ class TestExportFormats:
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_with_slide_range(self, client: AsyncClient, authenticated_user):
+    async def test_export_with_slide_range(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试导出指定页面范围"""
         from ai_ppt.core.security import create_access_token
 
@@ -423,7 +472,9 @@ class TestExportFormats:
             mock_instance.get_by_id.return_value = MagicMock(id=uuid.uuid4())
             mock_service.return_value = mock_instance
 
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.id = uuid.uuid4()
@@ -439,7 +490,9 @@ class TestExportFormats:
 
         assert response.status_code in [202, 200, 404, 500]
 
-    async def test_export_with_include_notes(self, client: AsyncClient, authenticated_user):
+    async def test_export_with_include_notes(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试导出包含备注"""
         from ai_ppt.core.security import create_access_token
 
@@ -453,7 +506,9 @@ class TestExportFormats:
             mock_instance.get_by_id.return_value = MagicMock(id=uuid.uuid4())
             mock_service.return_value = mock_instance
 
-            with patch("ai_ppt.api.v1.endpoints.exports.ExportService") as mock_export:
+            with patch(
+                "ai_ppt.api.v1.endpoints.exports.ExportService"
+            ) as mock_export:
                 mock_export_instance = AsyncMock()
                 mock_task = MagicMock()
                 mock_task.id = uuid.uuid4()

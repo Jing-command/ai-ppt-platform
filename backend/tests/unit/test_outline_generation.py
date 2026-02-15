@@ -96,7 +96,9 @@ class TestOutlineGenerationBuildPrompt:
 class TestOutlineGenerationGenerateOutline:
     """测试大纲生成"""
 
-    async def test_generate_outline_success(self, generation_service, mock_llm_client):
+    async def test_generate_outline_success(
+        self, generation_service, mock_llm_client
+    ):
         """测试成功生成大纲"""
         # 模拟 LLM 响应
         mock_response_data = {
@@ -345,7 +347,9 @@ class TestOutlineGenerationLifecycle:
 
     async def test_auto_create_llm_client(self):
         """测试自动创建 LLM 客户端"""
-        with patch("ai_ppt.services.outline_generation.LLMClient") as mock_client_class:
+        with patch(
+            "ai_ppt.services.outline_generation.LLMClient"
+        ) as mock_client_class:
             mock_instance = AsyncMock()
             mock_client_class.return_value = mock_instance
 
@@ -380,7 +384,9 @@ class TestOutlineGenerationPromptContent:
 
     def test_prompt_includes_page_types(self, generation_service):
         """测试提示词包含页面类型说明"""
-        prompt = generation_service._build_generation_prompt(topic="Test", num_slides=5)
+        prompt = generation_service._build_generation_prompt(
+            topic="Test", num_slides=5
+        )
 
         assert "title" in prompt
         assert "content" in prompt
@@ -390,7 +396,9 @@ class TestOutlineGenerationPromptContent:
 
     def test_prompt_includes_json_structure(self, generation_service):
         """测试提示词包含 JSON 结构说明"""
-        prompt = generation_service._build_generation_prompt(topic="Test", num_slides=5)
+        prompt = generation_service._build_generation_prompt(
+            topic="Test", num_slides=5
+        )
 
         assert '"title"' in prompt
         assert '"pages"' in prompt
@@ -398,7 +406,9 @@ class TestOutlineGenerationPromptContent:
 
     def test_prompt_length_constraints(self, generation_service):
         """测试提示词长度限制说明"""
-        prompt = generation_service._build_generation_prompt(topic="Test", num_slides=5)
+        prompt = generation_service._build_generation_prompt(
+            topic="Test", num_slides=5
+        )
 
         assert "100字" in prompt or "200字" in prompt
         assert "50字" in prompt

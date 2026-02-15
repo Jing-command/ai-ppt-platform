@@ -13,7 +13,9 @@ from httpx import AsyncClient
 class TestConnectorAPI:
     """测试连接器 API 端点"""
 
-    async def test_list_connectors_success(self, client: AsyncClient, authenticated_user):
+    async def test_list_connectors_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功获取连接器列表"""
         from ai_ppt.core.security import create_access_token
 
@@ -50,7 +52,9 @@ class TestConnectorAPI:
 
         assert response.status_code in [200, 500]
 
-    async def test_create_connector_success(self, client: AsyncClient, authenticated_user):
+    async def test_create_connector_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功创建连接器"""
         from ai_ppt.core.security import create_access_token
 
@@ -131,7 +135,9 @@ class TestConnectorAPI:
 
         assert response.status_code == 422
 
-    async def test_get_connector_success(self, client: AsyncClient, authenticated_user):
+    async def test_get_connector_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功获取连接器详情"""
         from ai_ppt.core.security import create_access_token
 
@@ -146,7 +152,9 @@ class TestConnectorAPI:
 
         assert response.status_code in [200, 404, 500]
 
-    async def test_get_connector_not_found(self, client: AsyncClient, authenticated_user):
+    async def test_get_connector_not_found(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试获取不存在的连接器"""
         from ai_ppt.core.security import create_access_token
 
@@ -160,7 +168,9 @@ class TestConnectorAPI:
 
         assert response.status_code in [404, 500]
 
-    async def test_update_connector_success(self, client: AsyncClient, authenticated_user):
+    async def test_update_connector_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功更新连接器"""
         from ai_ppt.core.security import create_access_token
 
@@ -189,7 +199,9 @@ class TestConnectorAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_delete_connector_success(self, client: AsyncClient, authenticated_user):
+    async def test_delete_connector_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功删除连接器"""
         from ai_ppt.core.security import create_access_token
 
@@ -216,7 +228,9 @@ class TestConnectorAPI:
 class TestConnectorTestAPI:
     """测试连接器测试 API"""
 
-    async def test_test_connector_success(self, client: AsyncClient, authenticated_user):
+    async def test_test_connector_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功测试连接器"""
         from ai_ppt.core.security import create_access_token
 
@@ -224,7 +238,9 @@ class TestConnectorTestAPI:
         headers = {"Authorization": f"Bearer {token}"}
         connector_id = uuid.uuid4()
 
-        with patch("ai_ppt.application.services.connector_service.ConnectorFactory"):
+        with patch(
+            "ai_ppt.application.services.connector_service.ConnectorFactory"
+        ):
             response = await client.post(
                 f"/api/v1/connectors/{connector_id}/test",
                 headers=headers,
@@ -232,7 +248,9 @@ class TestConnectorTestAPI:
 
         assert response.status_code in [200, 404, 500]
 
-    async def test_test_connector_with_config(self, client: AsyncClient, authenticated_user):
+    async def test_test_connector_with_config(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试带临时配置的连接测试"""
         from ai_ppt.core.security import create_access_token
 
@@ -240,7 +258,9 @@ class TestConnectorTestAPI:
         headers = {"Authorization": f"Bearer {token}"}
         connector_id = uuid.uuid4()
 
-        with patch("ai_ppt.application.services.connector_service.ConnectorFactory"):
+        with patch(
+            "ai_ppt.application.services.connector_service.ConnectorFactory"
+        ):
             response = await client.post(
                 f"/api/v1/connectors/{connector_id}/test",
                 headers=headers,
@@ -254,7 +274,9 @@ class TestConnectorTestAPI:
 
         assert response.status_code in [200, 404, 500]
 
-    async def test_test_connector_not_found(self, client: AsyncClient, authenticated_user):
+    async def test_test_connector_not_found(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试不存在的连接器"""
         from ai_ppt.core.security import create_access_token
 
@@ -323,7 +345,9 @@ class TestConnectorQueryAPI:
 class TestConnectorPagination:
     """测试连接器分页"""
 
-    async def test_list_connectors_pagination(self, client: AsyncClient, authenticated_user):
+    async def test_list_connectors_pagination(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试连接器分页"""
         from ai_ppt.core.security import create_access_token
 

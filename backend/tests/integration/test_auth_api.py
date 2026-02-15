@@ -33,7 +33,9 @@ class TestAuthAPI:
         assert "user" in data
         assert data["user"]["email"] == "newuser@example.com"
 
-    async def test_register_email_exists(self, client: AsyncClient, db_session):
+    async def test_register_email_exists(
+        self, client: AsyncClient, db_session
+    ):
         """测试注册已存在的邮箱"""
         # 首先创建一个用户
         with patch.object(db_session, "execute") as mock_execute:
@@ -230,7 +232,9 @@ class TestAuthAPI:
 
         assert response.status_code == 401
 
-    async def test_refresh_user_not_found(self, client: AsyncClient, db_session):
+    async def test_refresh_user_not_found(
+        self, client: AsyncClient, db_session
+    ):
         """测试刷新时用户不存在"""
         from ai_ppt.core.security import create_refresh_token
 
@@ -251,7 +255,9 @@ class TestAuthAPI:
         data = response.json()
         assert data["code"] == "USER_NOT_FOUND"
 
-    async def test_get_me_success(self, client: AsyncClient, authenticated_user):
+    async def test_get_me_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试获取当前用户信息"""
         from ai_ppt.core.security import create_access_token
 

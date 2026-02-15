@@ -13,7 +13,9 @@ from httpx import AsyncClient
 class TestSlideAPI:
     """测试幻灯片 API 端点（独立路由）"""
 
-    async def test_list_slides_success(self, client: AsyncClient, authenticated_user):
+    async def test_list_slides_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功获取幻灯片列表"""
         from ai_ppt.core.security import create_access_token
 
@@ -30,7 +32,9 @@ class TestSlideAPI:
 
     async def test_list_slides_no_auth(self, client: AsyncClient):
         """测试未认证获取幻灯片列表"""
-        response = await client.get(f"/api/v1/presentations/{uuid.uuid4()}/slides")
+        response = await client.get(
+            f"/api/v1/presentations/{uuid.uuid4()}/slides"
+        )
 
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
@@ -51,7 +55,9 @@ class TestSlideAPI:
 
         assert response.status_code in [404, 500]
 
-    async def test_get_slide_success(self, client: AsyncClient, authenticated_user):
+    async def test_get_slide_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功获取单个幻灯片"""
         from ai_ppt.core.security import create_access_token
 
@@ -67,7 +73,9 @@ class TestSlideAPI:
 
         assert response.status_code in [200, 404, 500]
 
-    async def test_get_slide_not_found(self, client: AsyncClient, authenticated_user):
+    async def test_get_slide_not_found(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试获取不存在的幻灯片"""
         from ai_ppt.core.security import create_access_token
 
@@ -97,7 +105,9 @@ class TestSlideAPI:
 class TestSlideUpdateAPI:
     """测试幻灯片更新 API"""
 
-    async def test_update_slide_success(self, client: AsyncClient, authenticated_user):
+    async def test_update_slide_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功更新幻灯片"""
         from ai_ppt.core.security import create_access_token
 
@@ -124,7 +134,9 @@ class TestSlideUpdateAPI:
 
         assert response.status_code in [200, 404, 500]
 
-    async def test_update_slide_partial(self, client: AsyncClient, authenticated_user):
+    async def test_update_slide_partial(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试部分更新幻灯片"""
         from ai_ppt.core.security import create_access_token
 
@@ -155,7 +167,9 @@ class TestSlideUpdateAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_update_slide_invalid_data(self, client: AsyncClient, authenticated_user):
+    async def test_update_slide_invalid_data(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试更新幻灯片时提供无效数据"""
         from ai_ppt.core.security import create_access_token
 
@@ -179,7 +193,9 @@ class TestSlideUpdateAPI:
 class TestSlideDeleteAPI:
     """测试幻灯片删除 API"""
 
-    async def test_delete_slide_success(self, client: AsyncClient, authenticated_user):
+    async def test_delete_slide_success(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试成功删除幻灯片"""
         from ai_ppt.core.security import create_access_token
 
@@ -204,7 +220,9 @@ class TestSlideDeleteAPI:
         # 401 (Unauthorized) 或 403 (Forbidden) 都是有效的未认证响应
         assert response.status_code in [401, 403]
 
-    async def test_delete_slide_not_found(self, client: AsyncClient, authenticated_user):
+    async def test_delete_slide_not_found(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试删除不存在的幻灯片"""
         from ai_ppt.core.security import create_access_token
 
@@ -408,7 +426,9 @@ class TestSlideUndoRedoAPI:
 class TestSlideContentValidation:
     """测试幻灯片内容验证"""
 
-    async def test_update_slide_empty_content(self, client: AsyncClient, authenticated_user):
+    async def test_update_slide_empty_content(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试更新幻灯片时提供空内容"""
         from ai_ppt.core.security import create_access_token
 
@@ -459,7 +479,9 @@ class TestSlideContentValidation:
 
         assert response.status_code in [200, 404, 500]
 
-    async def test_update_slide_style(self, client: AsyncClient, authenticated_user):
+    async def test_update_slide_style(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试更新幻灯片样式"""
         from ai_ppt.core.security import create_access_token
 
@@ -483,7 +505,9 @@ class TestSlideContentValidation:
 
         assert response.status_code in [200, 404, 500]
 
-    async def test_update_slide_notes(self, client: AsyncClient, authenticated_user):
+    async def test_update_slide_notes(
+        self, client: AsyncClient, authenticated_user
+    ):
         """测试更新幻灯片备注"""
         from ai_ppt.core.security import create_access_token
 

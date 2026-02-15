@@ -216,7 +216,9 @@ class TestExportServiceFilterSlides:
 
     def test_filter_slides_invalid_range(self, export_service, sample_slides):
         """测试无效范围"""
-        result = export_service._filter_slides_by_range(sample_slides, "invalid")
+        result = export_service._filter_slides_by_range(
+            sample_slides, "invalid"
+        )
 
         # 应该返回所有幻灯片
         assert len(result) == 2
@@ -310,9 +312,15 @@ class TestExportServiceProcessExport:
         assert task.status == ExportStatus.FAILED
         assert "not found" in task.error_message.lower()
 
-    @pytest.mark.skip(reason="Mock issue with _export_tasks dict - task not found in process_export")
+    @pytest.mark.skip(
+        reason="Mock issue with _export_tasks dict - task not found in process_export"
+    )
     async def test_process_export_updates_progress(
-        self, export_service, mock_db_session, sample_presentation, sample_slides
+        self,
+        export_service,
+        mock_db_session,
+        sample_presentation,
+        sample_slides,
     ):
         """测试导出进度更新"""
         from ai_ppt.services.export_service import _export_tasks
@@ -371,7 +379,9 @@ class TestProcessExportTaskFunction:
 
         with patch("ai_ppt.database.AsyncSessionLocal") as mock_session:
             mock_instance = AsyncMock()
-            mock_session.return_value.__aenter__ = AsyncMock(return_value=mock_instance)
+            mock_session.return_value.__aenter__ = AsyncMock(
+                return_value=mock_instance
+            )
             mock_session.return_value.__aexit__ = AsyncMock(return_value=False)
 
             with patch.object(ExportService, "process_export") as mock_process:

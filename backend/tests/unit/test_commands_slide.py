@@ -88,7 +88,9 @@ class TestCreateSlideCommand:
     class TestExecute:
         """测试 execute 方法"""
 
-        async def test_execute_success(self, mock_slide_repository, sample_slide):
+        async def test_execute_success(
+            self, mock_slide_repository, sample_slide
+        ):
             """测试成功执行创建"""
             presentation_id = uuid.uuid4()
             cmd = CreateSlideCommand(
@@ -112,7 +114,9 @@ class TestCreateSlideCommand:
                 title="Test",
             )
 
-            with pytest.raises(ValueError, match="Slide repository is required"):
+            with pytest.raises(
+                ValueError, match="Slide repository is required"
+            ):
                 await cmd.execute()
 
     class TestUndo:
@@ -131,7 +135,9 @@ class TestCreateSlideCommand:
             await cmd.undo()
 
             assert cmd.undone_at is not None
-            mock_slide_repository.delete.assert_called_once_with(sample_slide.id)
+            mock_slide_repository.delete.assert_called_once_with(
+                sample_slide.id
+            )
 
         async def test_undo_without_repository(self):
             """测试缺少仓储时抛出异常"""
@@ -141,7 +147,9 @@ class TestCreateSlideCommand:
             )
             cmd._created_slide_id = uuid.uuid4()
 
-            with pytest.raises(ValueError, match="Slide repository is required"):
+            with pytest.raises(
+                ValueError, match="Slide repository is required"
+            ):
                 await cmd.undo()
 
         async def test_undo_without_created_slide(self, mock_slide_repository):
@@ -229,7 +237,9 @@ class TestUpdateSlideCommand:
     class TestExecute:
         """测试 execute 方法"""
 
-        async def test_execute_success(self, mock_slide_repository, sample_slide):
+        async def test_execute_success(
+            self, mock_slide_repository, sample_slide
+        ):
             """测试成功执行更新"""
             cmd = UpdateSlideCommand(
                 slide_id=sample_slide.id,
@@ -246,7 +256,9 @@ class TestUpdateSlideCommand:
             mock_slide_repository.update.assert_called_once()
             assert cmd.executed_at is not None
 
-        async def test_execute_all_fields(self, mock_slide_repository, sample_slide):
+        async def test_execute_all_fields(
+            self, mock_slide_repository, sample_slide
+        ):
             """测试更新所有字段"""
             cmd = UpdateSlideCommand(
                 slide_id=sample_slide.id,
@@ -278,7 +290,9 @@ class TestUpdateSlideCommand:
                 updates={"title": "Test"},
             )
 
-            with pytest.raises(ValueError, match="Slide repository is required"):
+            with pytest.raises(
+                ValueError, match="Slide repository is required"
+            ):
                 await cmd.execute()
 
         async def test_execute_slide_not_found(self, mock_slide_repository):
@@ -321,7 +335,9 @@ class TestUpdateSlideCommand:
             )
             cmd._previous_data = {"title": "Old Title"}
 
-            with pytest.raises(ValueError, match="Slide repository is required"):
+            with pytest.raises(
+                ValueError, match="Slide repository is required"
+            ):
                 await cmd.undo()
 
         async def test_undo_without_previous_data(self, mock_slide_repository):
@@ -332,7 +348,9 @@ class TestUpdateSlideCommand:
                 slide_repository=mock_slide_repository,
             )
 
-            with pytest.raises(ValueError, match="No previous data to restore"):
+            with pytest.raises(
+                ValueError, match="No previous data to restore"
+            ):
                 await cmd.undo()
 
         async def test_undo_slide_not_found(self, mock_slide_repository):
@@ -405,7 +423,9 @@ class TestDeleteSlideCommand:
     class TestExecute:
         """测试 execute 方法"""
 
-        async def test_execute_success(self, mock_slide_repository, sample_slide):
+        async def test_execute_success(
+            self, mock_slide_repository, sample_slide
+        ):
             """测试成功执行删除"""
             cmd = DeleteSlideCommand(
                 slide_id=sample_slide.id,
@@ -418,14 +438,18 @@ class TestDeleteSlideCommand:
             assert cmd._deleted_data is not None
             assert cmd._deleted_data["title"] == sample_slide.title
             assert cmd._deleted_data["id"] == sample_slide.id
-            mock_slide_repository.delete.assert_called_once_with(sample_slide.id)
+            mock_slide_repository.delete.assert_called_once_with(
+                sample_slide.id
+            )
             assert cmd.executed_at is not None
 
         async def test_execute_without_repository(self):
             """测试缺少仓储时抛出异常"""
             cmd = DeleteSlideCommand(slide_id=uuid.uuid4())
 
-            with pytest.raises(ValueError, match="Slide repository is required"):
+            with pytest.raises(
+                ValueError, match="Slide repository is required"
+            ):
                 await cmd.execute()
 
         async def test_execute_slide_not_found(self, mock_slide_repository):
@@ -463,7 +487,9 @@ class TestDeleteSlideCommand:
             cmd = DeleteSlideCommand(slide_id=uuid.uuid4())
             cmd._deleted_data = {"title": "Old Slide"}
 
-            with pytest.raises(ValueError, match="Slide repository is required"):
+            with pytest.raises(
+                ValueError, match="Slide repository is required"
+            ):
                 await cmd.undo()
 
         async def test_undo_without_deleted_data(self, mock_slide_repository):
@@ -539,7 +565,9 @@ class TestMoveSlideCommand:
     class TestExecute:
         """测试 execute 方法"""
 
-        async def test_execute_success(self, mock_slide_repository, sample_slide):
+        async def test_execute_success(
+            self, mock_slide_repository, sample_slide
+        ):
             """测试成功执行移动"""
             cmd = MoveSlideCommand(
                 slide_id=sample_slide.id,
@@ -564,7 +592,9 @@ class TestMoveSlideCommand:
                 new_order=5,
             )
 
-            with pytest.raises(ValueError, match="Slide repository is required"):
+            with pytest.raises(
+                ValueError, match="Slide repository is required"
+            ):
                 await cmd.execute()
 
         async def test_execute_slide_not_found(self, mock_slide_repository):
@@ -607,10 +637,14 @@ class TestMoveSlideCommand:
             )
             cmd._previous_order = 1
 
-            with pytest.raises(ValueError, match="Slide repository is required"):
+            with pytest.raises(
+                ValueError, match="Slide repository is required"
+            ):
                 await cmd.undo()
 
-        async def test_undo_without_previous_order(self, mock_slide_repository):
+        async def test_undo_without_previous_order(
+            self, mock_slide_repository
+        ):
             """测试无先前顺序时抛出异常"""
             cmd = MoveSlideCommand(
                 slide_id=uuid.uuid4(),
@@ -618,7 +652,9 @@ class TestMoveSlideCommand:
                 slide_repository=mock_slide_repository,
             )
 
-            with pytest.raises(ValueError, match="No previous order to restore"):
+            with pytest.raises(
+                ValueError, match="No previous order to restore"
+            ):
                 await cmd.undo()
 
         async def test_undo_slide_not_found(self, mock_slide_repository):

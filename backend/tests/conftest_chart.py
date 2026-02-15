@@ -24,7 +24,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../src"))
 from ai_ppt.api.v1.router import router as api_router
 from ai_ppt.api.v1.endpoints.chart import router as chart_router
 
-
 # ==================== FastAPI App Fixtures ====================
 
 

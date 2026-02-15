@@ -65,7 +65,10 @@ class TestHTTPExceptionHandler:
 
         assert isinstance(response, JSONResponse)
         assert response.status_code == 400
-        assert response.body == b'{"code":"CUSTOM_ERROR","message":"Custom error"}'
+        assert (
+            response.body
+            == b'{"code":"CUSTOM_ERROR","message":"Custom error"}'
+        )
 
     @pytest.mark.asyncio
     async def test_http_exception_with_string_detail(self):

@@ -12,7 +12,10 @@ from ai_ppt.infrastructure.connectors.base import (
     DataType,
     QueryError,
 )
-from ai_ppt.infrastructure.connectors.mysql import MYSQL_TYPE_MAPPING, MySQLConnector
+from ai_ppt.infrastructure.connectors.mysql import (
+    MYSQL_TYPE_MAPPING,
+    MySQLConnector,
+)
 
 
 class TestMySQLTypeMapping:
@@ -93,7 +96,11 @@ class TestMySQLConnector:
             mock_pool.close = MagicMock()
             mock_pool.wait_closed = AsyncMock()
 
-            with patch('aiomysql.create_pool', new_callable=AsyncMock, return_value=mock_pool):
+            with patch(
+                "aiomysql.create_pool",
+                new_callable=AsyncMock,
+                return_value=mock_pool,
+            ):
                 await connector.connect()
 
                 assert connector.is_connected is True
@@ -101,7 +108,10 @@ class TestMySQLConnector:
 
         async def test_connect_failure(self, connector):
             """测试连接失败"""
-            with patch('aiomysql.create_pool', side_effect=Exception("Connection refused")):
+            with patch(
+                "aiomysql.create_pool",
+                side_effect=Exception("Connection refused"),
+            ):
                 with pytest.raises(ConnectionError, match="Failed to connect"):
                     await connector.connect()
 
@@ -116,7 +126,11 @@ class TestMySQLConnector:
             mock_pool.close = MagicMock()
             mock_pool.wait_closed = AsyncMock()
 
-            with patch('aiomysql.create_pool', new_callable=AsyncMock, return_value=mock_pool):
+            with patch(
+                "aiomysql.create_pool",
+                new_callable=AsyncMock,
+                return_value=mock_pool,
+            ):
                 await connector.connect()
                 await connector.disconnect()
 
@@ -148,7 +162,11 @@ class TestMySQLConnector:
             mock_cur.__aenter__ = AsyncMock(return_value=mock_cur)
             mock_cur.__aexit__ = AsyncMock(return_value=None)
 
-            with patch('aiomysql.create_pool', new_callable=AsyncMock, return_value=mock_pool):
+            with patch(
+                "aiomysql.create_pool",
+                new_callable=AsyncMock,
+                return_value=mock_pool,
+            ):
                 await connector.connect()
 
             # 模拟连接池返回正确的连接对象
@@ -169,10 +187,16 @@ class TestMySQLConnector:
             """测试连接测试失败"""
             mock_pool = MagicMock()
 
-            with patch('aiomysql.create_pool', new_callable=AsyncMock, return_value=mock_pool):
+            with patch(
+                "aiomysql.create_pool",
+                new_callable=AsyncMock,
+                return_value=mock_pool,
+            ):
                 await connector.connect()
 
-            mock_pool.acquire = MagicMock(side_effect=Exception("Query failed"))
+            mock_pool.acquire = MagicMock(
+                side_effect=Exception("Query failed")
+            )
 
             result = await connector.test_connection()
 
@@ -185,13 +209,25 @@ class TestMySQLConnector:
             """测试成功获取表结构"""
             # 模拟游标返回表和列信息
             mock_cur = AsyncMock()
-            mock_cur.fetchall = AsyncMock(side_effect=[
-                [{"TABLE_NAME": "users", "TABLE_COMMENT": "Users table"}],
-                [
-                    {"COLUMN_NAME": "id", "DATA_TYPE": "int", "IS_NULLABLE": "NO", "COLUMN_COMMENT": ""},
-                    {"COLUMN_NAME": "name", "DATA_TYPE": "varchar", "IS_NULLABLE": "YES", "COLUMN_COMMENT": "User name"},
-                ],
-            ])
+            mock_cur.fetchall = AsyncMock(
+                side_effect=[
+                    [{"TABLE_NAME": "users", "TABLE_COMMENT": "Users table"}],
+                    [
+                        {
+                            "COLUMN_NAME": "id",
+                            "DATA_TYPE": "int",
+                            "IS_NULLABLE": "NO",
+                            "COLUMN_COMMENT": "",
+                        },
+                        {
+                            "COLUMN_NAME": "name",
+                            "DATA_TYPE": "varchar",
+                            "IS_NULLABLE": "YES",
+                            "COLUMN_COMMENT": "User name",
+                        },
+                    ],
+                ]
+            )
             mock_cur.__aenter__ = AsyncMock(return_value=mock_cur)
             mock_cur.__aexit__ = AsyncMock(return_value=None)
 
@@ -205,7 +241,11 @@ class TestMySQLConnector:
             mock_pool.close = MagicMock()
             mock_pool.wait_closed = AsyncMock()
 
-            with patch('aiomysql.create_pool', new_callable=AsyncMock, return_value=mock_pool):
+            with patch(
+                "aiomysql.create_pool",
+                new_callable=AsyncMock,
+                return_value=mock_pool,
+            ):
                 await connector.connect()
 
             schemas = await connector.get_schema()
@@ -225,10 +265,12 @@ class TestMySQLConnector:
         async def test_query_success(self, connector):
             """测试成功查询"""
             mock_cur = AsyncMock()
-            mock_cur.fetchall = AsyncMock(return_value=[
-                {"id": 1, "name": "Test"},
-                {"id": 2, "name": "Test2"},
-            ])
+            mock_cur.fetchall = AsyncMock(
+                return_value=[
+                    {"id": 1, "name": "Test"},
+                    {"id": 2, "name": "Test2"},
+                ]
+            )
             mock_cur.__aenter__ = AsyncMock(return_value=mock_cur)
             mock_cur.__aexit__ = AsyncMock(return_value=None)
 
@@ -242,7 +284,11 @@ class TestMySQLConnector:
             mock_pool.close = MagicMock()
             mock_pool.wait_closed = AsyncMock()
 
-            with patch('aiomysql.create_pool', new_callable=AsyncMock, return_value=mock_pool):
+            with patch(
+                "aiomysql.create_pool",
+                new_callable=AsyncMock,
+                return_value=mock_pool,
+            ):
                 await connector.connect()
 
             results = await connector.query("SELECT * FROM users")
@@ -267,7 +313,11 @@ class TestMySQLConnector:
             mock_pool.close = MagicMock()
             mock_pool.wait_closed = AsyncMock()
 
-            with patch('aiomysql.create_pool', new_callable=AsyncMock, return_value=mock_pool):
+            with patch(
+                "aiomysql.create_pool",
+                new_callable=AsyncMock,
+                return_value=mock_pool,
+            ):
                 await connector.connect()
 
             results = await connector.query("SELECT * FROM users", limit=10)
@@ -297,7 +347,11 @@ class TestMySQLConnector:
             mock_pool.close = MagicMock()
             mock_pool.wait_closed = AsyncMock()
 
-            with patch('aiomysql.create_pool', new_callable=AsyncMock, return_value=mock_pool):
+            with patch(
+                "aiomysql.create_pool",
+                new_callable=AsyncMock,
+                return_value=mock_pool,
+            ):
                 await connector.connect()
 
             with pytest.raises(QueryError, match="Query failed"):
@@ -340,4 +394,7 @@ class TestMySQLConnectorEdgeCases:
     def test_unknown_type_mapping(self):
         """测试未知类型映射"""
         # 未知类型应该映射为 STRING
-        assert MYSQL_TYPE_MAPPING.get("unknown_type", DataType.STRING) == DataType.STRING
+        assert (
+            MYSQL_TYPE_MAPPING.get("unknown_type", DataType.STRING)
+            == DataType.STRING
+        )

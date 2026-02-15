@@ -118,7 +118,9 @@ class TestOutlineServiceGetById:
         mock_db_session.execute.return_value = mock_result
 
         with pytest.raises(OutlinePermissionError) as exc_info:
-            await outline_service.get_by_id(sample_outline.id, user_id=uuid.uuid4())
+            await outline_service.get_by_id(
+                sample_outline.id, user_id=uuid.uuid4()
+            )
 
         assert "无权访问" in str(exc_info.value)
 
@@ -134,7 +136,9 @@ class TestOutlineServiceGetById:
 
         assert result.id == sample_outline.id
 
-    async def test_get_by_id_or_raise_not_found(self, outline_service, mock_db_session):
+    async def test_get_by_id_or_raise_not_found(
+        self, outline_service, mock_db_session
+    ):
         """测试获取不存在时抛出"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = None
@@ -153,7 +157,8 @@ class TestOutlineServiceGetByUser:
         """测试成功获取用户大纲列表"""
         user_id = uuid.uuid4()
         outlines = [
-            Outline(title=f"Outline {i}", user_id=user_id, pages=[]) for i in range(3)
+            Outline(title=f"Outline {i}", user_id=user_id, pages=[])
+            for i in range(3)
         ]
 
         # 模拟总数查询
@@ -164,9 +169,14 @@ class TestOutlineServiceGetByUser:
         mock_data_result = MagicMock()
         mock_data_result.scalars.return_value.all.return_value = outlines
 
-        mock_db_session.execute.side_effect = [mock_count_result, mock_data_result]
+        mock_db_session.execute.side_effect = [
+            mock_count_result,
+            mock_data_result,
+        ]
 
-        result, total = await outline_service.get_by_user(user_id, page=1, page_size=10)
+        result, total = await outline_service.get_by_user(
+            user_id, page=1, page_size=10
+        )
 
         assert len(result) == 3
         assert total == 3
@@ -183,7 +193,10 @@ class TestOutlineServiceGetByUser:
         mock_data_result = MagicMock()
         mock_data_result.scalars.return_value.all.return_value = []
 
-        mock_db_session.execute.side_effect = [mock_count_result, mock_data_result]
+        mock_db_session.execute.side_effect = [
+            mock_count_result,
+            mock_data_result,
+        ]
 
         result, total = await outline_service.get_by_user(
             user_id, page=1, page_size=10, status="completed"
@@ -235,7 +248,9 @@ class TestOutlineServiceCreate:
         assert result.pages == []
         assert result.total_slides == 0
 
-    async def test_create_with_background(self, outline_service, mock_db_session):
+    async def test_create_with_background(
+        self, outline_service, mock_db_session
+    ):
         """测试带背景创建"""
         user_id = uuid.uuid4()
         background = {"type": "ai", "prompt": "Blue gradient"}
@@ -286,7 +301,9 @@ class TestOutlineServiceUpdate:
         assert result.title == "Updated Title"
         mock_db_session.flush.assert_called_once()
 
-    async def test_update_pages(self, outline_service, mock_db_session, sample_outline):
+    async def test_update_pages(
+        self, outline_service, mock_db_session, sample_outline
+    ):
         """测试更新大纲页面"""
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_outline
@@ -356,7 +373,9 @@ class TestOutlineServiceDelete:
         mock_result.scalar_one_or_none.return_value = sample_outline
         mock_db_session.execute.return_value = mock_result
 
-        result = await outline_service.delete(sample_outline.id, sample_outline.user_id)
+        result = await outline_service.delete(
+            sample_outline.id, sample_outline.user_id
+        )
 
         assert result is True
         mock_db_session.delete.assert_called_once_with(sample_outline)
@@ -401,7 +420,9 @@ class TestOutlineServiceGenerate:
         }
 
         mock_generation_service = AsyncMock()
-        mock_generation_service.generate_outline.return_value = mock_generation_result
+        mock_generation_service.generate_outline.return_value = (
+            mock_generation_result
+        )
         mock_generation_service.close = AsyncMock()
 
         outline_service._generation_service = mock_generation_service
@@ -446,7 +467,9 @@ class TestOutlineServiceGenerate:
 
             mock_gen_class.assert_called_once()
 
-    async def test_generate_with_context_data(self, outline_service, mock_db_session):
+    async def test_generate_with_context_data(
+        self, outline_service, mock_db_session
+    ):
         """测试带上下文数据的生成"""
         user_id = uuid.uuid4()
         context_data = {"key": "value", "numbers": [1, 2, 3]}
@@ -470,7 +493,9 @@ class TestOutlineServiceGenerate:
         call_kwargs = mock_generation_service.generate_outline.call_args[1]
         assert call_kwargs["context_data"] == context_data
 
-    async def test_generate_with_connector_id(self, outline_service, mock_db_session):
+    async def test_generate_with_connector_id(
+        self, outline_service, mock_db_session
+    ):
         """测试带连接器 ID 的生成"""
         user_id = uuid.uuid4()
         connector_id = uuid.uuid4()

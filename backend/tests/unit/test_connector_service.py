@@ -58,7 +58,9 @@ def sample_connector():
 class TestConnectorServiceCreate:
     """测试创建连接器"""
 
-    async def test_create_connector_success(self, connector_service, mock_repository):
+    async def test_create_connector_success(
+        self, connector_service, mock_repository
+    ):
         """测试成功创建连接器"""
         user_id = uuid.uuid4()
         data = ConnectorCreate(
@@ -85,7 +87,9 @@ class TestConnectorServiceCreate:
 
         assert result.name == "MySQL Connection"
         assert result.type == "mysql"
-        mock_repository.name_exists.assert_called_once_with(user_id, "MySQL Connection")
+        mock_repository.name_exists.assert_called_once_with(
+            user_id, "MySQL Connection"
+        )
         mock_repository.create.assert_called_once()
 
     async def test_create_connector_name_exists(
@@ -125,7 +129,9 @@ class TestConnectorServiceGet:
         assert result.id == sample_connector.id
         assert result.name == sample_connector.name
 
-    async def test_get_connector_not_found(self, connector_service, mock_repository):
+    async def test_get_connector_not_found(
+        self, connector_service, mock_repository
+    ):
         """测试获取不存在的连接器"""
         mock_repository.get_by_id.return_value = None
 
@@ -143,9 +149,13 @@ class TestConnectorServiceGet:
         wrong_user_id = uuid.uuid4()
 
         with pytest.raises(ConnectorNotFoundError):
-            await connector_service.get_connector(sample_connector.id, wrong_user_id)
+            await connector_service.get_connector(
+                sample_connector.id, wrong_user_id
+            )
 
-    async def test_get_connectors_list(self, connector_service, mock_repository):
+    async def test_get_connectors_list(
+        self, connector_service, mock_repository
+    ):
         """测试获取连接器列表"""
         user_id = uuid.uuid4()
         connectors = [
@@ -201,7 +211,9 @@ class TestConnectorServiceUpdate:
         mock_repository.name_exists.return_value = False  # 名称不冲突
         mock_repository.update.return_value = sample_connector
 
-        data = ConnectorUpdate(name="Updated Name", description="New description")
+        data = ConnectorUpdate(
+            name="Updated Name", description="New description"
+        )
 
         result = await connector_service.update_connector(
             sample_connector.id, data, sample_connector.user_id
@@ -224,14 +236,18 @@ class TestConnectorServiceUpdate:
                 sample_connector.id, data, sample_connector.user_id
             )
 
-    async def test_update_connector_not_found(self, connector_service, mock_repository):
+    async def test_update_connector_not_found(
+        self, connector_service, mock_repository
+    ):
         """测试更新不存在的连接器"""
         mock_repository.get_by_id.return_value = None
 
         data = ConnectorUpdate(name="New Name")
 
         with pytest.raises(ConnectorNotFoundError):
-            await connector_service.update_connector(uuid.uuid4(), data, uuid.uuid4())
+            await connector_service.update_connector(
+                uuid.uuid4(), data, uuid.uuid4()
+            )
 
     async def test_update_connector_activate(
         self, connector_service, mock_repository, sample_connector
@@ -282,12 +298,16 @@ class TestConnectorServiceDelete:
         assert result is True
         mock_repository.delete.assert_called_once_with(sample_connector.id)
 
-    async def test_delete_connector_not_found(self, connector_service, mock_repository):
+    async def test_delete_connector_not_found(
+        self, connector_service, mock_repository
+    ):
         """测试删除不存在的连接器"""
         mock_repository.get_by_id.return_value = None
 
         with pytest.raises(ConnectorNotFoundError):
-            await connector_service.delete_connector(uuid.uuid4(), uuid.uuid4())
+            await connector_service.delete_connector(
+                uuid.uuid4(), uuid.uuid4()
+            )
 
 
 class TestConnectorServiceTest:
@@ -362,7 +382,9 @@ class TestConnectorServiceTest:
         call_kwargs = mock_factory.create_connector.call_args[1]
         assert call_kwargs["config"] == temp_config
 
-    async def test_test_connector_not_found(self, connector_service, mock_repository):
+    async def test_test_connector_not_found(
+        self, connector_service, mock_repository
+    ):
         """测试不存在连接器的连接测试"""
         mock_repository.get_by_id.return_value = None
 
@@ -379,7 +401,9 @@ class TestConnectorServiceTest:
         with patch(
             "ai_ppt.application.services.connector_service.ConnectorFactory"
         ) as mock_factory:
-            mock_factory.create_connector.side_effect = Exception("Connection error")
+            mock_factory.create_connector.side_effect = Exception(
+                "Connection error"
+            )
 
             result = await connector_service.test_connector(
                 sample_connector.id, sample_connector.user_id

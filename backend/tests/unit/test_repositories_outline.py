@@ -72,7 +72,9 @@ class TestOutlineRepository:
             assert len(result) == 1
             assert result[0] == sample_outline
 
-        async def test_get_by_owner_empty_result(self, repository, mock_session):
+        async def test_get_by_owner_empty_result(
+            self, repository, mock_session
+        ):
             """测试用户无大纲"""
             owner_id = uuid.uuid4()
 
@@ -123,7 +125,9 @@ class TestOutlineRepository:
             assert len(result) == 1
             assert result[0].status == OutlineStatus.COMPLETED
 
-        async def test_get_ready_outlines_empty(self, repository, mock_session):
+        async def test_get_ready_outlines_empty(
+            self, repository, mock_session
+        ):
             """测试无就绪状态大纲"""
             owner_id = uuid.uuid4()
 
@@ -150,7 +154,9 @@ class TestOutlineRepository:
             mock_result.scalars.return_value = mock_scalars
             mock_session.execute.return_value = mock_result
 
-            result = await repository.get_ready_outlines(owner_id, skip=5, limit=3)
+            result = await repository.get_ready_outlines(
+                owner_id, skip=5, limit=3
+            )
 
             assert len(result) == 1
 
@@ -175,7 +181,9 @@ class TestOutlineRepository:
             assert len(result) == 1
             assert result[0] == sample_outline
 
-        async def test_search_by_title_no_results(self, repository, mock_session):
+        async def test_search_by_title_no_results(
+            self, repository, mock_session
+        ):
             """测试搜索无结果"""
             owner_id = uuid.uuid4()
             keyword = "NonExistent"
@@ -244,14 +252,18 @@ class TestOutlineRepository:
 
             assert result == sample_outline
 
-        async def test_create_inherited(self, repository, mock_session, sample_outline):
+        async def test_create_inherited(
+            self, repository, mock_session, sample_outline
+        ):
             """测试继承的 create 方法"""
             result = await repository.create(sample_outline)
 
             assert result == sample_outline
             mock_session.add.assert_called_once_with(sample_outline)
 
-        async def test_delete_inherited(self, repository, mock_session, sample_outline):
+        async def test_delete_inherited(
+            self, repository, mock_session, sample_outline
+        ):
             """测试继承的 delete 方法"""
             outline_id = sample_outline.id
 
@@ -275,7 +287,9 @@ class TestOutlineRepositoryEdgeCases:
         assert repo._session == mock_session
         assert repo._model_class == Outline
 
-    async def test_search_by_title_empty_keyword(self, repository, mock_session):
+    async def test_search_by_title_empty_keyword(
+        self, repository, mock_session
+    ):
         """测试空关键词搜索"""
         owner_id = uuid.uuid4()
         keyword = ""

@@ -24,7 +24,6 @@ from ai_ppt.api.v1.schemas.chart import (
     DataFieldType,
 )
 
-
 # ==================== 测试数据 Fixtures ====================
 
 
@@ -128,7 +127,9 @@ class TestDataAnalyzeAPI:
     """
 
     @pytest.mark.asyncio
-    async def test_analyze_basic_data(self, client: AsyncClient, sample_data_basic):
+    async def test_analyze_basic_data(
+        self, client: AsyncClient, sample_data_basic
+    ):
         """
         API-001: 测试基础数据分析
 
@@ -142,7 +143,9 @@ class TestDataAnalyzeAPI:
         request_body = {"data": sample_data_basic, "sampleSize": 100}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -191,7 +194,9 @@ class TestDataAnalyzeAPI:
         request_body = {"data": sample_data_with_nulls, "sampleSize": 100}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -212,7 +217,9 @@ class TestDataAnalyzeAPI:
                 assert field["nullCount"] >= 1
 
     @pytest.mark.asyncio
-    async def test_analyze_large_data(self, client: AsyncClient, sample_data_large):
+    async def test_analyze_large_data(
+        self, client: AsyncClient, sample_data_large
+    ):
         """
         API-003: 测试大数据量分析
 
@@ -226,7 +233,9 @@ class TestDataAnalyzeAPI:
         request_body = {"data": sample_data_large, "sampleSize": 50}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -254,7 +263,9 @@ class TestDataAnalyzeAPI:
         request_body = {"data": [], "sampleSize": 100}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码 - 应该返回 422 验证错误
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -275,7 +286,9 @@ class TestDataAnalyzeAPI:
         request_body = {"data": sample_data_numeric_only, "sampleSize": 100}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -289,7 +302,10 @@ class TestDataAnalyzeAPI:
 
         # 验证建议中包含维度字段缺失警告
         suggestions_text = " ".join(result.get("suggestions", []))
-        assert "维度" in suggestions_text or "dimension" in suggestions_text.lower()
+        assert (
+            "维度" in suggestions_text
+            or "dimension" in suggestions_text.lower()
+        )
 
     @pytest.mark.asyncio
     async def test_analyze_string_only_data(
@@ -307,7 +323,9 @@ class TestDataAnalyzeAPI:
         request_body = {"data": sample_data_string_only, "sampleSize": 100}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -321,7 +339,9 @@ class TestDataAnalyzeAPI:
 
         # 验证建议中包含度量字段缺失警告
         suggestions_text = " ".join(result.get("suggestions", []))
-        assert "度量" in suggestions_text or "measure" in suggestions_text.lower()
+        assert (
+            "度量" in suggestions_text or "measure" in suggestions_text.lower()
+        )
 
     @pytest.mark.asyncio
     async def test_analyze_date_field_recognition(
@@ -339,7 +359,9 @@ class TestDataAnalyzeAPI:
         request_body = {"data": sample_data_date_fields, "sampleSize": 100}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -372,7 +394,9 @@ class TestDataAnalyzeAPI:
         request_body = {"sampleSize": 100}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -388,7 +412,9 @@ class TestChartGenerateAPI:
     """
 
     @pytest.mark.asyncio
-    async def test_generate_bar_chart(self, client: AsyncClient, sample_data_basic):
+    async def test_generate_bar_chart(
+        self, client: AsyncClient, sample_data_basic
+    ):
         """
         API-009: 测试柱状图生成
 
@@ -403,11 +429,17 @@ class TestChartGenerateAPI:
             "chartType": ChartTypeEnum.BAR.value,
             "data": sample_data_basic,
             "fieldMapping": {"xField": "category", "yField": "value"},
-            "styleConfig": {"title": "销售数据", "showLegend": True, "animation": True},
+            "styleConfig": {
+                "title": "销售数据",
+                "showLegend": True,
+                "animation": True,
+            },
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -429,7 +461,9 @@ class TestChartGenerateAPI:
         assert echarts_option["series"][0]["type"] == "bar"
 
     @pytest.mark.asyncio
-    async def test_generate_line_chart(self, client: AsyncClient, sample_data_basic):
+    async def test_generate_line_chart(
+        self, client: AsyncClient, sample_data_basic
+    ):
         """
         API-010: 测试折线图生成
 
@@ -446,7 +480,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -461,7 +497,9 @@ class TestChartGenerateAPI:
         assert result["echartsOption"]["series"][0]["type"] == "line"
 
     @pytest.mark.asyncio
-    async def test_generate_pie_chart(self, client: AsyncClient, sample_data_basic):
+    async def test_generate_pie_chart(
+        self, client: AsyncClient, sample_data_basic
+    ):
         """
         API-011: 测试饼图生成
 
@@ -478,7 +516,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -517,7 +557,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -532,7 +574,9 @@ class TestChartGenerateAPI:
         assert result["echartsOption"]["series"][0]["type"] == "scatter"
 
     @pytest.mark.asyncio
-    async def test_generate_area_chart(self, client: AsyncClient, sample_data_basic):
+    async def test_generate_area_chart(
+        self, client: AsyncClient, sample_data_basic
+    ):
         """
         API-013: 测试面积图生成
 
@@ -549,7 +593,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -589,7 +635,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -626,7 +674,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -669,7 +719,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -699,13 +751,17 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码 - 应该返回 422 验证错误
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
     @pytest.mark.asyncio
-    async def test_generate_chart_invalid_type(self, client: AsyncClient, sample_data_basic):
+    async def test_generate_chart_invalid_type(
+        self, client: AsyncClient, sample_data_basic
+    ):
         """
         API-018: 测试无效图表类型
 
@@ -721,7 +777,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码 - 应该返回 422 验证错误
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -744,7 +802,9 @@ class TestChartGenerateAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码 - 应该返回 422 验证错误
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -760,7 +820,9 @@ class TestChartRecommendAPI:
     """
 
     @pytest.mark.asyncio
-    async def test_recommend_basic_data(self, client: AsyncClient, sample_data_basic):
+    async def test_recommend_basic_data(
+        self, client: AsyncClient, sample_data_basic
+    ):
         """
         API-020: 测试基础数据图表推荐
 
@@ -778,7 +840,9 @@ class TestChartRecommendAPI:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -819,7 +883,9 @@ class TestChartRecommendAPI:
         request_body = {"data": sample_data_basic, "maxRecommendations": 5}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -828,7 +894,9 @@ class TestChartRecommendAPI:
         result = response.json()
 
         # 获取推荐的图表类型
-        recommended_types = [rec["chartType"] for rec in result["recommendations"]]
+        recommended_types = [
+            rec["chartType"] for rec in result["recommendations"]
+        ]
 
         # 验证包含柱状图推荐
         assert ChartTypeEnum.BAR.value in recommended_types
@@ -845,10 +913,15 @@ class TestChartRecommendAPI:
         2. 验证推荐包含折线图
         """
         # 构造请求体
-        request_body = {"data": sample_data_date_fields, "maxRecommendations": 5}
+        request_body = {
+            "data": sample_data_date_fields,
+            "maxRecommendations": 5,
+        }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -857,7 +930,9 @@ class TestChartRecommendAPI:
         result = response.json()
 
         # 获取推荐的图表类型
-        recommended_types = [rec["chartType"] for rec in result["recommendations"]]
+        recommended_types = [
+            rec["chartType"] for rec in result["recommendations"]
+        ]
 
         # 验证包含折线图推荐
         assert ChartTypeEnum.LINE.value in recommended_types
@@ -874,10 +949,15 @@ class TestChartRecommendAPI:
         2. 验证推荐包含散点图
         """
         # 构造请求体
-        request_body = {"data": sample_data_numeric_only, "maxRecommendations": 5}
+        request_body = {
+            "data": sample_data_numeric_only,
+            "maxRecommendations": 5,
+        }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -886,7 +966,9 @@ class TestChartRecommendAPI:
         result = response.json()
 
         # 获取推荐的图表类型
-        recommended_types = [rec["chartType"] for rec in result["recommendations"]]
+        recommended_types = [
+            rec["chartType"] for rec in result["recommendations"]
+        ]
 
         # 验证包含散点图推荐
         assert ChartTypeEnum.SCATTER.value in recommended_types
@@ -906,7 +988,9 @@ class TestChartRecommendAPI:
         request_body = {"data": sample_data_basic, "maxRecommendations": 2}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -930,7 +1014,9 @@ class TestChartRecommendAPI:
         request_body = {"data": [], "maxRecommendations": 3}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码 - 应该返回 422 验证错误
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -950,7 +1036,9 @@ class TestChartRecommendAPI:
         request_body = {"data": sample_data_basic, "maxRecommendations": 5}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -980,7 +1068,9 @@ class TestChartRecommendAPI:
         request_body = {"data": sample_data_basic, "maxRecommendations": 3}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -1017,7 +1107,9 @@ class TestChartRecommendAPI:
         request_body = {"data": sample_data_basic, "maxRecommendations": 10}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/recommend", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/recommend", json=request_body
+        )
 
         # 验证响应状态码 - 应该返回 422 验证错误
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -1048,7 +1140,9 @@ class TestChartAPIEdgeCases:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -1081,7 +1175,9 @@ class TestChartAPIEdgeCases:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -1111,7 +1207,7 @@ class TestChartAPIEdgeCases:
         special_data = [
             {"category": "类别<特殊>", "value": 100},
             {"category": "类别&符号", "value": 200},
-            {"category": "类别\"引号", "value": 150},
+            {"category": '类别"引号', "value": 150},
         ]
 
         # 构造请求体
@@ -1122,7 +1218,9 @@ class TestChartAPIEdgeCases:
         }
 
         # 发送请求
-        response = await client.post("/api/v1/charts/generate", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/generate", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK
@@ -1153,7 +1251,9 @@ class TestChartAPIEdgeCases:
         request_body = {"data": bool_data, "sampleSize": 100}
 
         # 发送请求
-        response = await client.post("/api/v1/charts/analyze", json=request_body)
+        response = await client.post(
+            "/api/v1/charts/analyze", json=request_body
+        )
 
         # 验证响应状态码
         assert response.status_code == status.HTTP_200_OK

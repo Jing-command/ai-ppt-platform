@@ -67,7 +67,9 @@ class TestTableSchema:
     def test_table_schema_creation(self):
         """测试表模式创建"""
         columns = [
-            ColumnSchema(name="id", data_type=DataType.INTEGER, nullable=False),
+            ColumnSchema(
+                name="id", data_type=DataType.INTEGER, nullable=False
+            ),
             ColumnSchema(name="name", data_type=DataType.STRING),
         ]
         table = TableSchema(
@@ -206,7 +208,9 @@ class TestDataConnector:
 
         def test_initialization(self):
             """测试初始化"""
-            connector = MockDataConnector(config_id="test-1", name="Test Connector")
+            connector = MockDataConnector(
+                config_id="test-1", name="Test Connector"
+            )
 
             assert connector.config_id == "test-1"
             assert connector.name == "Test Connector"

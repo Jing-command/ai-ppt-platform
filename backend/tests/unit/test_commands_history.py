@@ -614,7 +614,9 @@ class TestPresentationCommandHistory:
                 },
             }
 
-            history = PresentationCommandHistory.from_dict(data, MockCommandFactory)
+            history = PresentationCommandHistory.from_dict(
+                data, MockCommandFactory
+            )
 
             assert history.presentation_id == presentation_id
             assert history.can_undo is True

@@ -67,7 +67,9 @@ class TestSlideRepository:
             assert len(result) == 1
             assert result[0] == sample_slide
 
-        async def test_get_by_presentation_empty(self, repository, mock_session):
+        async def test_get_by_presentation_empty(
+            self, repository, mock_session
+        ):
             """测试演示文稿无幻灯片"""
             presentation_id = uuid.uuid4()
 
@@ -81,7 +83,9 @@ class TestSlideRepository:
 
             assert result == []
 
-        async def test_get_by_presentation_ordered(self, repository, mock_session):
+        async def test_get_by_presentation_ordered(
+            self, repository, mock_session
+        ):
             """测试幻灯片按顺序返回"""
             presentation_id = uuid.uuid4()
 
@@ -152,7 +156,9 @@ class TestSlideRepository:
 
             mock_session.execute.return_value = MagicMock()
 
-            result = await repository.reorder_slides(presentation_id, slide_orders)
+            result = await repository.reorder_slides(
+                presentation_id, slide_orders
+            )
 
             assert result is None
             assert mock_session.execute.call_count == 3
@@ -168,7 +174,9 @@ class TestSlideRepository:
             mock_session.execute.assert_not_called()
             mock_session.flush.assert_called_once()
 
-        async def test_reorder_slides_single_slide(self, repository, mock_session):
+        async def test_reorder_slides_single_slide(
+            self, repository, mock_session
+        ):
             """测试单幻灯片排序"""
             presentation_id = uuid.uuid4()
             slide_orders = {uuid.uuid4(): 0}
@@ -183,7 +191,9 @@ class TestSlideRepository:
     class TestDeleteByPresentation:
         """测试 delete_by_presentation 方法"""
 
-        async def test_delete_by_presentation_success(self, repository, mock_session):
+        async def test_delete_by_presentation_success(
+            self, repository, mock_session
+        ):
             """测试成功删除演示文稿的所有幻灯片"""
             presentation_id = uuid.uuid4()
 
@@ -196,7 +206,9 @@ class TestSlideRepository:
             assert result == 3
             mock_session.flush.assert_called_once()
 
-        async def test_delete_by_presentation_none(self, repository, mock_session):
+        async def test_delete_by_presentation_none(
+            self, repository, mock_session
+        ):
             """测试删除 0 张幻灯片"""
             presentation_id = uuid.uuid4()
 
@@ -239,14 +251,18 @@ class TestSlideRepository:
 
             assert result == sample_slide
 
-        async def test_create_inherited(self, repository, mock_session, sample_slide):
+        async def test_create_inherited(
+            self, repository, mock_session, sample_slide
+        ):
             """测试继承的 create 方法"""
             result = await repository.create(sample_slide)
 
             assert result == sample_slide
             mock_session.add.assert_called_once_with(sample_slide)
 
-        async def test_update_inherited(self, repository, mock_session, sample_slide):
+        async def test_update_inherited(
+            self, repository, mock_session, sample_slide
+        ):
             """测试继承的 update 方法"""
             result = await repository.update(sample_slide)
 
@@ -287,7 +303,9 @@ class TestSlideRepositoryEdgeCases:
 
         assert mock_session.execute.call_count == 100
 
-    async def test_delete_by_presentation_large_result(self, repository, mock_session):
+    async def test_delete_by_presentation_large_result(
+        self, repository, mock_session
+    ):
         """测试删除大量幻灯片"""
         presentation_id = uuid.uuid4()
 

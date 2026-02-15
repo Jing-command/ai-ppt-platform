@@ -744,7 +744,9 @@ class ChartService:
 
         # 如果有大小字段，使用 symbolSize 回调函数字符串
         if size_field:
-            series_config["symbolSize"] = "function(data) { return data[2] || 10; }"
+            series_config["symbolSize"] = (
+                "function(data) { return data[2] || 10; }"
+            )
         else:
             series_config["symbolSize"] = 10
 

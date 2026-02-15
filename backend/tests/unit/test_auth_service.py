@@ -153,7 +153,9 @@ class TestUserModel:
     def test_user_repr(self):
         """测试 User 的 __repr__ 方法"""
         user = User(
-            email="test@example.com", username="testuser", hashed_password="hashed"
+            email="test@example.com",
+            username="testuser",
+            hashed_password="hashed",
         )
 
         repr_str = repr(user)
@@ -283,7 +285,9 @@ class TestAuthEndpoints:
         mock_db.execute.return_value = mock_result
         mock_db.commit = AsyncMock()
 
-        request = LoginRequest(email="test@example.com", password="password123")
+        request = LoginRequest(
+            email="test@example.com", password="password123"
+        )
 
         response = await login(request, mock_db)
 
@@ -300,7 +304,9 @@ class TestAuthEndpoints:
         mock_result.scalar_one_or_none.return_value = sample_user
         mock_db.execute.return_value = mock_result
 
-        request = LoginRequest(email="test@example.com", password="wrong-password")
+        request = LoginRequest(
+            email="test@example.com", password="wrong-password"
+        )
 
         with pytest.raises(HTTPException) as exc_info:
             await login(request, mock_db)
@@ -316,7 +322,9 @@ class TestAuthEndpoints:
         mock_result.scalar_one_or_none.return_value = None
         mock_db.execute.return_value = mock_result
 
-        request = LoginRequest(email="nonexistent@example.com", password="password123")
+        request = LoginRequest(
+            email="nonexistent@example.com", password="password123"
+        )
 
         with pytest.raises(HTTPException) as exc_info:
             await login(request, mock_db)
@@ -332,7 +340,9 @@ class TestAuthEndpoints:
         mock_result.scalar_one_or_none.return_value = sample_user
         mock_db.execute.return_value = mock_result
 
-        request = LoginRequest(email="test@example.com", password="password123")
+        request = LoginRequest(
+            email="test@example.com", password="password123"
+        )
 
         with pytest.raises(HTTPException) as exc_info:
             await login(request, mock_db)
@@ -459,7 +469,9 @@ class TestAuthDependencies:
 
         # 创建有效令牌
         token = create_access_token(sample_user.id)
-        credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+        credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
+        )
 
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_user
@@ -527,7 +539,9 @@ class TestAuthDependencies:
 
         user_id = uuid.uuid4()
         token = create_access_token(user_id)
-        credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+        credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
+        )
 
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = None
@@ -547,7 +561,9 @@ class TestAuthDependencies:
 
         sample_user.is_active = False
         token = create_access_token(sample_user.id)
-        credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+        credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
+        )
 
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_user
@@ -559,14 +575,18 @@ class TestAuthDependencies:
         assert exc_info.value.status_code == 403
         assert "USER_INACTIVE" in str(exc_info.value.detail)
 
-    async def test_get_optional_user_with_valid_token(self, mock_db, sample_user):
+    async def test_get_optional_user_with_valid_token(
+        self, mock_db, sample_user
+    ):
         """测试可选用户获取 - 有有效令牌"""
         from fastapi.security import HTTPAuthorizationCredentials
 
         from ai_ppt.api.deps import get_optional_user
 
         token = create_access_token(sample_user.id)
-        credentials = HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
+        credentials = HTTPAuthorizationCredentials(
+            scheme="Bearer", credentials=token
+        )
 
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = sample_user

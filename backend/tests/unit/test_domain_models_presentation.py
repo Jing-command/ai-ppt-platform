@@ -62,8 +62,12 @@ class TestPresentationInit:
         )
 
         # These are set by SQLAlchemy defaults on persist, not in __init__
-        assert presentation.status is None  # Will be set by SQLAlchemy default on persist
-        assert presentation.id is None  # Will be set by SQLAlchemy default on persist
+        assert (
+            presentation.status is None
+        )  # Will be set by SQLAlchemy default on persist
+        assert (
+            presentation.id is None
+        )  # Will be set by SQLAlchemy default on persist
 
 
 class TestPresentationUpdateTitle:
@@ -141,7 +145,9 @@ class TestPresentationPublish:
             status=PresentationStatus.ARCHIVED,
         )
 
-        with pytest.raises(ValueError, match="Cannot publish archived presentation"):
+        with pytest.raises(
+            ValueError, match="Cannot publish archived presentation"
+        ):
             presentation.publish()
 
     def test_publish_already_published(self):

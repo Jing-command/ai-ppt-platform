@@ -17,6 +17,7 @@ from ai_ppt.infrastructure.repositories.base import BaseRepository
 
 class MockModel(Base):
     """测试用模型类"""
+
     __tablename__ = "mock_models"
 
     id = Column(String, primary_key=True)
@@ -96,7 +97,9 @@ class TestBaseRepository:
     class TestGetByIdOrRaise:
         """测试 get_by_id_or_raise 方法"""
 
-        async def test_get_by_id_or_raise_success(self, repository, mock_session):
+        async def test_get_by_id_or_raise_success(
+            self, repository, mock_session
+        ):
             """测试成功获取实体"""
             entity_id = uuid.uuid4()
             mock_entity = MockModel(id=entity_id, name="Test")
@@ -109,7 +112,9 @@ class TestBaseRepository:
 
             assert result == mock_entity
 
-        async def test_get_by_id_or_raise_not_found(self, repository, mock_session):
+        async def test_get_by_id_or_raise_not_found(
+            self, repository, mock_session
+        ):
             """测试实体不存在时抛出异常"""
             entity_id = uuid.uuid4()
 
@@ -126,7 +131,9 @@ class TestBaseRepository:
     class TestGetAll:
         """测试 get_all 方法"""
 
-        async def test_get_all_default_pagination(self, repository, mock_session):
+        async def test_get_all_default_pagination(
+            self, repository, mock_session
+        ):
             """测试默认分页"""
             mock_entities = [
                 MockModel(name="Entity1"),
@@ -144,7 +151,9 @@ class TestBaseRepository:
             assert len(result) == 2
             assert result == mock_entities
 
-        async def test_get_all_with_custom_pagination(self, repository, mock_session):
+        async def test_get_all_with_custom_pagination(
+            self, repository, mock_session
+        ):
             """测试自定义分页"""
             mock_entities = [MockModel(name="Entity1")]
 
