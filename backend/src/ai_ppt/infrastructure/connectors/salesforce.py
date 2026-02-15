@@ -98,7 +98,9 @@ class SalesforceConnector(DataConnector):
         self._client_id: Optional[str] = None
         self._client_secret: Optional[str] = None
 
-    def set_oauth_credentials(self, client_id: str, client_secret: str) -> None:
+    def set_oauth_credentials(
+        self, client_id: str, client_secret: str
+    ) -> None:
         """
         设置 OAuth 凭证
 
@@ -137,11 +139,15 @@ class SalesforceConnector(DataConnector):
 
             token_data = response.json()
             self._access_token = token_data["access_token"]
-            self.instance_url = self.instance_url or token_data.get("instance_url")
+            self.instance_url = self.instance_url or token_data.get(
+                "instance_url"
+            )
             self._connected = True
 
         except httpx.HTTPError as e:
-            raise ConnectionError(f"Failed to authenticate with Salesforce: {e}")
+            raise ConnectionError(
+                f"Failed to authenticate with Salesforce: {e}"
+            )
         except KeyError as e:
             raise AuthenticationError(f"Invalid authentication response: {e}")
 
@@ -158,7 +164,9 @@ class SalesforceConnector(DataConnector):
         if not self._client or not self._access_token:
             return False
         try:
-            await self._api_request("GET", f"/services/data/{self.api_version}/limits")
+            await self._api_request(
+                "GET", f"/services/data/{self.api_version}/limits"
+            )
             return True
         except Exception:
             return False
@@ -316,7 +324,9 @@ class SalesforceConnector(DataConnector):
             from urllib.parse import quote
 
             encoded_query = quote(query)
-            endpoint = f"/services/data/{self.api_version}/query/?q={encoded_query}"
+            endpoint = (
+                f"/services/data/{self.api_version}/query/?q={encoded_query}"
+            )
 
             data = await self._api_request("GET", endpoint)
             records = data.get("records", [])

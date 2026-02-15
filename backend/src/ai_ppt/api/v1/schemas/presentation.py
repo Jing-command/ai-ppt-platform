@@ -65,7 +65,9 @@ class Slide(BaseModel):
 
     id: Optional[Union[str, UUID]] = None
     type: str = Field(default="content", description="幻灯片类型")
-    content: Union[SlideContent, Dict[str, Any]] = Field(..., description="幻灯片内容")
+    content: Union[SlideContent, Dict[str, Any]] = Field(
+        ..., description="幻灯片内容"
+    )
     layout: Optional[SlideLayout] = None
     style: Optional[Union[SlideStyle, Dict[str, Any]]] = None
     notes: Optional[str] = None
@@ -103,8 +105,12 @@ class PresentationBase(BaseModel):
 class PresentationCreate(PresentationBase):
     """创建 PPT 请求"""
 
-    description: Optional[str] = Field(None, max_length=1000, description="PPT 描述")
-    template_id: Optional[str] = Field(None, alias="templateId", description="模板 ID")
+    description: Optional[str] = Field(
+        None, max_length=1000, description="PPT 描述"
+    )
+    template_id: Optional[str] = Field(
+        None, alias="templateId", description="模板 ID"
+    )
     outline_id: Optional[UUID] = Field(
         None, alias="outlineId", description="关联的大纲ID"
     )
@@ -142,14 +148,20 @@ class PresentationResponse(PresentationBase):
     owner_id: UUID = Field(..., alias="ownerId")
     outline_id: Optional[UUID] = Field(None, alias="outlineId")
     template_id: Optional[str] = Field(None, alias="templateId")
-    slide_count: int = Field(default=0, alias="slideCount", description="幻灯片数量")
-    status: str = Field(default="draft", description="状态: draft, published, archived")
+    slide_count: int = Field(
+        default=0, alias="slideCount", description="幻灯片数量"
+    )
+    status: str = Field(
+        default="draft", description="状态: draft, published, archived"
+    )
     version: int = Field(default=1)
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")
 
     model_config = ConfigDict(
-        from_attributes=True, populate_by_name=True, arbitrary_types_allowed=True
+        from_attributes=True,
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
     )
 
     @model_validator(mode="before")
@@ -183,7 +195,9 @@ class PresentationDetailResponse(PresentationBase):
     updated_at: datetime = Field(..., alias="updatedAt")
 
     model_config = ConfigDict(
-        from_attributes=True, populate_by_name=True, arbitrary_types_allowed=True
+        from_attributes=True,
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
     )
 
     @model_validator(mode="before")
@@ -223,7 +237,9 @@ class SlideCreate(BaseModel):
     layout: Optional[SlideLayout] = None
     style: Optional[SlideStyle] = None
     notes: Optional[str] = None
-    position: Optional[int] = Field(None, ge=0, description="插入位置，None 表示末尾")
+    position: Optional[int] = Field(
+        None, ge=0, description="插入位置，None 表示末尾"
+    )
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -248,7 +264,9 @@ class SlideResponse(Slide):
     updated_at: Optional[datetime] = Field(None, alias="updatedAt")
 
     model_config = ConfigDict(
-        populate_by_name=True, from_attributes=True, arbitrary_types_allowed=True
+        populate_by_name=True,
+        from_attributes=True,
+        arbitrary_types_allowed=True,
     )
 
 
@@ -285,12 +303,17 @@ class GenerateFromOutlineRequest(BaseModel):
 class GenerateRequest(BaseModel):
     """直接生成 PPT 请求（无需大纲）"""
 
-    prompt: str = Field(..., min_length=10, max_length=2000, description="生成提示词")
-    template_id: Optional[str] = Field(None, alias="templateId", description="模板 ID")
+    prompt: str = Field(
+        ..., min_length=10, max_length=2000, description="生成提示词"
+    )
+    template_id: Optional[str] = Field(
+        None, alias="templateId", description="模板 ID"
+    )
     num_slides: int = Field(default=10, ge=1, le=50, alias="numSlides")
     language: str = Field(default="zh", pattern="^(zh|en)$")
     style: str = Field(
-        default="business", description="风格: business, education, creative, minimal"
+        default="business",
+        description="风格: business, education, creative, minimal",
     )
     provider: Optional[str] = Field(None, description="指定 AI 提供商")
 
@@ -312,7 +335,9 @@ class GenerateResponse(BaseModel):
 
     task_id: UUID = Field(..., alias="taskId")
     status: str
-    estimated_time: int = Field(..., alias="estimatedTime", description="预估秒数")
+    estimated_time: int = Field(
+        ..., alias="estimatedTime", description="预估秒数"
+    )
     message: str
 
     model_config = ConfigDict(populate_by_name=True)

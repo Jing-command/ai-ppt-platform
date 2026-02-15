@@ -178,7 +178,10 @@ async def generate_outline(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={"code": "GENERATION_FAILED", "message": f"生成大纲失败: {str(e)}"},
+            detail={
+                "code": "GENERATION_FAILED",
+                "message": f"生成大纲失败: {str(e)}",
+            },
         )
 
 

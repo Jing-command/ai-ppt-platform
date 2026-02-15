@@ -9,7 +9,9 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ai_ppt.api.v1.schemas.presentation import SlideUpdate
-from ai_ppt.application.services.presentation_service import PresentationService
+from ai_ppt.application.services.presentation_service import (
+    PresentationService,
+)
 from ai_ppt.domain.commands.command_history import CommandHistory
 from ai_ppt.domain.commands.slide_commands import UpdateSlideCommand
 from ai_ppt.infrastructure.repositories.slide import SlideRepository
@@ -68,7 +70,9 @@ class SlideService:
             CommandHistory 实例
         """
         if presentation_id not in self._command_histories:
-            self._command_histories[presentation_id] = CommandHistory(max_history=50)
+            self._command_histories[presentation_id] = CommandHistory(
+                max_history=50
+            )
         return self._command_histories[presentation_id]
 
     async def update_slide(
@@ -146,7 +150,9 @@ class SlideService:
             UndoRedoError: 无可撤销的操作
         """
         # 检查权限
-        await self._presentation_service.get_by_id_or_raise(presentation_id, user_id)
+        await self._presentation_service.get_by_id_or_raise(
+            presentation_id, user_id
+        )
 
         history = self._get_command_history(presentation_id)
 
@@ -192,7 +198,9 @@ class SlideService:
             UndoRedoError: 无可重做的操作
         """
         # 检查权限
-        await self._presentation_service.get_by_id_or_raise(presentation_id, user_id)
+        await self._presentation_service.get_by_id_or_raise(
+            presentation_id, user_id
+        )
 
         history = self._get_command_history(presentation_id)
 

@@ -134,7 +134,9 @@ class OutlineBackground:
         }
 
     @classmethod
-    def from_dict(cls, data: Optional[dict[str, Any]]) -> Optional["OutlineBackground"]:
+    def from_dict(
+        cls, data: Optional[dict[str, Any]]
+    ) -> Optional["OutlineBackground"]:
         """从字典创建"""
         if not data:
             return None
@@ -263,7 +265,9 @@ class Outline(Base):
     def get_pages(self) -> list[OutlinePage]:
         """获取页面列表（从 pages JSON 解析）"""
         if self._pages_cache is None:
-            self._pages_cache = [OutlinePage.from_dict(p) for p in (self.pages or [])]
+            self._pages_cache = [
+                OutlinePage.from_dict(p) for p in (self.pages or [])
+            ]
         return self._pages_cache
 
     def set_pages(self, pages: list[OutlinePage]) -> None:
@@ -275,7 +279,9 @@ class Outline(Base):
     def get_background(self) -> Optional[OutlineBackground]:
         """获取背景设置"""
         if self._background_cache is None and self.background:
-            self._background_cache = OutlineBackground.from_dict(self.background)
+            self._background_cache = OutlineBackground.from_dict(
+                self.background
+            )
         return self._background_cache
 
     def set_background(self, background: Optional[OutlineBackground]) -> None:

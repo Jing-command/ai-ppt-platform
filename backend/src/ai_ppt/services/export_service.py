@@ -141,7 +141,9 @@ class ExportService:
         _export_tasks[task.id] = task
         return task
 
-    async def get_task(self, task_id: UUID, user_id: UUID) -> Optional[ExportTask]:
+    async def get_task(
+        self, task_id: UUID, user_id: UUID
+    ) -> Optional[ExportTask]:
         """
         获取导出任务
 
@@ -192,7 +194,9 @@ class ExportService:
             elif task.format == ExportFormat.PDF:
                 file_path = await self._export_pdf(presentation, slides, task)
             elif task.format in (ExportFormat.PNG, ExportFormat.JPG):
-                file_path = await self._export_images(presentation, slides, task)
+                file_path = await self._export_images(
+                    presentation, slides, task
+                )
             else:
                 raise ExportFailedError(f"Unsupported format: {task.format}")
 
@@ -390,7 +394,9 @@ class ExportService:
         # 注册中文字体（如果可用）
         try:
             pdfmetrics.registerFont(
-                TTFont("SimHei", "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc")
+                TTFont(
+                    "SimHei", "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc"
+                )
             )
             font_name = "SimHei"
         except Exception:
@@ -412,7 +418,9 @@ class ExportService:
         for idx, slide in enumerate(slides):
             # 背景色
             bg_color = theme_colors["background"]
-            c.setFillColorRGB(bg_color[0] / 255, bg_color[1] / 255, bg_color[2] / 255)
+            c.setFillColorRGB(
+                bg_color[0] / 255, bg_color[1] / 255, bg_color[2] / 255
+            )
             c.rect(0, 0, width, height, fill=1, stroke=0)
 
             content = slide.content or {}
@@ -421,7 +429,9 @@ class ExportService:
             if content.get("title"):
                 title_color = theme_colors["title"]
                 c.setFillColorRGB(
-                    title_color[0] / 255, title_color[1] / 255, title_color[2] / 255
+                    title_color[0] / 255,
+                    title_color[1] / 255,
+                    title_color[2] / 255,
                 )
                 c.setFont(font_name, 28 if idx == 0 else 24)
                 c.drawString(40, height - 60, content["title"])
@@ -430,7 +440,9 @@ class ExportService:
             if content.get("subtitle"):
                 text_color = theme_colors["text"]
                 c.setFillColorRGB(
-                    text_color[0] / 255, text_color[1] / 255, text_color[2] / 255
+                    text_color[0] / 255,
+                    text_color[1] / 255,
+                    text_color[2] / 255,
                 )
                 c.setFont(font_name, 16)
                 c.drawString(40, height - 100, content["subtitle"])
@@ -440,7 +452,9 @@ class ExportService:
             if content.get("text"):
                 text_color = theme_colors["text"]
                 c.setFillColorRGB(
-                    text_color[0] / 255, text_color[1] / 255, text_color[2] / 255
+                    text_color[0] / 255,
+                    text_color[1] / 255,
+                    text_color[2] / 255,
                 )
                 c.setFont(font_name, 12)
 
@@ -449,7 +463,10 @@ class ExportService:
                 words = text.split()
                 line = ""
                 for word in words:
-                    if c.stringWidth(line + " " + word, font_name, 12) < width - 80:
+                    if (
+                        c.stringWidth(line + " " + word, font_name, 12)
+                        < width - 80
+                    ):
                         line += " " + word if line else word
                     else:
                         c.drawString(40, y_pos, line)
@@ -462,7 +479,9 @@ class ExportService:
             if content.get("bullets"):
                 text_color = theme_colors["text"]
                 c.setFillColorRGB(
-                    text_color[0] / 255, text_color[1] / 255, text_color[2] / 255
+                    text_color[0] / 255,
+                    text_color[1] / 255,
+                    text_color[2] / 255,
                 )
                 c.setFont(font_name, 12)
 
@@ -572,18 +591,26 @@ class ExportService:
                 words = text.split()
                 line = ""
                 for word in words:
-                    bbox = draw.textbbox((0, 0), line + " " + word, font=text_font)
+                    bbox = draw.textbbox(
+                        (0, 0), line + " " + word, font=text_font
+                    )
                     if bbox[2] < width - 80:
                         line += " " + word if line else word
                     else:
                         draw.text(
-                            (40, y_pos), line, fill=theme_colors["text"], font=text_font
+                            (40, y_pos),
+                            line,
+                            fill=theme_colors["text"],
+                            font=text_font,
                         )
                         y_pos += 30
                         line = word
                 if line:
                     draw.text(
-                        (40, y_pos), line, fill=theme_colors["text"], font=text_font
+                        (40, y_pos),
+                        line,
+                        fill=theme_colors["text"],
+                        font=text_font,
                     )
 
             # 项目符号
@@ -606,7 +633,11 @@ class ExportService:
             if task.format == ExportFormat.PNG:
                 img.save(img_path, "PNG")
             else:
-                img.save(img_path, "JPEG", quality=95 if task.quality == "high" else 80)
+                img.save(
+                    img_path,
+                    "JPEG",
+                    quality=95 if task.quality == "high" else 80,
+                )
 
             image_files.append(img_path)
             task.progress = 70 + int((idx + 1) / len(slides) * 15)

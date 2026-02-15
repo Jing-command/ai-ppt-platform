@@ -117,12 +117,20 @@ class LLMClient:
         if not _api_key:
             # 尝试从环境变量直接读取（兼容不同的环境变量命名）
             _api_key = (
-                os.environ.get("AI_API_KEY") or os.environ.get("DEEPSEEK_API_KEY") or ""
+                os.environ.get("AI_API_KEY")
+                or os.environ.get("DEEPSEEK_API_KEY")
+                or ""
             )
 
         self.api_key = _api_key
-        self.base_url = base_url or settings.ai_base_url or self.DEFAULT_BASE_URLS[self.provider]
-        self.model = model or settings.ai_model or self.DEFAULT_MODELS[self.provider]
+        self.base_url = (
+            base_url
+            or settings.ai_base_url
+            or self.DEFAULT_BASE_URLS[self.provider]
+        )
+        self.model = (
+            model or settings.ai_model or self.DEFAULT_MODELS[self.provider]
+        )
         self.timeout = timeout or settings.ai_timeout
 
         # 验证 API key 是否配置
@@ -171,7 +179,9 @@ class LLMClient:
 
         return body
 
-    def _parse_response(self, data: Dict[str, Any], latency_ms: float) -> LLMResponse:
+    def _parse_response(
+        self, data: Dict[str, Any], latency_ms: float
+    ) -> LLMResponse:
         """解析 API 响应"""
         choice = data["choices"][0]
 
@@ -212,8 +222,11 @@ class LLMClient:
 
         # 调试日志
         import logging
+
         logger = logging.getLogger(__name__)
-        logger.info(f"LLM Request to {self.provider.value}: model={self.model}, body={body}")
+        logger.info(
+            f"LLM Request to {self.provider.value}: model={self.model}, body={body}"
+        )
 
         try:
             response = await self._client.post("/chat/completions", json=body)
@@ -224,12 +237,16 @@ class LLMClient:
             return self._parse_response(data, latency_ms)
 
         except httpx.TimeoutException as e:
-            raise LLMTimeoutError(f"LLM request timed out after {self.timeout}s") from e
+            raise LLMTimeoutError(
+                f"LLM request timed out after {self.timeout}s"
+            ) from e
         except httpx.HTTPStatusError as e:
             response_body = e.response.text if hasattr(e, "response") else None
             raise LLMAPIError(
                 f"LLM API error: {e}",
-                status_code=e.response.status_code if hasattr(e, "response") else None,
+                status_code=(
+                    e.response.status_code if hasattr(e, "response") else None
+                ),
                 response_body=response_body,
             ) from e
         except httpx.HTTPError as e:
@@ -286,7 +303,9 @@ class LLMClient:
                             content = delta.get("content", "")
 
                             if content:
-                                is_finished = choice.get("finish_reason") is not None
+                                is_finished = (
+                                    choice.get("finish_reason") is not None
+                                )
                                 yield StreamingChunk(
                                     content=content,
                                     is_finished=is_finished,
@@ -353,7 +372,10 @@ class LLMClient:
         # 构建请求
         request = LLMRequest(
             messages=[
-                {"role": "system", "content": "你是一个专业的 PPT 大纲设计专家。"},
+                {
+                    "role": "system",
+                    "content": "你是一个专业的 PPT 大纲设计专家。",
+                },
                 {"role": "user", "content": prompt},
             ],
             temperature=temperature,
@@ -404,7 +426,10 @@ class LLMClient:
         # 构建请求
         request = LLMRequest(
             messages=[
-                {"role": "system", "content": "你是一个专业的 PPT 内容优化专家。"},
+                {
+                    "role": "system",
+                    "content": "你是一个专业的 PPT 内容优化专家。",
+                },
                 {"role": "user", "content": prompt},
             ],
             temperature=temperature,
@@ -420,7 +445,9 @@ class LLMClient:
             result_content = json.loads(response.content)
             return SlideEnhancementResult.model_validate(result_content)
         except json.JSONDecodeError as e:
-            raise LLMFormatError(f"Failed to parse enhancement JSON: {e}") from e
+            raise LLMFormatError(
+                f"Failed to parse enhancement JSON: {e}"
+            ) from e
         except Exception as e:
             raise LLMFormatError(f"Invalid enhancement format: {e}") from e
 

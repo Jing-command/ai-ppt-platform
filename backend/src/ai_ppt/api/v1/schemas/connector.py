@@ -12,11 +12,15 @@ from pydantic import BaseModel, ConfigDict, Field
 class ConnectorBase(BaseModel):
     """连接器基础模型"""
 
-    name: str = Field(..., min_length=1, max_length=100, description="连接器名称")
+    name: str = Field(
+        ..., min_length=1, max_length=100, description="连接器名称"
+    )
     type: str = Field(
         ..., description="连接类型: mysql, postgresql, mongodb, csv, api, etc."
     )
-    description: Optional[str] = Field(None, max_length=500, description="描述")
+    description: Optional[str] = Field(
+        None, max_length=500, description="描述"
+    )
 
 
 class ConnectorCreate(ConnectorBase):
@@ -64,7 +68,9 @@ class ConnectorResponse(ConnectorBase):
     is_active: bool = Field(default=True, alias="isActive")
     last_tested_at: Optional[datetime] = Field(None, alias="lastTestedAt")
     last_test_status: Optional[str] = Field(
-        None, alias="lastTestStatus", description="last_test_status: success, failed"
+        None,
+        alias="lastTestStatus",
+        description="last_test_status: success, failed",
     )
     created_at: datetime = Field(..., alias="createdAt")
     updated_at: datetime = Field(..., alias="updatedAt")

@@ -113,7 +113,9 @@ class Connector(Base):
     def mark_as_tested(self, success: bool) -> None:
         """标记为已测试"""
         self.last_tested_at = datetime.utcnow()
-        self.status = ConnectorStatus.CONNECTED if success else ConnectorStatus.ERROR
+        self.status = (
+            ConnectorStatus.CONNECTED if success else ConnectorStatus.ERROR
+        )
 
     def update_config(self, new_config: dict[str, Any]) -> None:
         """更新连接配置"""

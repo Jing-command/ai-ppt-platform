@@ -80,7 +80,9 @@ class CreateSlideCommand(Command):
             "created_slide_id": (
                 str(self._created_slide_id) if self._created_slide_id else None
             ),
-            "executed_at": self.executed_at.isoformat() if self.executed_at else None,
+            "executed_at": (
+                self.executed_at.isoformat() if self.executed_at else None
+            ),
         }
 
     @classmethod
@@ -200,7 +202,9 @@ class UpdateSlideCommand(Command):
             "slide_id": str(self.slide_id),
             "updates": self.updates,
             "previous_data": self._previous_data,
-            "executed_at": self.executed_at.isoformat() if self.executed_at else None,
+            "executed_at": (
+                self.executed_at.isoformat() if self.executed_at else None
+            ),
         }
 
     @classmethod
@@ -302,7 +306,9 @@ class DeleteSlideCommand(Command):
             "id": str(self.id),
             "slide_id": str(self.slide_id),
             "deleted_data": self._deleted_data,
-            "executed_at": self.executed_at.isoformat() if self.executed_at else None,
+            "executed_at": (
+                self.executed_at.isoformat() if self.executed_at else None
+            ),
         }
 
     @classmethod
@@ -387,7 +393,9 @@ class MoveSlideCommand(Command):
             "slide_id": str(self.slide_id),
             "new_order": self.new_order,
             "previous_order": self._previous_order,
-            "executed_at": self.executed_at.isoformat() if self.executed_at else None,
+            "executed_at": (
+                self.executed_at.isoformat() if self.executed_at else None
+            ),
         }
 
     @classmethod

@@ -67,7 +67,9 @@ class ChatService:
         pass
 
     def analyze_intent(
-        self, messages: List[ChatMessage], context: Optional[ChatContext] = None
+        self,
+        messages: List[ChatMessage],
+        context: Optional[ChatContext] = None,
     ) -> IntentAnalysis:
         """
         分析用户意图
@@ -97,7 +99,9 @@ class ChatService:
         )
 
         # 检查是否是提示词优化请求
-        prompt_score = self._calculate_keyword_score(content, self.PROMPT_KEYWORDS)
+        prompt_score = self._calculate_keyword_score(
+            content, self.PROMPT_KEYWORDS
+        )
 
         # 分析缺失的信息
         missing_info = self._analyze_missing_info(content, context)
@@ -113,7 +117,9 @@ class ChatService:
                 intent_type=IntentType.CLARIFICATION,
                 confidence=min(0.9, clarification_score + 0.3),
                 missing_info=missing_info,
-                suggested_questions=suggested_questions[:3],  # 最多返回3个建议问题
+                suggested_questions=suggested_questions[
+                    :3
+                ],  # 最多返回3个建议问题
             )
 
         if prompt_score > 0.4 and len(missing_info) <= 1:
@@ -139,7 +145,9 @@ class ChatService:
             suggested_questions=[],
         )
 
-    def _get_last_user_message(self, messages: List[ChatMessage]) -> Optional[ChatMessage]:
+    def _get_last_user_message(
+        self, messages: List[ChatMessage]
+    ) -> Optional[ChatMessage]:
         """
         获取最后一条用户消息
 
@@ -154,7 +162,9 @@ class ChatService:
                 return message
         return None
 
-    def _calculate_keyword_score(self, content: str, keywords: List[str]) -> float:
+    def _calculate_keyword_score(
+        self, content: str, keywords: List[str]
+    ) -> float:
         """
         计算关键词匹配分数
 
@@ -206,7 +216,9 @@ class ChatService:
         return missing
 
     def generate_optimized_prompt(
-        self, messages: List[ChatMessage], context: Optional[ChatContext] = None
+        self,
+        messages: List[ChatMessage],
+        context: Optional[ChatContext] = None,
     ) -> str:
         """
         生成优化后的提示词
@@ -335,7 +347,9 @@ class ChatService:
         return None
 
     async def generate_response_stream(
-        self, messages: List[ChatMessage], context: Optional[ChatContext] = None
+        self,
+        messages: List[ChatMessage],
+        context: Optional[ChatContext] = None,
     ) -> AsyncIterator[ChatResponseChunk]:
         """
         生成流式响应
@@ -359,7 +373,9 @@ class ChatService:
         elif intent.intent_type == IntentType.PROMPT_OPTIMIZATION:
             response_text = self._generate_optimization_response(intent)
             has_optimized = True
-            optimized_prompt = self.generate_optimized_prompt(messages, context)
+            optimized_prompt = self.generate_optimized_prompt(
+                messages, context
+            )
 
         elif intent.intent_type == IntentType.SUGGESTION:
             response_text = self._generate_suggestion_response(intent)

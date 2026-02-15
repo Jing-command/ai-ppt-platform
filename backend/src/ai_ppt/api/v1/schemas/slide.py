@@ -13,7 +13,9 @@ class OperationHistoryEntry(BaseModel):
 
     operation_id: str = Field(..., alias="operationId")
     operation_type: str = Field(
-        ..., alias="operationType", description="操作类型: add, update, delete, reorder"
+        ...,
+        alias="operationType",
+        description="操作类型: add, update, delete, reorder",
     )
     slide_id: Optional[str] = Field(None, alias="slideId")
     description: str

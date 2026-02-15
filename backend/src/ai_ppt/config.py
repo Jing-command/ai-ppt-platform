@@ -26,7 +26,9 @@ class Settings(BaseSettings):
     PORT: int = 8000
 
     # 数据库配置
-    DATABASE_URL: str = "postgresql+asyncpg://pptuser:pptpass@localhost:5432/pptdb"
+    DATABASE_URL: str = (
+        "postgresql+asyncpg://pptuser:pptpass@localhost:5432/pptdb"
+    )
     DATABASE_POOL_SIZE: int = 10
     DATABASE_MAX_OVERFLOW: int = 20
 

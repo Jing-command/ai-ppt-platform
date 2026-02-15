@@ -155,7 +155,9 @@ class PresentationService:
         """
         presentation = await self.get_by_id(presentation_id, user_id)
         if not presentation:
-            raise PresentationNotFoundError(f"Presentation {presentation_id} not found")
+            raise PresentationNotFoundError(
+                f"Presentation {presentation_id} not found"
+            )
         return presentation
 
     async def get_by_user(
@@ -185,7 +187,9 @@ class PresentationService:
             where_clause = where_clause & (Presentation.status == status)
 
         # 获取总数
-        count_stmt = select(func.count()).select_from(Presentation).where(where_clause)
+        count_stmt = (
+            select(func.count()).select_from(Presentation).where(where_clause)
+        )
         total_result = await self._session.execute(count_stmt)
         total = total_result.scalar_one()
 
@@ -310,7 +314,9 @@ class PresentationService:
             order_index = max_order + 1
 
         # 创建幻灯片
-        content_dict = slide_data.content.model_dump(by_alias=True, exclude_none=True)
+        content_dict = slide_data.content.model_dump(
+            by_alias=True, exclude_none=True
+        )
 
         # 确定布局类型
         layout_type = SlideLayoutType.TITLE_CONTENT
@@ -424,7 +430,9 @@ class PresentationService:
                 pass
 
         if data.content is not None:
-            content_dict = data.content.model_dump(by_alias=True, exclude_none=True)
+            content_dict = data.content.model_dump(
+                by_alias=True, exclude_none=True
+            )
             slide.update_content(content_dict)
 
             # 同步更新 title

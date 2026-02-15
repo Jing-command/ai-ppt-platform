@@ -20,13 +20,17 @@ class User(Base):
 
     __tablename__ = "users"
 
-    id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        GUID(), primary_key=True, default=uuid.uuid4
+    )
 
     # 基本信息
     email: Mapped[str] = mapped_column(
         String(255), unique=True, nullable=False, index=True
     )
-    username: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(
+        String(100), unique=True, nullable=False
+    )
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
 
     # 头像
@@ -43,7 +47,9 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow_aware, onupdate=utcnow_aware
     )
-    last_login: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_login: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     def __repr__(self) -> str:
         return f"<User(id={self.id}, email={self.email})>"

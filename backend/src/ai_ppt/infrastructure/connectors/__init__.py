@@ -20,7 +20,10 @@ from ai_ppt.infrastructure.connectors.base import (
 )
 
 # 工厂类
-from ai_ppt.infrastructure.connectors.factory import ConnectorFactory, ConnectorType
+from ai_ppt.infrastructure.connectors.factory import (
+    ConnectorFactory,
+    ConnectorType,
+)
 
 # 具体连接器实现
 from ai_ppt.infrastructure.connectors.mysql import MySQLConnector

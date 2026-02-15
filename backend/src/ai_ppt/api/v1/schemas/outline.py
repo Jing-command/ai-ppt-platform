@@ -12,10 +12,16 @@ from pydantic import BaseModel, ConfigDict, Field
 class OutlinePage(BaseModel):
     """大纲页面（对应 API Contract 的 OutlineSection）"""
 
-    id: str = Field(default_factory=lambda: str(UUID(int=0)), description="页面ID")
+    id: str = Field(
+        default_factory=lambda: str(UUID(int=0)), description="页面ID"
+    )
     page_number: int = Field(..., ge=1, alias="pageNumber", description="页码")
-    title: str = Field(..., min_length=1, max_length=200, description="页面标题")
-    content: Optional[str] = Field(None, max_length=1000, description="页面内容描述")
+    title: str = Field(
+        ..., min_length=1, max_length=200, description="页面标题"
+    )
+    content: Optional[str] = Field(
+        None, max_length=1000, description="页面内容描述"
+    )
     page_type: str = Field(
         default="content",
         alias="pageType",
@@ -37,8 +43,12 @@ class OutlineBackground(BaseModel):
     prompt: Optional[str] = Field(None, description="AI生成背景时的提示词")
     url: Optional[str] = Field(None, description="上传图片的URL")
     color: Optional[str] = Field(None, description="纯色背景的颜色值 (hex)")
-    opacity: float = Field(default=1.0, ge=0.0, le=1.0, description="背景透明度")
-    blur: float = Field(default=0.0, ge=0.0, le=20.0, description="背景模糊度(px)")
+    opacity: float = Field(
+        default=1.0, ge=0.0, le=1.0, description="背景透明度"
+    )
+    blur: float = Field(
+        default=0.0, ge=0.0, le=20.0, description="背景模糊度(px)"
+    )
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -46,14 +56,20 @@ class OutlineBackground(BaseModel):
 class OutlineBase(BaseModel):
     """大纲基础模型"""
 
-    title: str = Field(..., min_length=1, max_length=200, description="大纲标题")
-    description: Optional[str] = Field(None, max_length=1000, description="描述")
+    title: str = Field(
+        ..., min_length=1, max_length=200, description="大纲标题"
+    )
+    description: Optional[str] = Field(
+        None, max_length=1000, description="描述"
+    )
 
 
 class OutlineCreate(OutlineBase):
     """手动创建大纲请求"""
 
-    pages: List[OutlinePage] = Field(default_factory=list, description="页面列表")
+    pages: List[OutlinePage] = Field(
+        default_factory=list, description="页面列表"
+    )
     background: Optional[OutlineBackground] = None
 
     model_config = ConfigDict(
@@ -88,13 +104,16 @@ class OutlineCreate(OutlineBase):
 class OutlineGenerateRequest(BaseModel):
     """AI 生成大纲请求"""
 
-    prompt: str = Field(..., min_length=10, max_length=2000, description="主题描述")
+    prompt: str = Field(
+        ..., min_length=10, max_length=2000, description="主题描述"
+    )
     num_slides: int = Field(
         default=10, ge=3, le=50, alias="numSlides", description="PPT总页数"
     )
     language: str = Field(default="zh", pattern="^(zh|en)$")
     style: str = Field(
-        default="business", description="风格: business, education, creative, technical"
+        default="business",
+        description="风格: business, education, creative, technical",
     )
     context_data: Optional[Dict[str, Any]] = Field(
         None, alias="contextData", description="上下文数据"
@@ -120,7 +139,9 @@ class OutlineGenerateResponse(BaseModel):
     """AI 生成大纲响应"""
 
     task_id: UUID = Field(..., alias="taskId")
-    status: str = Field(..., description="状态: pending, processing, completed, failed")
+    status: str = Field(
+        ..., description="状态: pending, processing, completed, failed"
+    )
     estimated_time: int = Field(
         ..., ge=0, alias="estimatedTime", description="预估时间(秒)"
     )
@@ -150,9 +171,12 @@ class OutlineResponse(OutlineBase):
     user_id: UUID = Field(..., alias="userId")
     pages: List[OutlinePage] = Field(default_factory=list)
     background: Optional[OutlineBackground] = None
-    total_slides: int = Field(default=0, alias="totalSlides", description="总页数")
+    total_slides: int = Field(
+        default=0, alias="totalSlides", description="总页数"
+    )
     status: str = Field(
-        default="draft", description="状态: draft, generating, completed, archived"
+        default="draft",
+        description="状态: draft, generating, completed, archived",
     )
     ai_prompt: Optional[str] = Field(None, alias="aiPrompt")
     ai_parameters: Optional[Dict[str, Any]] = Field(None, alias="aiParameters")
@@ -170,8 +194,12 @@ class OutlineDetailResponse(OutlineResponse):
 class OutlineToPresentationRequest(BaseModel):
     """基于大纲创建 PPT 请求"""
 
-    title: Optional[str] = Field(None, description="自定义标题，默认使用大纲标题")
-    template_id: Optional[str] = Field(None, alias="templateId", description="模板ID")
+    title: Optional[str] = Field(
+        None, description="自定义标题，默认使用大纲标题"
+    )
+    template_id: Optional[str] = Field(
+        None, alias="templateId", description="模板ID"
+    )
     theme: Optional[str] = Field(None, description="主题风格")
     slide_layout: str = Field(
         default="auto",
@@ -179,7 +207,9 @@ class OutlineToPresentationRequest(BaseModel):
         description="幻灯片布局: auto, detailed, minimal",
     )
     generate_content: bool = Field(
-        default=True, alias="generateContent", description="是否使用AI生成详细内容"
+        default=True,
+        alias="generateContent",
+        description="是否使用AI生成详细内容",
     )
     provider: Optional[str] = Field(None, description="指定 AI 提供商")
 

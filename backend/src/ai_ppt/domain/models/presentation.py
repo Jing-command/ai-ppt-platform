@@ -57,7 +57,9 @@ class Presentation(Base):
 
     # 模板和样式
     theme: Mapped[str] = mapped_column(String(50), default="default")
-    color_scheme: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    color_scheme: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True
+    )
 
     # 元数据
     is_public: Mapped[BoolTrue]

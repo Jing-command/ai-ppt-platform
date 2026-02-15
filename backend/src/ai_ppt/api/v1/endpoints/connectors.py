@@ -37,7 +37,9 @@ from ai_ppt.models.user import User
 router = APIRouter(prefix="/connectors", tags=["连接器管理"])
 
 
-def get_connector_service(db: AsyncSession = Depends(get_db)) -> ConnectorService:
+def get_connector_service(
+    db: AsyncSession = Depends(get_db),
+) -> ConnectorService:
     """获取连接器服务实例"""
     return ConnectorService(db)
 

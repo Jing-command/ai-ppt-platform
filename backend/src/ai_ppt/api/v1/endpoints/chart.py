@@ -99,7 +99,9 @@ async def analyze_data(request: DataAnalyzeRequest) -> DataAnalyzeResponse:
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def generate_chart(request: ChartGenerateRequest) -> ChartGenerateResponse:
+async def generate_chart(
+    request: ChartGenerateRequest,
+) -> ChartGenerateResponse:
     """
     生成图表
 
@@ -169,7 +171,9 @@ async def generate_chart(request: ChartGenerateRequest) -> ChartGenerateResponse
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def recommend_charts(request: ChartRecommendRequest) -> ChartRecommendResponse:
+async def recommend_charts(
+    request: ChartRecommendRequest,
+) -> ChartRecommendResponse:
     """
     推荐图表
 

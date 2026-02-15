@@ -109,7 +109,9 @@ async def get_dashboard_stats(
 
         # 1. 总大纲数
         total_outlines_result = await db.execute(
-            select(func.count()).select_from(Outline).where(Outline.user_id == user_id)
+            select(func.count())
+            .select_from(Outline)
+            .where(Outline.user_id == user_id)
         )
         total_outlines = total_outlines_result.scalar() or 0
 
@@ -117,7 +119,9 @@ async def get_dashboard_stats(
         outlines_this_week_result = await db.execute(
             select(func.count())
             .select_from(Outline)
-            .where(Outline.user_id == user_id, Outline.created_at >= week_start)
+            .where(
+                Outline.user_id == user_id, Outline.created_at >= week_start
+            )
         )
         outlines_this_week = outlines_this_week_result.scalar() or 0
 
@@ -126,7 +130,8 @@ async def get_dashboard_stats(
             select(func.count())
             .select_from(Presentation)
             .where(
-                Presentation.owner_id == user_id, Presentation.created_at >= week_start
+                Presentation.owner_id == user_id,
+                Presentation.created_at >= week_start,
             )
         )
         ppts_this_week = ppts_this_week_result.scalar() or 0
@@ -148,7 +153,10 @@ async def get_dashboard_stats(
         recent_outlines_result = await db.execute(
             select(func.count())
             .select_from(Outline)
-            .where(Outline.user_id == user_id, Outline.updated_at >= seven_days_ago)
+            .where(
+                Outline.user_id == user_id,
+                Outline.updated_at >= seven_days_ago,
+            )
         )
         recent_outlines = recent_outlines_result.scalar() or 0
 
@@ -218,7 +226,9 @@ async def get_dashboard_stats(
                     "title": row[1],
                     "type": "ppt",
                     "status": (
-                        str(row[2].value) if hasattr(row[2], "value") else str(row[2])
+                        str(row[2].value)
+                        if hasattr(row[2], "value")
+                        else str(row[2])
                     ),
                     "updated_at": row[3],
                     "sort_key": row[3],
@@ -252,5 +262,8 @@ async def get_dashboard_stats(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={"code": "INTERNAL_ERROR", "message": f"获取统计数据失败: {str(e)}"},
+            detail={
+                "code": "INTERNAL_ERROR",
+                "message": f"获取统计数据失败: {str(e)}",
+            },
         )

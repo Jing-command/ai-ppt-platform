@@ -42,7 +42,9 @@ async def _get_user_by_email(db: AsyncSession, email: str) -> Optional[User]:
     return result.scalar_one_or_none()
 
 
-async def _get_user_by_username(db: AsyncSession, username: str) -> Optional[User]:
+async def _get_user_by_username(
+    db: AsyncSession, username: str
+) -> Optional[User]:
     """通过用户名获取用户"""
     result = await db.execute(select(User).where(User.username == username))
     return result.scalar_one_or_none()
@@ -65,7 +67,10 @@ def _user_to_response(user: User) -> UserResponse:
     status_code=status.HTTP_201_CREATED,
     summary="用户注册",
     responses={
-        400: {"model": ErrorResponse, "description": "请求参数错误或用户已存在"},
+        400: {
+            "model": ErrorResponse,
+            "description": "请求参数错误或用户已存在",
+        },
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
@@ -115,7 +120,9 @@ async def register(
     access_token = create_access_token(new_user.id)
 
     return RegisterResponse(
-        accessToken=access_token, tokenType="bearer", user=_user_to_response(new_user)
+        accessToken=access_token,
+        tokenType="bearer",
+        user=_user_to_response(new_user),
     )
 
 
@@ -145,7 +152,10 @@ async def login(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "INVALID_CREDENTIALS", "message": "邮箱或密码错误"},
+            detail={
+                "code": "INVALID_CREDENTIALS",
+                "message": "邮箱或密码错误",
+            },
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -153,7 +163,10 @@ async def login(
     if not verify_password(data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "INVALID_CREDENTIALS", "message": "邮箱或密码错误"},
+            detail={
+                "code": "INVALID_CREDENTIALS",
+                "message": "邮箱或密码错误",
+            },
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -172,7 +185,9 @@ async def login(
     access_token = create_access_token(user.id)
 
     return LoginResponse(
-        accessToken=access_token, tokenType="bearer", user=_user_to_response(user)
+        accessToken=access_token,
+        tokenType="bearer",
+        user=_user_to_response(user),
     )
 
 
@@ -246,7 +261,9 @@ async def refresh(
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def get_me(current_user: User = Depends(get_current_user)) -> UserResponse:
+async def get_me(
+    current_user: User = Depends(get_current_user),
+) -> UserResponse:
     """
     获取当前登录用户的信息
 
@@ -312,7 +329,10 @@ async def upload_avatar(
     if file.content_type not in allowed_types:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"code": "INVALID_FILE_TYPE", "message": "仅支持 jpg, png, gif, webp 格式"},
+            detail={
+                "code": "INVALID_FILE_TYPE",
+                "message": "仅支持 jpg, png, gif, webp 格式",
+            },
         )
 
     # 验证文件大小（2MB）
@@ -320,7 +340,10 @@ async def upload_avatar(
     if len(contents) > 2 * 1024 * 1024:
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            detail={"code": "FILE_TOO_LARGE", "message": "文件大小不能超过 2MB"},
+            detail={
+                "code": "FILE_TOO_LARGE",
+                "message": "文件大小不能超过 2MB",
+            },
         )
 
     # 生成文件名

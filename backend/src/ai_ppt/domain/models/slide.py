@@ -50,7 +50,9 @@ class Slide(Base):
 
     # 索引
     __table_args__ = (
-        Index("ix_slides_presentation_order", "presentation_id", "order_index"),
+        Index(
+            "ix_slides_presentation_order", "presentation_id", "order_index"
+        ),
     )
 
     # 主键

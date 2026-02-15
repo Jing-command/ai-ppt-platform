@@ -10,11 +10,14 @@ from typing import Literal, Optional
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 # 获取 backend 目录路径
 # __file__ 是 config.py 的路径: ai_ppt/infrastructure/config.py
 # 需要向上回溯 4 层: infrastructure -> ai_ppt -> src -> backend
-_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+_PROJECT_ROOT = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
+)
 
 
 class Settings(BaseSettings):
@@ -36,12 +39,14 @@ class Settings(BaseSettings):
 
     # API 配置
     api_v1_prefix: str = Field(default="/api/v1")
-    cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+    cors_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:3000"]
+    )
 
     # 数据库配置
     db_url: str = Field(
         default="postgresql+asyncpg://postgres:postgres@localhost:5432/ai_ppt",
-        alias="DB_URL"
+        alias="DB_URL",
     )
     db_pool_size: int = Field(default=10, alias="DB_POOL_SIZE")
     db_max_overflow: int = Field(default=20, alias="DB_MAX_OVERFLOW")
@@ -49,13 +54,17 @@ class Settings(BaseSettings):
     db_echo: bool = Field(default=False, alias="DB_ECHO")
 
     # Redis 配置
-    redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
-    redis_connection_timeout: int = Field(default=5, alias="REDIS_CONNECTION_TIMEOUT")
+    redis_url: str = Field(
+        default="redis://localhost:6379/0", alias="REDIS_URL"
+    )
+    redis_connection_timeout: int = Field(
+        default=5, alias="REDIS_CONNECTION_TIMEOUT"
+    )
 
     # AI/LLM 配置
-    ai_provider: Literal["openai", "azure", "anthropic", "deepseek", "kimi"] = Field(
-        default="deepseek", alias="AI_PROVIDER"
-    )
+    ai_provider: Literal[
+        "openai", "azure", "anthropic", "deepseek", "kimi"
+    ] = Field(default="deepseek", alias="AI_PROVIDER")
     ai_api_key: SecretStr = Field(
         default_factory=lambda: SecretStr(""), alias="AI_API_KEY"
     )
@@ -69,7 +78,9 @@ class Settings(BaseSettings):
     security_secret_key: str = Field(
         default="change-me-in-production", alias="SECURITY_SECRET_KEY"
     )
-    security_algorithm: str = Field(default="HS256", alias="SECURITY_ALGORITHM")
+    security_algorithm: str = Field(
+        default="HS256", alias="SECURITY_ALGORITHM"
+    )
     security_access_token_expire_minutes: int = Field(
         default=30, alias="SECURITY_ACCESS_TOKEN_EXPIRE_MINUTES"
     )
@@ -78,7 +89,9 @@ class Settings(BaseSettings):
     )
 
     # 导出引擎配置
-    export_max_file_size_mb: int = Field(default=50, alias="EXPORT_MAX_FILE_SIZE_MB")
+    export_max_file_size_mb: int = Field(
+        default=50, alias="EXPORT_MAX_FILE_SIZE_MB"
+    )
     export_temp_dir: str = Field(
         default="/tmp/ai-ppt-exports", alias="EXPORT_TEMP_DIR"
     )

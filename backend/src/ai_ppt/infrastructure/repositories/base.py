@@ -23,7 +23,9 @@ class BaseRepository(IRepository[ModelT], Generic[ModelT]):
     提供通用的 CRUD 操作，具体仓储类继承此类
     """
 
-    def __init__(self, session: AsyncSession, model_class: type[ModelT]) -> None:
+    def __init__(
+        self, session: AsyncSession, model_class: type[ModelT]
+    ) -> None:
         """
         初始化仓储
 

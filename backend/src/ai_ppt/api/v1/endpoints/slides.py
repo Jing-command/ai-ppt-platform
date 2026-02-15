@@ -18,14 +18,21 @@ from ai_ppt.application.services.presentation_service import (
     PresentationService,
     SlideNotFoundError,
 )
-from ai_ppt.application.services.slide_service import SlideService, UndoRedoError
+from ai_ppt.application.services.slide_service import (
+    SlideService,
+    UndoRedoError,
+)
 from ai_ppt.database import get_db
 from ai_ppt.models.user import User
 
-router = APIRouter(prefix="/presentations/{ppt_id}/slides", tags=["幻灯片管理"])
+router = APIRouter(
+    prefix="/presentations/{ppt_id}/slides", tags=["幻灯片管理"]
+)
 
 
-def get_presentation_service(db: AsyncSession = Depends(get_db)) -> PresentationService:
+def get_presentation_service(
+    db: AsyncSession = Depends(get_db),
+) -> PresentationService:
     """获取演示文稿服务"""
     return PresentationService(db)
 

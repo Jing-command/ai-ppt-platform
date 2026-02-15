@@ -12,7 +12,9 @@ from pydantic import BaseModel, ConfigDict, Field
 class ExportRequest(BaseModel):
     """导出请求"""
 
-    format: str = Field(..., pattern="^(pptx|pdf|png|jpg)$", description="导出格式")
+    format: str = Field(
+        ..., pattern="^(pptx|pdf|png|jpg)$", description="导出格式"
+    )
     quality: str = Field(
         default="standard", pattern="^(standard|high)$", description="导出质量"
     )
@@ -30,7 +32,9 @@ class ExportResponse(BaseModel):
     """导出任务响应"""
 
     task_id: UUID = Field(..., alias="taskId")
-    status: str = Field(..., description="状态: pending, processing, completed, failed")
+    status: str = Field(
+        ..., description="状态: pending, processing, completed, failed"
+    )
     download_url: Optional[str] = Field(None, alias="downloadUrl")
     file_size: Optional[int] = Field(
         None, alias="fileSize", description="文件大小（字节）"

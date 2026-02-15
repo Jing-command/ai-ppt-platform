@@ -7,7 +7,11 @@ from collections import deque
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from ai_ppt.domain.commands.base import Command, CommandExecutionError, CommandUndoError
+from ai_ppt.domain.commands.base import (
+    Command,
+    CommandExecutionError,
+    CommandUndoError,
+)
 
 
 class CommandHistory:
@@ -141,7 +145,9 @@ class CommandHistory:
         # 如果超出最大限制，deque 会自动处理
         # 但我们需要调整 current_index
         if len(self._history) > self._max_history:
-            self._current_index = min(self._current_index, self._max_history - 1)
+            self._current_index = min(
+                self._current_index, self._max_history - 1
+            )
 
     async def undo(self) -> Optional[Command]:
         """
@@ -161,7 +167,9 @@ class CommandHistory:
         try:
             await command.undo()
         except Exception as e:
-            raise CommandUndoError(f"Command undo failed: {e}", command=command) from e
+            raise CommandUndoError(
+                f"Command undo failed: {e}", command=command
+            ) from e
 
         self._current_index -= 1
         return command
@@ -253,10 +261,14 @@ class CommandHistory:
                     "is_current": i == self._current_index,
                     "can_undo": i <= self._current_index,
                     "executed_at": (
-                        command.executed_at.isoformat() if command.executed_at else None
+                        command.executed_at.isoformat()
+                        if command.executed_at
+                        else None
                     ),
                     "undone_at": (
-                        command.undone_at.isoformat() if command.undone_at else None
+                        command.undone_at.isoformat()
+                        if command.undone_at
+                        else None
                     ),
                 }
             )
@@ -289,7 +301,9 @@ class CommandHistory:
         Returns:
             恢复的 CommandHistory 实例
         """
-        history = cls(max_history=data.get("max_history", cls.DEFAULT_MAX_HISTORY))
+        history = cls(
+            max_history=data.get("max_history", cls.DEFAULT_MAX_HISTORY)
+        )
         history._current_index = data.get("current_index", -1)
 
         if command_factory:
@@ -357,5 +371,7 @@ class PresentationCommandHistory:
             presentation_id=UUID(data["presentation_id"]),
             max_history=history_data.get("max_history", 50),
         )
-        instance._history = CommandHistory.from_dict(history_data, command_factory)
+        instance._history = CommandHistory.from_dict(
+            history_data, command_factory
+        )
         return instance

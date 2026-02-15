@@ -101,7 +101,9 @@ app.add_middleware(
 
 
 @app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+async def http_exception_handler(
+    request: Request, exc: HTTPException
+) -> JSONResponse:
     """
     统一 HTTP 异常返回格式
 
@@ -116,7 +118,9 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 
 
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+async def global_exception_handler(
+    request: Request, exc: Exception
+) -> JSONResponse:
     """
     全局异常处理
 
@@ -138,7 +142,10 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
             },
         }
     else:
-        content = {"code": "INTERNAL_ERROR", "message": "服务器内部错误，请稍后重试"}
+        content = {
+            "code": "INTERNAL_ERROR",
+            "message": "服务器内部错误，请稍后重试",
+        }
 
     # 记录错误日志
     print(f"[ERROR] {error_message}")

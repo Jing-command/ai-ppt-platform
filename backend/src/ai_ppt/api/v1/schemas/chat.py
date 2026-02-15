@@ -20,7 +20,9 @@ class MessageRole(str, Enum):
 class ChatMessage(BaseModel):
     """聊天消息"""
 
-    role: MessageRole = Field(..., description="消息角色: user/assistant/system")
+    role: MessageRole = Field(
+        ..., description="消息角色: user/assistant/system"
+    )
     content: str = Field(..., description="消息内容")
 
     model_config = ConfigDict(
@@ -35,7 +37,9 @@ class ChatContext(BaseModel):
     presentation_id: Optional[str] = Field(
         None, alias="presentationId", description="当前演示文稿 ID"
     )
-    slide_id: Optional[str] = Field(None, alias="slideId", description="当前幻灯片 ID")
+    slide_id: Optional[str] = Field(
+        None, alias="slideId", description="当前幻灯片 ID"
+    )
     current_prompt: Optional[str] = Field(
         None, alias="currentPrompt", description="用户当前正在编辑的提示词"
     )
@@ -52,7 +56,9 @@ class ChatRequest(BaseModel):
     messages: List[ChatMessage] = Field(
         ..., min_length=1, description="聊天消息列表"
     )
-    context: Optional[ChatContext] = Field(None, description="可选的上下文信息")
+    context: Optional[ChatContext] = Field(
+        None, description="可选的上下文信息"
+    )
     stream: bool = Field(default=True, description="是否使用流式响应")
 
 
@@ -95,5 +101,9 @@ class IntentAnalysis(BaseModel):
 
     intent_type: IntentType = Field(..., description="意图类型")
     confidence: float = Field(..., ge=0.0, le=1.0, description="置信度")
-    missing_info: Optional[List[str]] = Field(None, description="缺失的信息列表")
-    suggested_questions: Optional[List[str]] = Field(None, description="建议的问题列表")
+    missing_info: Optional[List[str]] = Field(
+        None, description="缺失的信息列表"
+    )
+    suggested_questions: Optional[List[str]] = Field(
+        None, description="建议的问题列表"
+    )

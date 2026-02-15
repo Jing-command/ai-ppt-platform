@@ -38,7 +38,9 @@ async def _generate_sse_stream(
         SSE 格式的字符串
     """
     # 使用聊天服务生成流式响应
-    async for chunk in chat_service.generate_response_stream(messages, context):
+    async for chunk in chat_service.generate_response_stream(
+        messages, context
+    ):
         # 将响应块转换为 JSON
         chunk_dict = {
             "content": chunk.content,

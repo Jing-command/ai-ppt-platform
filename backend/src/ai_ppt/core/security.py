@@ -19,7 +19,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """验证密码"""
     # bcrypt 限制密码最长 72 字节
-    truncated_password = plain_password[:72] if len(plain_password) > 72 else plain_password
+    truncated_password = (
+        plain_password[:72] if len(plain_password) > 72 else plain_password
+    )
     result: bool = pwd_context.verify(truncated_password, hashed_password)
     return result
 
@@ -60,7 +62,9 @@ def create_access_token(
     }
 
     encoded_jwt = jwt.encode(
-        to_encode, settings.security_secret_key, algorithm=settings.security_algorithm
+        to_encode,
+        settings.security_secret_key,
+        algorithm=settings.security_algorithm,
     )
     return encoded_jwt
 
@@ -87,7 +91,9 @@ def create_refresh_token(user_id: UUID) -> str:
     }
 
     encoded_jwt = jwt.encode(
-        to_encode, settings.security_secret_key, algorithm=settings.security_algorithm
+        to_encode,
+        settings.security_secret_key,
+        algorithm=settings.security_algorithm,
     )
     return encoded_jwt
 
@@ -109,7 +115,9 @@ def decode_token(
     """
     try:
         payload = jwt.decode(
-            token, settings.security_secret_key, algorithms=[settings.security_algorithm]
+            token,
+            settings.security_secret_key,
+            algorithms=[settings.security_algorithm],
         )
 
         # 验证令牌类型

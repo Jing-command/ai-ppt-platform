@@ -94,7 +94,9 @@ class ChartService:
 
         # 分析每个字段
         for field_name in all_fields:
-            field_info = self._analyze_field(data, field_name, request.sample_size)
+            field_info = self._analyze_field(
+                data, field_name, request.sample_size
+            )
             fields.append(field_info)
 
         # 生成数据建议
@@ -140,10 +142,14 @@ class ChartService:
         data_type = self._infer_data_type(values)
 
         # 推断字段类型（维度/度量）
-        field_type = self._infer_field_type(values, data_type, unique_count, len(data))
+        field_type = self._infer_field_type(
+            values, data_type, unique_count, len(data)
+        )
 
         # 获取样本值
-        sample_values = list(unique_values)[:min(sample_size, len(unique_values))]
+        sample_values = list(unique_values)[
+            : min(sample_size, len(unique_values))
+        ]
 
         # 计算数值统计
         min_value = None
@@ -297,17 +303,23 @@ class ChartService:
 
         # 检查数据量
         if total_rows < 10:
-            suggestions.append("数据量较少，建议增加更多数据以获得更好的可视化效果")
+            suggestions.append(
+                "数据量较少，建议增加更多数据以获得更好的可视化效果"
+            )
 
         # 检查空值
         high_null_fields = [
             f.name for f in fields if f.null_count / max(total_rows, 1) > 0.3
         ]
         if high_null_fields:
-            suggestions.append(f"字段 {', '.join(high_null_fields)} 空值较多，建议进行数据清洗")
+            suggestions.append(
+                f"字段 {', '.join(high_null_fields)} 空值较多，建议进行数据清洗"
+            )
 
         # 检查维度和度量
-        dimensions = [f for f in fields if f.field_type == FieldTypeEnum.DIMENSION]
+        dimensions = [
+            f for f in fields if f.field_type == FieldTypeEnum.DIMENSION
+        ]
         measures = [f for f in fields if f.field_type == FieldTypeEnum.MEASURE]
 
         if not dimensions:
@@ -346,22 +358,38 @@ class ChartService:
         """
         # 根据图表类型生成对应的 ECharts 配置
         if chart_type == ChartTypeEnum.BAR:
-            echarts_option = self._generate_bar_chart(data, field_mapping, style_config)
+            echarts_option = self._generate_bar_chart(
+                data, field_mapping, style_config
+            )
         elif chart_type == ChartTypeEnum.LINE:
-            echarts_option = self._generate_line_chart(data, field_mapping, style_config)
+            echarts_option = self._generate_line_chart(
+                data, field_mapping, style_config
+            )
         elif chart_type == ChartTypeEnum.PIE:
-            echarts_option = self._generate_pie_chart(data, field_mapping, style_config)
+            echarts_option = self._generate_pie_chart(
+                data, field_mapping, style_config
+            )
         elif chart_type == ChartTypeEnum.SCATTER:
-            echarts_option = self._generate_scatter_chart(data, field_mapping, style_config)
+            echarts_option = self._generate_scatter_chart(
+                data, field_mapping, style_config
+            )
         elif chart_type == ChartTypeEnum.AREA:
-            echarts_option = self._generate_area_chart(data, field_mapping, style_config)
+            echarts_option = self._generate_area_chart(
+                data, field_mapping, style_config
+            )
         elif chart_type == ChartTypeEnum.RADAR:
-            echarts_option = self._generate_radar_chart(data, field_mapping, style_config)
+            echarts_option = self._generate_radar_chart(
+                data, field_mapping, style_config
+            )
         elif chart_type == ChartTypeEnum.FUNNEL:
-            echarts_option = self._generate_funnel_chart(data, field_mapping, style_config)
+            echarts_option = self._generate_funnel_chart(
+                data, field_mapping, style_config
+            )
         else:
             # 默认使用柱状图
-            echarts_option = self._generate_bar_chart(data, field_mapping, style_config)
+            echarts_option = self._generate_bar_chart(
+                data, field_mapping, style_config
+            )
 
         return ChartGenerateResponse(
             chart_type=chart_type,
@@ -370,7 +398,9 @@ class ChartService:
             generated_at=datetime.now().isoformat(),
         )
 
-    def _get_base_option(self, style_config: Optional[ChartStyleConfig]) -> Dict[str, Any]:
+    def _get_base_option(
+        self, style_config: Optional[ChartStyleConfig]
+    ) -> Dict[str, Any]:
         """
         获取基础配置
 
@@ -394,7 +424,11 @@ class ChartService:
                 "orient": "horizontal",
                 "bottom": 10,
             },
-            "color": style_config.color_palette if style_config and style_config.color_palette else self.DEFAULT_COLORS,
+            "color": (
+                style_config.color_palette
+                if style_config and style_config.color_palette
+                else self.DEFAULT_COLORS
+            ),
             "animation": style_config.animation if style_config else True,
         }
 
@@ -442,7 +476,9 @@ class ChartService:
         # 构建系列数据
         if series_field:
             # 有系列字段，生成多系列
-            series_values = list(set(row.get(series_field, "") for row in data))
+            series_values = list(
+                set(row.get(series_field, "") for row in data)
+            )
             series_list = []
 
             for series_name in series_values:
@@ -451,16 +487,21 @@ class ChartService:
                     # 查找对应的数据
                     value = 0
                     for row in data:
-                        if row.get(x_field) == x_val and row.get(series_field) == series_name:
+                        if (
+                            row.get(x_field) == x_val
+                            and row.get(series_field) == series_name
+                        ):
                             value = row.get(y_field, 0)
                             break
                     series_data.append(value)
 
-                series_list.append({
-                    "name": series_name,
-                    "type": "bar",
-                    "data": series_data,
-                })
+                series_list.append(
+                    {
+                        "name": series_name,
+                        "type": "bar",
+                        "data": series_data,
+                    }
+                )
         else:
             # 无系列字段，生成单系列
             series_data = []
@@ -473,11 +514,13 @@ class ChartService:
                         break
                 series_data.append(value)
 
-            series_list = [{
-                "name": y_field,
-                "type": "bar",
-                "data": series_data,
-            }]
+            series_list = [
+                {
+                    "name": y_field,
+                    "type": "bar",
+                    "data": series_data,
+                }
+            ]
 
         # 设置 X 轴和 Y 轴
         option["xAxis"] = {
@@ -532,7 +575,9 @@ class ChartService:
 
         # 构建系列数据
         if series_field:
-            series_values = list(set(row.get(series_field, "") for row in data))
+            series_values = list(
+                set(row.get(series_field, "") for row in data)
+            )
             series_list = []
 
             for series_name in series_values:
@@ -540,17 +585,22 @@ class ChartService:
                 for x_val in x_values:
                     value = 0
                     for row in data:
-                        if row.get(x_field) == x_val and row.get(series_field) == series_name:
+                        if (
+                            row.get(x_field) == x_val
+                            and row.get(series_field) == series_name
+                        ):
                             value = row.get(y_field, 0)
                             break
                     series_data.append(value)
 
-                series_list.append({
-                    "name": series_name,
-                    "type": "line",
-                    "data": series_data,
-                    "smooth": True,
-                })
+                series_list.append(
+                    {
+                        "name": series_name,
+                        "type": "line",
+                        "data": series_data,
+                        "smooth": True,
+                    }
+                )
         else:
             series_data = []
             for x_val in x_values:
@@ -561,12 +611,14 @@ class ChartService:
                         break
                 series_data.append(value)
 
-            series_list = [{
-                "name": y_field,
-                "type": "line",
-                "data": series_data,
-                "smooth": True,
-            }]
+            series_list = [
+                {
+                    "name": y_field,
+                    "type": "line",
+                    "data": series_data,
+                    "smooth": True,
+                }
+            ]
 
         option["xAxis"] = {
             "type": "category",
@@ -619,24 +671,26 @@ class ChartService:
             if name:
                 pie_data.append({"name": str(name), "value": value})
 
-        option["series"] = [{
-            "name": value_field,
-            "type": "pie",
-            "radius": ["40%", "70%"],
-            "center": ["50%", "50%"],
-            "data": pie_data,
-            "emphasis": {
-                "itemStyle": {
-                    "shadowBlur": 10,
-                    "shadowOffsetX": 0,
-                    "shadowColor": "rgba(0, 0, 0, 0.5)",
-                }
-            },
-            "label": {
-                "show": True,
-                "formatter": "{b}: {d}%",
-            },
-        }]
+        option["series"] = [
+            {
+                "name": value_field,
+                "type": "pie",
+                "radius": ["40%", "70%"],
+                "center": ["50%", "50%"],
+                "data": pie_data,
+                "emphasis": {
+                    "itemStyle": {
+                        "shadowBlur": 10,
+                        "shadowOffsetX": 0,
+                        "shadowColor": "rgba(0, 0, 0, 0.5)",
+                    }
+                },
+                "label": {
+                    "show": True,
+                    "formatter": "{b}: {d}%",
+                },
+            }
+        ]
 
         return option
 
@@ -682,12 +736,14 @@ class ChartService:
 
         option["xAxis"] = {"type": "value"}
         option["yAxis"] = {"type": "value"}
-        option["series"] = [{
-            "name": "散点",
-            "type": "scatter",
-            "data": scatter_data,
-            "symbolSize": lambda data: data[2] if len(data) > 2 else 10,
-        }]
+        option["series"] = [
+            {
+                "name": "散点",
+                "type": "scatter",
+                "data": scatter_data,
+                "symbolSize": lambda data: data[2] if len(data) > 2 else 10,
+            }
+        ]
 
         if style_config and style_config.show_grid:
             option["grid"] = {
@@ -747,32 +803,42 @@ class ChartService:
         # 获取所有数值字段作为指标
         indicators = []
         for key in data[0].keys() if data else []:
-            values = [row.get(key, 0) for row in data if isinstance(row.get(key), (int, float))]
+            values = [
+                row.get(key, 0)
+                for row in data
+                if isinstance(row.get(key), (int, float))
+            ]
             if values:
-                indicators.append({
-                    "name": key,
-                    "max": max(values) * 1.2 if values else 100,
-                })
+                indicators.append(
+                    {
+                        "name": key,
+                        "max": max(values) * 1.2 if values else 100,
+                    }
+                )
 
         # 构建雷达数据
         radar_data = []
         for row in data[:5]:  # 最多显示 5 条数据
             values = [row.get(ind["name"], 0) for ind in indicators]
-            radar_data.append({
-                "value": values,
-                "name": str(row.get(field_mapping.name_field, "系列")),
-            })
+            radar_data.append(
+                {
+                    "value": values,
+                    "name": str(row.get(field_mapping.name_field, "系列")),
+                }
+            )
 
         option["radar"] = {
             "indicator": indicators,
             "shape": "polygon",
             "splitNumber": 5,
         }
-        option["series"] = [{
-            "name": "雷达图",
-            "type": "radar",
-            "data": radar_data,
-        }]
+        option["series"] = [
+            {
+                "name": "雷达图",
+                "type": "radar",
+                "data": radar_data,
+            }
+        ]
 
         return option
 
@@ -812,21 +878,27 @@ class ChartService:
         # 按值排序
         funnel_data.sort(key=lambda x: x["value"], reverse=True)
 
-        option["series"] = [{
-            "name": "漏斗图",
-            "type": "funnel",
-            "left": "10%",
-            "top": 60,
-            "bottom": 60,
-            "width": "80%",
-            "min": 0,
-            "max": max(d["value"] for d in funnel_data) if funnel_data else 100,
-            "minSize": "0%",
-            "maxSize": "100%",
-            "sort": "descending",
-            "gap": 2,
-            "data": funnel_data,
-        }]
+        option["series"] = [
+            {
+                "name": "漏斗图",
+                "type": "funnel",
+                "left": "10%",
+                "top": 60,
+                "bottom": 60,
+                "width": "80%",
+                "min": 0,
+                "max": (
+                    max(d["value"] for d in funnel_data)
+                    if funnel_data
+                    else 100
+                ),
+                "minSize": "0%",
+                "maxSize": "100%",
+                "sort": "descending",
+                "gap": 2,
+                "data": funnel_data,
+            }
+        ]
 
         return option
 
@@ -850,7 +922,9 @@ class ChartService:
         analyze_result = self.analyze_data(analyze_request)
 
         fields = analyze_result.fields
-        dimensions = [f for f in fields if f.field_type == FieldTypeEnum.DIMENSION]
+        dimensions = [
+            f for f in fields if f.field_type == FieldTypeEnum.DIMENSION
+        ]
         measures = [f for f in fields if f.field_type == FieldTypeEnum.MEASURE]
 
         recommendations: List[RecommendedChart] = []
@@ -956,7 +1030,9 @@ class ChartService:
             analyzed_at=datetime.now().isoformat(),
         )
 
-    def _generate_data_summary(self, analyze_result: DataAnalyzeResponse) -> str:
+    def _generate_data_summary(
+        self, analyze_result: DataAnalyzeResponse
+    ) -> str:
         """
         生成数据摘要
 
@@ -967,10 +1043,14 @@ class ChartService:
             str: 数据摘要
         """
         dimensions = [
-            f for f in analyze_result.fields if f.field_type == FieldTypeEnum.DIMENSION
+            f
+            for f in analyze_result.fields
+            if f.field_type == FieldTypeEnum.DIMENSION
         ]
         measures = [
-            f for f in analyze_result.fields if f.field_type == FieldTypeEnum.MEASURE
+            f
+            for f in analyze_result.fields
+            if f.field_type == FieldTypeEnum.MEASURE
         ]
 
         summary_parts = [

@@ -140,7 +140,9 @@ class CommandMetadata(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     executed_at: Optional[datetime] = Field(default=None)
     undone_at: Optional[datetime] = Field(default=None)
-    payload: Dict[str, Any] = Field(default_factory=dict, description="命令数据")
+    payload: Dict[str, Any] = Field(
+        default_factory=dict, description="命令数据"
+    )
 
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典"""
@@ -150,8 +152,12 @@ class CommandMetadata(BaseModel):
             "target_id": str(self.target_id),
             "target_type": self.target_type,
             "created_at": self.created_at.isoformat(),
-            "executed_at": self.executed_at.isoformat() if self.executed_at else None,
-            "undone_at": self.undone_at.isoformat() if self.undone_at else None,
+            "executed_at": (
+                self.executed_at.isoformat() if self.executed_at else None
+            ),
+            "undone_at": (
+                self.undone_at.isoformat() if self.undone_at else None
+            ),
             "payload": self.payload,
         }
 
@@ -245,7 +251,9 @@ class CommandException(Exception):
 class CommandExecutionError(CommandException):
     """命令执行错误"""
 
-    def __init__(self, message: str, command: Optional[Command] = None) -> None:
+    def __init__(
+        self, message: str, command: Optional[Command] = None
+    ) -> None:
         super().__init__(message)
         self.command = command
 
@@ -253,6 +261,8 @@ class CommandExecutionError(CommandException):
 class CommandUndoError(CommandException):
     """命令撤销错误"""
 
-    def __init__(self, message: str, command: Optional[Command] = None) -> None:
+    def __init__(
+        self, message: str, command: Optional[Command] = None
+    ) -> None:
         super().__init__(message)
         self.command = command

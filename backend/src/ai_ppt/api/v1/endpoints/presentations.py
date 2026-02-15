@@ -30,14 +30,19 @@ from ai_ppt.application.services.presentation_service import (
     PresentationNotFoundError,
     PresentationService,
 )
-from ai_ppt.application.services.slide_service import SlideService, UndoRedoError
+from ai_ppt.application.services.slide_service import (
+    SlideService,
+    UndoRedoError,
+)
 from ai_ppt.database import get_db
 from ai_ppt.models.user import User
 
 router = APIRouter(prefix="/presentations", tags=["PPT 管理"])
 
 
-def get_presentation_service(db: AsyncSession = Depends(get_db)) -> PresentationService:
+def get_presentation_service(
+    db: AsyncSession = Depends(get_db),
+) -> PresentationService:
     """获取演示文稿服务"""
     return PresentationService(db)
 
@@ -306,7 +311,9 @@ async def update_slide(
         )
 
         # 返回更新后的完整 PPT
-        presentation = await service.get_by_id(presentation_id, current_user.id)
+        presentation = await service.get_by_id(
+            presentation_id, current_user.id
+        )
         return presentation
     except PresentationNotFoundError:
         raise HTTPException(

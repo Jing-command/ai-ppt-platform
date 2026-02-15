@@ -58,7 +58,8 @@ class Base(DeclarativeBase):
     def __repr__(self) -> str:
         """统一的字符串表示"""
         columns = [
-            f"{col.key}={getattr(self, col.key)}" for col in self.__table__.columns
+            f"{col.key}={getattr(self, col.key)}"
+            for col in self.__table__.columns
         ]
         return f"<{self.__class__.__name__}({', '.join(columns)})>"
 

@@ -160,7 +160,9 @@ class DataConnector(ABC):
         await self.connect()
         return self
 
-    async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def __aexit__(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """异步上下文管理器出口"""
         await self.disconnect()
 

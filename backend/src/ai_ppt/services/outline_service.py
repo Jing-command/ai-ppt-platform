@@ -60,7 +60,9 @@ class OutlineService:
         Returns:
             Outline 或 None
         """
-        result = await self._db.execute(select(Outline).where(Outline.id == outline_id))
+        result = await self._db.execute(
+            select(Outline).where(Outline.id == outline_id)
+        )
         outline = result.scalar_one_or_none()
 
         if outline and user_id and outline.user_id != user_id:
@@ -112,7 +114,9 @@ class OutlineService:
         # 构建查询
         query = select(Outline).where(Outline.user_id == user_id)
         count_query = (
-            select(func.count()).select_from(Outline).where(Outline.user_id == user_id)
+            select(func.count())
+            .select_from(Outline)
+            .where(Outline.user_id == user_id)
         )
 
         if status:
@@ -171,7 +175,9 @@ class OutlineService:
 
         return outline
 
-    async def create_from_schema(self, user_id: UUID, data: dict[str, Any]) -> Outline:
+    async def create_from_schema(
+        self, user_id: UUID, data: dict[str, Any]
+    ) -> Outline:
         """
         从 Schema 数据创建大纲
 
@@ -347,7 +353,9 @@ class OutlineService:
 
             # 更新大纲
             outline.title = result.get("title", outline.title)
-            outline.description = result.get("description", outline.description)
+            outline.description = result.get(
+                "description", outline.description
+            )
             outline.pages = result.get("pages", [])
             outline.total_slides = len(result.get("pages", []))
 

@@ -306,7 +306,9 @@ class ConnectorService:
                     success=True,
                     message="Connection successful",
                     latencyMs=latency_ms,
-                    serverVersion=getattr(data_connector, "server_version", None),
+                    serverVersion=getattr(
+                        data_connector, "server_version", None
+                    ),
                     errorDetails=None,
                 )
             else:

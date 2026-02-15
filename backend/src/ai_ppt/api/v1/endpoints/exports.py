@@ -62,10 +62,14 @@ async def export_pptx(
     返回任务 ID，使用 /exports/{task_id}/status 查询进度
     """
     # 验证 PPT 存在
-    from ai_ppt.application.services.presentation_service import PresentationService
+    from ai_ppt.application.services.presentation_service import (
+        PresentationService,
+    )
 
     ppt_service = PresentationService(db)
-    presentation = await ppt_service.get_by_id(presentation_id, current_user.id)
+    presentation = await ppt_service.get_by_id(
+        presentation_id, current_user.id
+    )
 
     if not presentation:
         raise HTTPException(
@@ -128,10 +132,14 @@ async def export_pdf(
     返回任务 ID，使用 /exports/{task_id}/status 查询进度
     """
     # 验证 PPT 存在
-    from ai_ppt.application.services.presentation_service import PresentationService
+    from ai_ppt.application.services.presentation_service import (
+        PresentationService,
+    )
 
     ppt_service = PresentationService(db)
-    presentation = await ppt_service.get_by_id(presentation_id, current_user.id)
+    presentation = await ppt_service.get_by_id(
+        presentation_id, current_user.id
+    )
 
     if not presentation:
         raise HTTPException(
@@ -197,14 +205,21 @@ async def export_images(
     if format not in ("png", "jpg"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"code": "INVALID_FORMAT", "message": "格式必须是 png 或 jpg"},
+            detail={
+                "code": "INVALID_FORMAT",
+                "message": "格式必须是 png 或 jpg",
+            },
         )
 
     # 验证 PPT 存在
-    from ai_ppt.application.services.presentation_service import PresentationService
+    from ai_ppt.application.services.presentation_service import (
+        PresentationService,
+    )
 
     ppt_service = PresentationService(db)
-    presentation = await ppt_service.get_by_id(presentation_id, current_user.id)
+    presentation = await ppt_service.get_by_id(
+        presentation_id, current_user.id
+    )
 
     if not presentation:
         raise HTTPException(
@@ -362,7 +377,9 @@ async def download_export(
         "png": "zip",
         "jpg": "zip",
     }
-    filename = f"presentation.{extensions.get(task.format.value, task.format.value)}"
+    filename = (
+        f"presentation.{extensions.get(task.format.value, task.format.value)}"
+    )
 
     return FileResponse(
         path=str(file_path),

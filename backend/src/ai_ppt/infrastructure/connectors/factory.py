@@ -124,7 +124,9 @@ class ConnectorFactory:
                 password=config.get("password", ""),
                 security_token=config.get("security_token"),
                 instance_url=config.get("instance_url"),
-                login_url=config.get("login_url", "https://login.salesforce.com"),
+                login_url=config.get(
+                    "login_url", "https://login.salesforce.com"
+                ),
                 api_version=config.get("api_version", "v59.0"),
                 timeout=config.get("timeout", 30.0),
             )
