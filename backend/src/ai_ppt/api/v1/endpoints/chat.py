@@ -4,12 +4,13 @@ AI 提示词助手聊天 API
 """
 
 import json
-from typing import Any, AsyncIterator, Dict, Optional
+from typing import Any, AsyncIterator, Dict, List, Optional, Union
 
 from fastapi import APIRouter, status
 from fastapi.responses import StreamingResponse
 
 from ai_ppt.api.v1.schemas.chat import (
+    ChatContext,
     ChatMessage,
     ChatRequest,
     ChatResponse,
@@ -23,11 +24,11 @@ router = APIRouter(prefix="/chat", tags=["AI 提示词助手"])
 
 
 async def _generate_sse_stream(
-    messages: list[ChatMessage],
-    context: Optional[Dict[str, Any]] = None,
+    messages: List[ChatMessage],
+    context: Optional[ChatContext] = None,
 ) -> AsyncIterator[str]:
     """
-    生成 SSE (Server-Sent Events) 流式响应
+    生成 SSE 流式响应
 
     Args:
         messages: 聊天消息列表
@@ -57,12 +58,13 @@ async def _generate_sse_stream(
     summary="发送聊天消息",
     description="与 AI 提示词助手进行对话，支持流式响应",
     status_code=status.HTTP_200_OK,
+    response_model=None,
     responses={
         400: {"model": ErrorResponse, "description": "请求参数错误"},
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def chat(request: ChatRequest) -> StreamingResponse:
+async def chat(request: ChatRequest) -> Union[StreamingResponse, ChatResponse]:
     """
     处理聊天请求
 

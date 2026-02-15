@@ -91,12 +91,12 @@ async def export_pptx(
     background_tasks.add_task(process_export_task, task.id)
 
     return ExportResponse(
-        taskId=task.id,
+        task_id=task.id,
         status=task.status.value,
-        downloadUrl=None,
-        fileSize=None,
-        expiresAt=None,
-        createdAt=task.created_at,
+        download_url=None,
+        file_size=None,
+        expires_at=None,
+        created_at=task.created_at,
     )
 
 
@@ -161,12 +161,12 @@ async def export_pdf(
     background_tasks.add_task(process_export_task, task.id)
 
     return ExportResponse(
-        taskId=task.id,
+        task_id=task.id,
         status=task.status.value,
-        downloadUrl=None,
-        fileSize=None,
-        expiresAt=None,
-        createdAt=task.created_at,
+        download_url=None,
+        file_size=None,
+        expires_at=None,
+        created_at=task.created_at,
     )
 
 
@@ -242,12 +242,12 @@ async def export_images(
     background_tasks.add_task(process_export_task, task.id)
 
     return ExportResponse(
-        taskId=task.id,
+        task_id=task.id,
         status=task.status.value,
-        downloadUrl=None,
-        fileSize=None,
-        expiresAt=None,
-        createdAt=task.created_at,
+        download_url=None,
+        file_size=None,
+        expires_at=None,
+        created_at=task.created_at,
     )
 
 
@@ -287,18 +287,18 @@ async def get_export_status(
         download_url = f"/api/v1/exports/{task_id}/download"
 
     return ExportStatusResponse(
-        taskId=task.id,
-        presentationId=task.presentation_id,
+        task_id=task.id,
+        presentation_id=task.presentation_id,
         format=task.format.value,
         status=task.status.value,
         progress=task.progress,
-        filePath=task.file_path,
-        fileSize=task.file_size,
-        errorMessage=task.error_message,
-        downloadUrl=download_url,
-        expiresAt=task.expires_at,
-        createdAt=task.created_at,
-        completedAt=task.completed_at,
+        file_path=task.file_path,
+        file_size=task.file_size,
+        error_message=task.error_message,
+        download_url=download_url,
+        expires_at=task.expires_at,
+        created_at=task.created_at,
+        completed_at=task.completed_at,
     )
 
 

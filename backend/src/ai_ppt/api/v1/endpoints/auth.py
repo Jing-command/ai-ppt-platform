@@ -56,7 +56,7 @@ def _user_to_response(user: User) -> UserResponse:
         email=user.email,
         name=user.username,  # username 映射为 name
         avatar=user.avatar_url,
-        createdAt=user.created_at,
+        created_at=user.created_at,
     )
 
 
@@ -119,8 +119,8 @@ async def register(
     access_token = create_access_token(new_user.id)
 
     return RegisterResponse(
-        accessToken=access_token,
-        tokenType="bearer",
+        access_token=access_token,
+        token_type="bearer",
         user=_user_to_response(new_user),
     )
 
@@ -184,8 +184,8 @@ async def login(
     access_token = create_access_token(user.id)
 
     return LoginResponse(
-        accessToken=access_token,
-        tokenType="bearer",
+        access_token=access_token,
+        token_type="bearer",
         user=_user_to_response(user),
     )
 
@@ -247,7 +247,7 @@ async def refresh(
     # 生成新的访问令牌
     new_access_token = create_access_token(user.id)
 
-    return RefreshResponse(accessToken=new_access_token, tokenType="bearer")
+    return RefreshResponse(access_token=new_access_token, token_type="bearer")
 
 
 @router.get(
@@ -371,4 +371,4 @@ async def upload_avatar(
     await db.commit()
     await db.refresh(current_user)
 
-    return AvatarUploadResponse(avatarUrl=avatar_url)
+    return AvatarUploadResponse(avatar_url=avatar_url)

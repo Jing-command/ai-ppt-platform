@@ -52,7 +52,7 @@ class Base(DeclarativeBase):
     - 类型注册表
     """
 
-    registry: ClassVar = registry()  # type: ignore[assignment]
+    registry: ClassVar = registry()
     metadata: ClassVar[MetaData] = MetaData(naming_convention=convention)
 
     def __repr__(self) -> str:

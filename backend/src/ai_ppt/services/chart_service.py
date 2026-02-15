@@ -83,7 +83,7 @@ class ChartService:
             )
 
         # 获取所有字段名
-        all_fields = set()
+        all_fields: set[str] = set()
         for row in data:
             all_fields.update(row.keys())
 
@@ -817,11 +817,13 @@ class ChartService:
         # 构建雷达数据
         radar_data = []
         for row in data[:5]:  # 最多显示 5 条数据
-            values = [row.get(ind["name"], 0) for ind in indicators]
+            values = [row.get(str(ind["name"]), 0) for ind in indicators]
             radar_data.append(
                 {
                     "value": values,
-                    "name": str(row.get(field_mapping.name_field, "系列")),
+                    "name": str(
+                        row.get(str(field_mapping.name_field), "系列")
+                    ),
                 }
             )
 

@@ -286,7 +286,7 @@ class ChatService:
             words = re.findall(r"[\u4e00-\u9fa5]{2,10}", content)
             for word in words:
                 if word not in ["幻灯片", "演示文稿", "帮我", "制作", "生成"]:
-                    return word
+                    return str(word)
 
         return None
 
