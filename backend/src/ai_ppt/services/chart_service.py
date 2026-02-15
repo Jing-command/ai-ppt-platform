@@ -11,7 +11,6 @@ from ai_ppt.api.v1.schemas.chart import (
     ChartGenerateResponse,
     ChartRecommendRequest,
     ChartRecommendResponse,
-    ChartRecommendResponse,
     ChartStyleConfig,
     ChartTypeEnum,
     DataAnalyzeRequest,
