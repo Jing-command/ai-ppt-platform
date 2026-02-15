@@ -86,6 +86,7 @@ class TestAuthAPI:
 
     async def test_login_success(self, client: AsyncClient, db_session):
         """测试成功登录"""
+        from datetime import datetime, timezone
         from ai_ppt.core.security import get_password_hash
 
         # 创建测试用户
@@ -100,6 +101,8 @@ class TestAuthAPI:
                 username="loginuser",
                 hashed_password=hashed_password,
                 is_active=True,
+                avatar=None,
+                created_at=datetime.now(timezone.utc),
             )
             mock_execute.return_value = mock_result
 

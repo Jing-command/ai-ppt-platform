@@ -734,14 +734,21 @@ class ChartService:
 
         option["xAxis"] = {"type": "value"}
         option["yAxis"] = {"type": "value"}
-        option["series"] = [
-            {
-                "name": "散点",
-                "type": "scatter",
-                "data": scatter_data,
-                "symbolSize": lambda data: data[2] if len(data) > 2 else 10,
-            }
-        ]
+
+        # 构建系列配置，symbolSize 使用数值或字符串表达式（避免 lambda 函数）
+        series_config: Dict[str, Any] = {
+            "name": "散点",
+            "type": "scatter",
+            "data": scatter_data,
+        }
+
+        # 如果有大小字段，使用 symbolSize 回调函数字符串
+        if size_field:
+            series_config["symbolSize"] = "function(data) { return data[2] || 10; }"
+        else:
+            series_config["symbolSize"] = 10
+
+        option["series"] = [series_config]
 
         if style_config and style_config.show_grid:
             option["grid"] = {
