@@ -138,7 +138,7 @@ function calculateStats(values: number[]): {
         ? sorted[midIndex]
         : (sorted[midIndex - 1] + sorted[midIndex]) / 2;
 
-    return { min, max, mean, median, sum };
+    return {min, max, mean, median, sum};
 }
 
 /**
@@ -291,7 +291,7 @@ export async function parseExcel(file: File): Promise<ParsedData> {
                 }
 
                 // 解析工作簿
-                const workbook = XLSX.read(data, { type: 'array' });
+                const workbook = XLSX.read(data, {type: 'array'});
 
                 // 获取第一个工作表名称
                 const firstSheetName = workbook.SheetNames[0];
@@ -560,15 +560,15 @@ export async function parseFile(file: File): Promise<ParsedData> {
 
     // 根据扩展名选择解析器
     switch (extension) {
-        case 'xlsx':
-        case 'xls':
-            return parseExcel(file);
-        case 'csv':
-            return parseCSV(file);
-        case 'json':
-            return parseJSON(file);
-        default:
-            throw new Error(`不支持的文件格式: ${extension}`);
+    case 'xlsx':
+    case 'xls':
+        return parseExcel(file);
+    case 'csv':
+        return parseCSV(file);
+    case 'json':
+        return parseJSON(file);
+    default:
+        throw new Error(`不支持的文件格式: ${extension}`);
     }
 }
 
@@ -607,5 +607,5 @@ export function validateFile(file: File): { valid: boolean; error?: string } {
         };
     }
 
-    return { valid: true };
+    return {valid: true};
 }

@@ -5,11 +5,12 @@ SQLAlchemy 2.0 基础模型配置
 
 from datetime import datetime
 from typing import Annotated, Any, ClassVar, Optional
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from sqlalchemy import DateTime, MetaData, String, func
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import DeclarativeBase, mapped_column, registry
+
+from ai_ppt.core.custom_types import GUID
 
 # 命名约定用于 Alembic 自动迁移
 convention = {
@@ -22,8 +23,9 @@ convention = {
 
 # 类型别名 - 常用字段类型
 IntPk = Annotated[int, mapped_column(primary_key=True)]
+# 使用 GUID 类型以支持 SQLite 和 PostgreSQL
 UUIDPk = Annotated[
-    UUID, mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid4)
+    str, mapped_column(GUID(), primary_key=True, default=lambda: str(uuid4()))
 ]
 Str255 = Annotated[str, mapped_column(String(255), nullable=False)]
 Str50 = Annotated[str, mapped_column(String(50), nullable=False)]

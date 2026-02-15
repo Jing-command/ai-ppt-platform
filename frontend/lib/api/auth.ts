@@ -6,13 +6,13 @@
 
 import {apiClient} from './client';
 import {
-  AvatarUploadResponse,
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  RegisterResponse,
-  UpdateUserRequest,
-  User,
+    AvatarUploadResponse,
+    LoginRequest,
+    LoginResponse,
+    RegisterRequest,
+    RegisterResponse,
+    UpdateUserRequest,
+    User
 } from '@/types/auth';
 
 // localStorage keys
@@ -25,8 +25,8 @@ const USER_KEY = 'user';
  * @returns 登录响应
  */
 export async function login(credentials: LoginRequest): Promise<LoginResponse> {
-  const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
-  return response.data;
+    const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
+    return response.data;
 }
 
 /**
@@ -35,8 +35,8 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
  * @returns 注册响应
  */
 export async function register(data: RegisterRequest): Promise<RegisterResponse> {
-  const response = await apiClient.post<RegisterResponse>('/auth/register', data);
-  return response.data;
+    const response = await apiClient.post<RegisterResponse>('/auth/register', data);
+    return response.data;
 }
 
 /**
@@ -44,10 +44,10 @@ export async function register(data: RegisterRequest): Promise<RegisterResponse>
  * @param data 登录响应数据
  */
 export function saveAuthData(data: LoginResponse): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(TOKEN_KEY, data.accessToken);
-    localStorage.setItem(USER_KEY, JSON.stringify(data.user));
-  }
+    if (typeof window !== 'undefined') {
+        localStorage.setItem(TOKEN_KEY, data.accessToken);
+        localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    }
 }
 
 /**
@@ -55,10 +55,10 @@ export function saveAuthData(data: LoginResponse): void {
  * @returns token 字符串或 null
  */
 export function getAccessToken(): string | null {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem(TOKEN_KEY);
-  }
-  return null;
+    if (typeof window !== 'undefined') {
+        return localStorage.getItem(TOKEN_KEY);
+    }
+    return null;
 }
 
 /**
@@ -66,27 +66,27 @@ export function getAccessToken(): string | null {
  * @returns User 对象或 null
  */
 export function getUser(): User | null {
-  if (typeof window !== 'undefined') {
-    const userStr = localStorage.getItem(USER_KEY);
-    if (userStr) {
-      try {
-        return JSON.parse(userStr) as User;
-      } catch {
-        return null;
-      }
+    if (typeof window !== 'undefined') {
+        const userStr = localStorage.getItem(USER_KEY);
+        if (userStr) {
+            try {
+                return JSON.parse(userStr) as User;
+            } catch {
+                return null;
+            }
+        }
     }
-  }
-  return null;
+    return null;
 }
 
 /**
  * 清除认证信息（登出）
  */
 export function clearAuthData(): void {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-  }
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+    }
 }
 
 /**
@@ -94,7 +94,7 @@ export function clearAuthData(): void {
  * @returns boolean
  */
 export function isAuthenticated(): boolean {
-  return !!getAccessToken();
+    return !!getAccessToken();
 }
 
 /**
@@ -103,14 +103,14 @@ export function isAuthenticated(): boolean {
  * @returns 更新后的用户信息
  */
 export async function updateUser(data: UpdateUserRequest): Promise<User> {
-  const response = await apiClient.put<User>('/auth/me', data);
-  // 更新本地存储的用户信息
-  const currentUser = getUser();
-  if (currentUser) {
-    const updatedUser = {...currentUser, ...response.data};
-    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
-  }
-  return response.data;
+    const response = await apiClient.put<User>('/auth/me', data);
+    // 更新本地存储的用户信息
+    const currentUser = getUser();
+    if (currentUser) {
+        const updatedUser = {...currentUser, ...response.data};
+        localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
+    }
+    return response.data;
 }
 
 /**
@@ -119,20 +119,20 @@ export async function updateUser(data: UpdateUserRequest): Promise<User> {
  * @returns 上传后的头像URL
  */
 export async function uploadAvatar(file: File): Promise<AvatarUploadResponse> {
-  const formData = new FormData();
-  formData.append('file', file);
-  const response = await apiClient.post<AvatarUploadResponse>('/auth/me/avatar', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-  // 更新本地存储的用户信息
-  const currentUser = getUser();
-  if (currentUser) {
-    const updatedUser = {...currentUser, avatar: response.data.avatarUrl};
-    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
-  }
-  return response.data;
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await apiClient.post<AvatarUploadResponse>('/auth/me/avatar', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    // 更新本地存储的用户信息
+    const currentUser = getUser();
+    if (currentUser) {
+        const updatedUser = {...currentUser, avatar: response.data.avatarUrl};
+        localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
+    }
+    return response.data;
 }
 
 /**
@@ -140,7 +140,7 @@ export async function uploadAvatar(file: File): Promise<AvatarUploadResponse> {
  * @param user 用户信息
  */
 export function updateStoredUser(user: User): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-  }
+    if (typeof window !== 'undefined') {
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+    }
 }

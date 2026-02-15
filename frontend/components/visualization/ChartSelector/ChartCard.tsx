@@ -3,10 +3,10 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import {motion} from 'framer-motion';
+import {Check} from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
-import type { ChartConfig } from '@/types/visualization';
+import type {ChartConfig} from '@/types/visualization';
 
 /**
  * 动态获取 Lucide 图标组件
@@ -54,27 +54,27 @@ export default function ChartCard({
         <motion.div
             onClick={onClick}
             // 卡片动画：悬停上浮 + 选中缩放
-            whileHover={{ y: -4, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.1 }}
+            whileHover={{y: -4, scale: 1.02}}
+            whileTap={{scale: 0.98}}
+            transition={{duration: 0.1}}
             className={`
                 relative p-4 rounded-xl cursor-pointer
                 border-2 transition-colors duration-100
                 ${isSelected
-                    // 选中状态：蓝色边框 + 浅蓝背景
-                    ? 'border-blue-500 bg-blue-50'
-                    // 非选中状态：灰色边框 + 白色背景
-                    : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50'
-                }
+        // 选中状态：蓝色边框 + 浅蓝背景
+            ? 'border-blue-500 bg-blue-50'
+        // 非选中状态：灰色边框 + 白色背景
+            : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50'
+        }
             `}
         >
             {/* 选中指示器 */}
             {isSelected && (
                 <motion.div
                     // 选中标记动画：缩放淡入
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.1 }}
+                    initial={{scale: 0, opacity: 0}}
+                    animate={{scale: 1, opacity: 1}}
+                    transition={{duration: 0.1}}
                     className="absolute top-2 right-2 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center"
                 >
                     <Check className="w-3 h-3 text-white" />
@@ -87,11 +87,11 @@ export default function ChartCard({
                     w-12 h-12 rounded-lg flex items-center justify-center mb-3
                     transition-colors duration-100
                     ${isSelected
-                        // 选中状态：蓝色背景
-                        ? 'bg-blue-100 text-blue-600'
-                        // 非选中状态：灰色背景
-                        : 'bg-gray-100 text-gray-600'
-                    }
+        // 选中状态：蓝色背景
+            ? 'bg-blue-100 text-blue-600'
+        // 非选中状态：灰色背景
+            : 'bg-gray-100 text-gray-600'
+        }
                 `}
             >
                 {getIconComponent(config.icon)}

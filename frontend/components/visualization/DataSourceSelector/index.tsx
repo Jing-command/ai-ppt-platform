@@ -3,10 +3,10 @@
 
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Database, ArrowRight } from 'lucide-react';
-import type { DataSource, ParsedData } from '@/types/visualization';
+import {useState} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Upload, Database, ArrowRight} from 'lucide-react';
+import type {DataSource, ParsedData} from '@/types/visualization';
 import FileUploader from './FileUploader';
 
 /**
@@ -52,6 +52,7 @@ export default function DataSourceSelector({
      * 处理数据库连接选择
      * TODO: 实现数据库连接功能
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleDatabaseConnect = () => {
         // 创建模拟数据源
         const dataSource: DataSource = {
@@ -78,19 +79,19 @@ export default function DataSourceSelector({
                 {!selectedOption && (
                     <motion.div
                         key="options"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.1 }}
+                        initial={{opacity: 0, y: 20}}
+                        animate={{opacity: 1, y: 0}}
+                        exit={{opacity: 0, y: -20}}
+                        transition={{duration: 0.1}}
                         className="grid grid-cols-1 md:grid-cols-2 gap-4"
                     >
                         {/* 文件上传选项 */}
                         <motion.button
                             onClick={() => setSelectedOption('file')}
                             // 按钮动画：悬停上浮
-                            whileHover={{ y: -4, scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            transition={{ duration: 0.1 }}
+                            whileHover={{y: -4, scale: 1.02}}
+                            whileTap={{scale: 0.98}}
+                            transition={{duration: 0.1}}
                             className="
                                 p-6 rounded-xl border-2 border-gray-200 bg-white
                                 hover:border-blue-400 hover:bg-blue-50
@@ -137,9 +138,9 @@ export default function DataSourceSelector({
                         <motion.button
                             onClick={() => setSelectedOption('database')}
                             // 按钮动画：悬停上浮
-                            whileHover={{ y: -4, scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            transition={{ duration: 0.1 }}
+                            whileHover={{y: -4, scale: 1.02}}
+                            whileTap={{scale: 0.98}}
+                            transition={{duration: 0.1}}
                             className="
                                 p-6 rounded-xl border-2 border-gray-200 bg-white
                                 hover:border-purple-400 hover:bg-purple-50
@@ -193,16 +194,16 @@ export default function DataSourceSelector({
                 {selectedOption === 'file' && (
                     <motion.div
                         key="file-upload"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.1 }}
+                        initial={{opacity: 0, y: 20}}
+                        animate={{opacity: 1, y: 0}}
+                        exit={{opacity: 0, y: -20}}
+                        transition={{duration: 0.1}}
                     >
                         {/* 返回按钮 */}
                         <motion.button
                             onClick={handleBack}
                             // 返回按钮动画：悬停效果
-                            whileHover={{ x: -2 }}
+                            whileHover={{x: -2}}
                             className="
                                 flex items-center gap-1 mb-4
                                 text-sm text-gray-500 hover:text-gray-700
@@ -222,15 +223,15 @@ export default function DataSourceSelector({
                 {selectedOption === 'database' && (
                     <motion.div
                         key="database-connect"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.1 }}
+                        initial={{opacity: 0, y: 20}}
+                        animate={{opacity: 1, y: 0}}
+                        exit={{opacity: 0, y: -20}}
+                        transition={{duration: 0.1}}
                     >
                         {/* 返回按钮 */}
                         <motion.button
                             onClick={handleBack}
-                            whileHover={{ x: -2 }}
+                            whileHover={{x: -2}}
                             className="
                                 flex items-center gap-1 mb-4
                                 text-sm text-gray-500 hover:text-gray-700

@@ -3,8 +3,8 @@
 
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {useState} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
 import {
     Trash2,
     Clock,
@@ -13,7 +13,7 @@ import {
     PieChart,
     Image as ImageIcon
 } from 'lucide-react';
-import type { StoredChart, ChartType } from '@/types/visualization';
+import type {StoredChart, ChartType} from '@/types/visualization';
 
 /**
  * 图表类型图标映射
@@ -134,9 +134,9 @@ export default function StoredChartCard({
         <motion.div
             onClick={onClick}
             // 卡片动画：悬停上浮
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.1 }}
+            whileHover={{y: -2}}
+            whileTap={{scale: 0.98}}
+            transition={{duration: 0.1}}
             className="
                 relative p-3 rounded-xl border border-gray-200 bg-white
                 hover:border-blue-300 hover:shadow-md
@@ -186,8 +186,8 @@ export default function StoredChartCard({
             {/* 删除按钮 */}
             <motion.button
                 onClick={handleDeleteClick}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                whileHover={{scale: 1.1}}
+                whileTap={{scale: 0.9}}
                 className="
                     absolute top-2 right-2 p-1.5 rounded-lg
                     bg-white/80 backdrop-blur-sm
@@ -202,9 +202,9 @@ export default function StoredChartCard({
             <AnimatePresence>
                 {showDeleteConfirm && (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
                         onClick={(e) => e.stopPropagation()}
                         className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-xl flex flex-col items-center justify-center p-3"
                     >
@@ -214,16 +214,16 @@ export default function StoredChartCard({
                         <div className="flex gap-2">
                             <motion.button
                                 onClick={handleCancelDelete}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
                                 className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
                             >
                                 取消
                             </motion.button>
                             <motion.button
                                 onClick={handleConfirmDelete}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
                                 className="px-3 py-1.5 text-xs rounded-lg bg-red-500 text-white hover:bg-red-600"
                             >
                                 删除

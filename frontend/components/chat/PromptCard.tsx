@@ -3,10 +3,10 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Copy, Check, ArrowRight, Sparkles } from 'lucide-react';
+import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion} from 'framer-motion';
+import {Copy, Check, ArrowRight, Sparkles} from 'lucide-react';
 
 /**
  * PromptCard 组件属性
@@ -19,7 +19,7 @@ interface PromptCardProps {
  * 优化提示词卡片组件
  * 显示 AI 优化后的提示词，支持复制和使用
  */
-export default function PromptCard({ optimizedPrompt }: PromptCardProps) {
+export default function PromptCard({optimizedPrompt}: PromptCardProps) {
     const router = useRouter();
     // 复制状态：是否已复制
     const [copied, setCopied] = useState(false);
@@ -65,9 +65,9 @@ export default function PromptCard({ optimizedPrompt }: PromptCardProps) {
     return (
         <motion.div
             // 卡片入场动画：淡入 + 缩放
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
+            initial={{opacity: 0, scale: 0.95}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.3}}
             className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-blue-200/50 overflow-hidden"
         >
             {/* 卡片头部 */}
@@ -95,17 +95,17 @@ export default function PromptCard({ optimizedPrompt }: PromptCardProps) {
                 <motion.button
                     onClick={handleCopy}
                     // 按钮动画：悬停缩放
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{scale: 1.02}}
+                    whileTap={{scale: 0.98}}
                     className={`
                         flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium
                         transition-all duration-200
                         ${copied
-                            // 已复制状态：绿色背景
-                            ? 'bg-green-100 text-green-700 border border-green-200'
-                            // 默认状态：白色背景
-                            : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
-                        }
+        // 已复制状态：绿色背景
+            ? 'bg-green-100 text-green-700 border border-green-200'
+        // 默认状态：白色背景
+            : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300'
+        }
                     `}
                 >
                     {copied ? (
@@ -127,8 +127,8 @@ export default function PromptCard({ optimizedPrompt }: PromptCardProps) {
                 <motion.button
                     onClick={handleUsePrompt}
                     // 按钮动画：悬停缩放
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{scale: 1.02}}
+                    whileTap={{scale: 0.98}}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-200"
                 >
                     <span>使用此提示词</span>

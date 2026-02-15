@@ -3,8 +3,8 @@
 
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import {useState, useMemo, useCallback} from 'react';
+import {motion} from 'framer-motion';
 import {
     Save,
     Download,
@@ -13,16 +13,15 @@ import {
     ChevronRight,
     ChevronLeft
 } from 'lucide-react';
-import type { EChartsOption } from 'echarts';
+import type {EChartsOption} from 'echarts';
 import type {
     ChartType,
     ParsedData,
     ChartFieldMapping,
     ChartStyleConfig,
-    StoredChart,
-    ChartStorageManager
+    StoredChart
 } from '@/types/visualization';
-import { ChartStorageManager as StorageManager } from '@/types/visualization';
+import {ChartStorageManager as StorageManager} from '@/types/visualization';
 import EChartsRenderer from './EChartsRenderer';
 import FieldMapper from './FieldMapper';
 import StyleEditor from './StyleEditor';
@@ -323,8 +322,8 @@ export default function ChartPreview({
                         {/* 重置按钮 */}
                         <motion.button
                             onClick={handleReset}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{scale: 1.05}}
+                            whileTap={{scale: 0.95}}
                             className="
                                 flex items-center gap-1 px-3 py-1.5 text-sm
                                 rounded-lg border border-gray-200 text-gray-600
@@ -338,8 +337,8 @@ export default function ChartPreview({
                         {/* 导出按钮 */}
                         <motion.button
                             onClick={handleExport}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{scale: 1.05}}
+                            whileTap={{scale: 0.95}}
                             className="
                                 flex items-center gap-1 px-3 py-1.5 text-sm
                                 rounded-lg border border-gray-200 text-gray-600
@@ -354,15 +353,15 @@ export default function ChartPreview({
                         <motion.button
                             onClick={handleStore}
                             disabled={!isConfigValid}
-                            whileHover={isConfigValid ? { scale: 1.05 } : {}}
-                            whileTap={isConfigValid ? { scale: 0.95 } : {}}
+                            whileHover={isConfigValid ? {scale: 1.05} : {}}
+                            whileTap={isConfigValid ? {scale: 0.95} : {}}
                             className={`
                                 flex items-center gap-1 px-3 py-1.5 text-sm
                                 rounded-lg font-medium transition-colors
                                 ${isConfigValid
-                                    ? 'bg-blue-500 text-white hover:bg-blue-600'
-                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                }
+            ? 'bg-blue-500 text-white hover:bg-blue-600'
+            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+        }
                             `}
                         >
                             <Save className="w-4 h-4" />
@@ -390,22 +389,22 @@ export default function ChartPreview({
 
             {/* 侧边栏 */}
             <motion.div
-                animate={{ width: sidebarOpen ? 320 : 48 }}
-                transition={{ duration: 0.1 }}
+                animate={{width: sidebarOpen ? 320 : 48}}
+                transition={{duration: 0.1}}
                 className="border-l border-gray-200 bg-white flex flex-col"
             >
                 {/* 展开/收起按钮 */}
                 <motion.button
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{scale: 1.05}}
+                    whileTap={{scale: 0.95}}
                     className="
                         absolute top-1/2 -translate-y-1/2 -translate-x-3
                         w-6 h-6 rounded-full bg-white border border-gray-200
                         flex items-center justify-center shadow-sm
                         hover:bg-gray-50 transition-colors
                     "
-                    style={{ zIndex: 10 }}
+                    style={{zIndex: 10}}
                 >
                     {sidebarOpen ? (
                         <ChevronRight className="w-4 h-4 text-gray-500" />
@@ -423,9 +422,9 @@ export default function ChartPreview({
                                 className={`
                                     flex-1 py-3 text-sm font-medium transition-colors
                                     ${activeTab === 'mapping'
-                                        ? 'text-blue-600 border-b-2 border-blue-500'
-                                        : 'text-gray-500 hover:text-gray-700'
-                                    }
+                        ? 'text-blue-600 border-b-2 border-blue-500'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }
                                 `}
                             >
                                 字段映射
@@ -435,9 +434,9 @@ export default function ChartPreview({
                                 className={`
                                     flex-1 py-3 text-sm font-medium transition-colors
                                     ${activeTab === 'style'
-                                        ? 'text-blue-600 border-b-2 border-blue-500'
-                                        : 'text-gray-500 hover:text-gray-700'
-                                    }
+                        ? 'text-blue-600 border-b-2 border-blue-500'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }
                                 `}
                             >
                                 样式配置

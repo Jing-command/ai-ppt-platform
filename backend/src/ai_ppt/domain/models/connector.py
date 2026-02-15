@@ -8,12 +8,12 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum as PyEnum
 from typing import Any, Optional
-from uuid import UUID
 
 # 根据数据库类型选择 JSON 类型
 from sqlalchemy import JSON, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
+from ai_ppt.core.custom_types import GUID
 from ai_ppt.domain.models.base import (
     Base,
     DateTimeAuto,
@@ -72,7 +72,8 @@ class Connector(Base):
     )
 
     # 外键 - 所属用户
-    user_id: Mapped[UUID] = mapped_column(
+    user_id: Mapped[str] = mapped_column(
+        GUID(),
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
     )
@@ -89,10 +90,10 @@ class Connector(Base):
         self,
         name: str,
         type: str,
-        user_id: UUID,
+        user_id: str,
         config: dict[str, Any] | None = None,
         description: Optional[str] = None,
-        id: Optional[UUID] = None,
+        id: Optional[str] = None,
         is_active: bool = True,
         status: Optional[ConnectorStatus] = None,
     ) -> None:

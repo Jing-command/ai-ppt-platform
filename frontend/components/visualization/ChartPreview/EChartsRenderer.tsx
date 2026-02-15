@@ -3,9 +3,9 @@
 
 'use client';
 
-import { useRef, useEffect, useCallback } from 'react';
+import {useRef, useEffect, useCallback} from 'react';
 import ReactECharts from 'echarts-for-react';
-import type { EChartsOption, ECharts } from 'echarts';
+import type {EChartsOption, ECharts} from 'echarts';
 
 // EChartsReact 组件类型
 type EChartsReactInstance = InstanceType<typeof ReactECharts>;
@@ -120,7 +120,7 @@ export default function EChartsRenderer({
                 theme={theme}
                 style={defaultStyle}
                 onChartReady={handleChartReady}
-                onEvents={onChartClick ? { click: onChartClick } : undefined}
+                onEvents={onChartClick ? {click: onChartClick} : undefined}
                 showLoading={loading}
                 loadingOption={loadingOption || defaultLoadingOption}
                 // 响应式配置

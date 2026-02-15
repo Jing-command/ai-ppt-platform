@@ -3,9 +3,9 @@
 
 'use client';
 
-import { useState, useRef, useEffect, KeyboardEvent } from 'react';
-import { motion } from 'framer-motion';
-import { Send, Loader2 } from 'lucide-react';
+import {useState, useRef, useEffect, KeyboardEvent} from 'react';
+import {motion} from 'framer-motion';
+import {Send, Loader2} from 'lucide-react';
 
 /**
  * ChatInput 组件属性
@@ -90,7 +90,7 @@ export default function ChatInput({
                         disabled={disabled}
                         rows={1}
                         className="flex-1 bg-transparent text-gray-800 placeholder:text-gray-400 resize-none outline-none text-sm leading-relaxed py-2"
-                        style={{ minHeight: '40px' }}
+                        style={{minHeight: '40px'}}
                     />
 
                     {/* 发送按钮 */}
@@ -98,17 +98,17 @@ export default function ChatInput({
                         onClick={handleSend}
                         disabled={!canSend}
                         // 按钮动画：可用时轻微缩放
-                        whileHover={canSend ? { scale: 1.05 } : {}}
-                        whileTap={canSend ? { scale: 0.95 } : {}}
+                        whileHover={canSend ? {scale: 1.05} : {}}
+                        whileTap={canSend ? {scale: 0.95} : {}}
                         className={`
                             flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center
                             transition-all duration-200
                             ${canSend
-                                // 可发送状态：蓝色渐变背景
-                                ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 cursor-pointer'
-                                // 禁用状态：灰色背景
-                                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                            }
+        // 可发送状态：蓝色渐变背景
+            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 cursor-pointer'
+        // 禁用状态：灰色背景
+            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+        }
                         `}
                     >
                         {disabled ? (

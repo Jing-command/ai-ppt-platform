@@ -52,14 +52,14 @@ function getAuthHeaders(): HeadersInit {
  * @param params - 发送消息的参数配置
  */
 export async function sendMessage(params: SendMessageParams): Promise<void> {
-    const { messages, onChunk, onError, onComplete } = params;
+    const {messages, onChunk, onError, onComplete} = params;
 
     try {
         // 发送 POST 请求到聊天 API
         const response = await fetch(`${API_BASE}/api/v1/chat`, {
             method: 'POST',
             headers: getAuthHeaders(),
-            body: JSON.stringify({ messages })
+            body: JSON.stringify({messages})
         });
 
         // 检查响应状态
@@ -84,7 +84,7 @@ export async function sendMessage(params: SendMessageParams): Promise<void> {
         // 持续读取数据流
         while (true) {
             // 读取下一个数据块
-            const { done, value } = await reader.read();
+            const {done, value} = await reader.read();
 
             // 流结束
             if (done) {
@@ -92,7 +92,7 @@ export async function sendMessage(params: SendMessageParams): Promise<void> {
             }
 
             // 解码数据块并添加到缓冲区
-            buffer += decoder.decode(value, { stream: true });
+            buffer += decoder.decode(value, {stream: true});
 
             // 按行分割数据（SSE 格式每行以 "data: " 开头）
             const lines = buffer.split('\n');

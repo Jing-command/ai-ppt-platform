@@ -34,22 +34,24 @@ export interface DashboardApiError {
  * @throws Error 当请求失败时抛出错误
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
-  try {
-    const response = await apiClient.get<DashboardStats>('/dashboard/stats');
-    return response.data;
-  } catch (error) {
+    try {
+        const response = await apiClient.get<DashboardStats>('/dashboard/stats');
+        return response.data;
+    } catch (error) {
     // 处理 API 错误
-    if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as { response?: { data?: DashboardApiError } };
-      const errorData = axiosError.response?.data;
-      if (errorData) {
-        throw new Error(errorData.message || '获取数据失败');
-      }
+        if (error && typeof error === 'object' && 'response' in error) {
+            const axiosError = error as { response?: { data?: DashboardApiError } };
+            const errorData = axiosError.response?.data;
+            if (errorData) {
+                throw new Error(errorData.message || '获取数据失败');
+            }
+        }
+        throw new Error('网络错误，请检查网络连接');
     }
-    throw new Error('网络错误，请检查网络连接');
-  }
 }
 
-export default {
-  getDashboardStats
+const dashboardApi = {
+    getDashboardStats
 };
+
+export default dashboardApi;

@@ -3,11 +3,11 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X } from 'lucide-react';
-import type { ChartType, ChartCategory, ChartConfig } from '@/types/visualization';
-import { chartConfigs } from '@/lib/charts/chartConfigs';
+import {useState, useMemo} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Search, X} from 'lucide-react';
+import type {ChartType, ChartCategory} from '@/types/visualization';
+import {chartConfigs} from '@/lib/charts/chartConfigs';
 import CategoryTabs from './CategoryTabs';
 import ChartCard from './ChartCard';
 
@@ -110,18 +110,18 @@ export default function ChartSelector({
                 {filteredCharts.length > 0 ? (
                     <motion.div
                         key={activeCategory}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.1 }}
+                        initial={{opacity: 0, y: 10}}
+                        animate={{opacity: 1, y: 0}}
+                        exit={{opacity: 0, y: -10}}
+                        transition={{duration: 0.1}}
                         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
                     >
                         {filteredCharts.map((config, index) => (
                             <motion.div
                                 key={config.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.02, duration: 0.1 }}
+                                initial={{opacity: 0, y: 10}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{delay: index * 0.02, duration: 0.1}}
                             >
                                 <ChartCard
                                     config={config}
@@ -133,8 +133,8 @@ export default function ChartSelector({
                     </motion.div>
                 ) : (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
                         className="flex flex-col items-center justify-center py-12 text-gray-400"
                     >
                         <Search className="w-12 h-12 mb-4 opacity-50" />
@@ -147,4 +147,4 @@ export default function ChartSelector({
 }
 
 // 导出图表配置供其他模块使用
-export { CHART_CONFIGS };
+export {CHART_CONFIGS};

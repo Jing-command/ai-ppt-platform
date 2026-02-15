@@ -3,14 +3,13 @@
 
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {useState, useCallback, useRef} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
 import {
     Upload,
     FileSpreadsheet,
     FileJson,
     FileText,
-    X,
     CheckCircle,
     AlertCircle,
     Loader2
@@ -87,7 +86,7 @@ interface FileUploaderProps {
  * 文件上传组件
  * 支持拖拽上传 Excel、CSV、JSON 文件，并解析数据
  */
-export default function FileUploader({ onUpload }: FileUploaderProps) {
+export default function FileUploader({onUpload}: FileUploaderProps) {
     // 上传状态
     const [status, setStatus] = useState<UploadStatus>('idle');
     // 错误信息
@@ -259,7 +258,7 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
      */
     const parseExcel = (arrayBuffer: ArrayBuffer): Record<string, unknown>[] => {
         // 读取工作簿
-        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const workbook = XLSX.read(arrayBuffer, {type: 'array'});
         // 获取第一个工作表名称
         const sheetName = workbook.SheetNames[0];
         // 获取工作表
@@ -275,7 +274,7 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
      */
     const parseCSV = (text: string): Record<string, unknown>[] => {
         // 使用 XLSX 解析 CSV
-        const workbook = XLSX.read(text, { type: 'string' });
+        const workbook = XLSX.read(text, {type: 'string'});
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         return XLSX.utils.sheet_to_json(worksheet);
@@ -414,8 +413,10 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
 
         const files = e.dataTransfer.files;
         if (files.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             handleFileUpload(files[0]);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /**
@@ -495,9 +496,9 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                     {status === 'idle' && (
                         <motion.div
                             key="idle"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="flex flex-col items-center text-center"
                         >
                             {/* 上传图标 */}
@@ -534,9 +535,9 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                     {(status === 'uploading' || status === 'parsing') && (
                         <motion.div
                             key="uploading"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="flex flex-col items-center text-center"
                         >
                             {/* 加载图标 */}
@@ -551,9 +552,9 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                             <div className="w-full max-w-xs h-2 bg-gray-200 rounded-full overflow-hidden">
                                 <motion.div
                                     className="h-full bg-blue-500"
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${progress}%` }}
-                                    transition={{ duration: 0.1 }}
+                                    initial={{width: 0}}
+                                    animate={{width: `${progress}%`}}
+                                    transition={{duration: 0.1}}
                                 />
                             </div>
 
@@ -570,9 +571,9 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                     {status === 'success' && (
                         <motion.div
                             key="success"
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0, scale: 0.9}}
+                            animate={{opacity: 1, scale: 1}}
+                            exit={{opacity: 0}}
                             className="flex flex-col items-center text-center"
                         >
                             {/* 成功图标 */}
@@ -598,9 +599,9 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                     {status === 'error' && (
                         <motion.div
                             key="error"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="flex flex-col items-center text-center"
                         >
                             {/* 错误图标 */}
@@ -621,8 +622,8 @@ export default function FileUploader({ onUpload }: FileUploaderProps) {
                             {/* 重试按钮 */}
                             <motion.button
                                 onClick={handleReset}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
+                                whileHover={{scale: 1.02}}
+                                whileTap={{scale: 0.98}}
                                 className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                             >
                                 重新上传

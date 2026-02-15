@@ -4,8 +4,8 @@
  * @description 定义所有支持的图表类型及其默认配置
  */
 
-import type { EChartsOption } from 'echarts';
-import type { ChartConfig, ChartCategory } from '@/types/visualization';
+import type {EChartsOption} from 'echarts';
+import type {ChartConfig, ChartCategory} from '@/types/visualization';
 
 // ============================================
 // 默认调色板
@@ -224,11 +224,11 @@ const pieChartConfig: ChartConfig = {
                     show: false
                 },
                 data: [
-                    { value: 1048, name: '搜索引擎' },
-                    { value: 735, name: '直接访问' },
-                    { value: 580, name: '邮件营销' },
-                    { value: 484, name: '联盟广告' },
-                    { value: 300, name: '视频广告' }
+                    {value: 1048, name: '搜索引擎'},
+                    {value: 735, name: '直接访问'},
+                    {value: 580, name: '邮件营销'},
+                    {value: 484, name: '联盟广告'},
+                    {value: 300, name: '视频广告'}
                 ]
             }
         ],
@@ -443,12 +443,12 @@ const radarChartConfig: ChartConfig = {
         },
         radar: {
             indicator: [
-                { name: '销售', max: 6500 },
-                { name: '管理', max: 16000 },
-                { name: '信息技术', max: 30000 },
-                { name: '客服', max: 38000 },
-                { name: '研发', max: 52000 },
-                { name: '市场', max: 25000 }
+                {name: '销售', max: 6500},
+                {name: '管理', max: 16000},
+                {name: '信息技术', max: 30000},
+                {name: '客服', max: 38000},
+                {name: '研发', max: 52000},
+                {name: '市场', max: 25000}
             ]
         },
         series: [
@@ -724,11 +724,11 @@ const funnelChartConfig: ChartConfig = {
                     }
                 },
                 data: [
-                    { value: 100, name: '展现' },
-                    { value: 80, name: '点击' },
-                    { value: 60, name: '访问' },
-                    { value: 40, name: '咨询' },
-                    { value: 20, name: '订单' }
+                    {value: 100, name: '展现'},
+                    {value: 80, name: '点击'},
+                    {value: 60, name: '访问'},
+                    {value: 40, name: '咨询'},
+                    {value: 20, name: '订单'}
                 ]
             }
         ],
@@ -918,18 +918,18 @@ const sankeyChartConfig: ChartConfig = {
                     focus: 'adjacency'
                 },
                 data: [
-                    { name: 'a' },
-                    { name: 'b' },
-                    { name: 'c' },
-                    { name: 'd' },
-                    { name: 'e' }
+                    {name: 'a'},
+                    {name: 'b'},
+                    {name: 'c'},
+                    {name: 'd'},
+                    {name: 'e'}
                 ],
                 links: [
-                    { source: 'a', target: 'b', value: 5 },
-                    { source: 'a', target: 'c', value: 3 },
-                    { source: 'b', target: 'd', value: 4 },
-                    { source: 'c', target: 'd', value: 2 },
-                    { source: 'd', target: 'e', value: 6 }
+                    {source: 'a', target: 'b', value: 5},
+                    {source: 'a', target: 'c', value: 3},
+                    {source: 'b', target: 'd', value: 4},
+                    {source: 'c', target: 'd', value: 2},
+                    {source: 'd', target: 'e', value: 6}
                 ],
                 lineStyle: {
                     color: 'gradient',
@@ -994,11 +994,11 @@ const chinaMapChartConfig: ChartConfig = {
                     show: true
                 },
                 data: [
-                    { name: '北京', value: 100 },
-                    { name: '上海', value: 90 },
-                    { name: '广东', value: 80 },
-                    { name: '浙江', value: 70 },
-                    { name: '江苏', value: 60 }
+                    {name: '北京', value: 100},
+                    {name: '上海', value: 90},
+                    {name: '广东', value: 80},
+                    {name: '浙江', value: 70},
+                    {name: '江苏', value: 60}
                 ]
             }
         ]
@@ -1055,11 +1055,11 @@ const worldMapChartConfig: ChartConfig = {
                     show: false
                 },
                 data: [
-                    { name: 'China', value: 100 },
-                    { name: 'United States', value: 90 },
-                    { name: 'Japan', value: 80 },
-                    { name: 'Germany', value: 70 },
-                    { name: 'United Kingdom', value: 60 }
+                    {name: 'China', value: 100},
+                    {name: 'United States', value: 90},
+                    {name: 'Japan', value: 80},
+                    {name: 'Germany', value: 70},
+                    {name: 'United Kingdom', value: 60}
                 ]
             }
         ]
@@ -1104,16 +1104,16 @@ const graphChartConfig: ChartConfig = {
                 type: 'graph',
                 layout: 'force',
                 data: [
-                    { name: '节点1', symbolSize: 50 },
-                    { name: '节点2', symbolSize: 40 },
-                    { name: '节点3', symbolSize: 30 },
-                    { name: '节点4', symbolSize: 20 }
+                    {name: '节点1', symbolSize: 50},
+                    {name: '节点2', symbolSize: 40},
+                    {name: '节点3', symbolSize: 30},
+                    {name: '节点4', symbolSize: 20}
                 ],
                 links: [
-                    { source: '节点1', target: '节点2' },
-                    { source: '节点1', target: '节点3' },
-                    { source: '节点2', target: '节点4' },
-                    { source: '节点3', target: '节点4' }
+                    {source: '节点1', target: '节点2'},
+                    {source: '节点1', target: '节点3'},
+                    {source: '节点2', target: '节点4'},
+                    {source: '节点3', target: '节点4'}
                 ],
                 roam: true,
                 label: {
@@ -1176,14 +1176,14 @@ const treeChartConfig: ChartConfig = {
                             {
                                 name: '子节点1',
                                 children: [
-                                    { name: '叶子节点1' },
-                                    { name: '叶子节点2' }
+                                    {name: '叶子节点1'},
+                                    {name: '叶子节点2'}
                                 ]
                             },
                             {
                                 name: '子节点2',
                                 children: [
-                                    { name: '叶子节点3' }
+                                    {name: '叶子节点3'}
                                 ]
                             }
                         ]
@@ -1261,7 +1261,7 @@ const candlestickChartConfig: ChartConfig = {
         xAxis: {
             type: 'category',
             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-            axisLine: { lineStyle: { color: '#777' } }
+            axisLine: {lineStyle: {color: '#777'}}
         },
         yAxis: {
             scale: true,

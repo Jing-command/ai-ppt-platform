@@ -1,11 +1,11 @@
 import apiClient from './client';
 import {
-  Connector,
-  CreateConnectorRequest,
-  UpdateConnectorRequest,
-  TestConnectorRequest,
-  TestConnectorResponse,
-  PaginatedResponse
+    Connector,
+    CreateConnectorRequest,
+    UpdateConnectorRequest,
+    TestConnectorRequest,
+    TestConnectorResponse,
+    PaginatedResponse
 } from '@/types/connector';
 
 const CONNECTORS_BASE = '/connectors';
@@ -17,21 +17,21 @@ const CONNECTORS_BASE = '/connectors';
  * @param connectorType 可选的连接器类型过滤
  */
 export async function getConnectors(
-  page: number = 1,
-  pageSize: number = 20,
-  connectorType?: string
+    page: number = 1,
+    pageSize: number = 20,
+    connectorType?: string
 ): Promise<PaginatedResponse<Connector>> {
-  const params = new URLSearchParams();
-  params.append('page', page.toString());
-  params.append('pageSize', pageSize.toString());
-  if (connectorType) {
-    params.append('connectorType', connectorType);
-  }
+    const params = new URLSearchParams();
+    params.append('page', page.toString());
+    params.append('pageSize', pageSize.toString());
+    if (connectorType) {
+        params.append('connectorType', connectorType);
+    }
 
-  const response = await apiClient.get<PaginatedResponse<Connector>>(
-    `${CONNECTORS_BASE}?${params.toString()}`
-  );
-  return response.data;
+    const response = await apiClient.get<PaginatedResponse<Connector>>(
+        `${CONNECTORS_BASE}?${params.toString()}`
+    );
+    return response.data;
 }
 
 /**
@@ -39,8 +39,8 @@ export async function getConnectors(
  * @param id 连接器 ID
  */
 export async function getConnector(id: string): Promise<Connector> {
-  const response = await apiClient.get<Connector>(`${CONNECTORS_BASE}/${id}`);
-  return response.data;
+    const response = await apiClient.get<Connector>(`${CONNECTORS_BASE}/${id}`);
+    return response.data;
 }
 
 /**
@@ -48,8 +48,8 @@ export async function getConnector(id: string): Promise<Connector> {
  * @param data 连接器创建数据
  */
 export async function createConnector(data: CreateConnectorRequest): Promise<Connector> {
-  const response = await apiClient.post<Connector>(CONNECTORS_BASE, data);
-  return response.data;
+    const response = await apiClient.post<Connector>(CONNECTORS_BASE, data);
+    return response.data;
 }
 
 /**
@@ -58,11 +58,11 @@ export async function createConnector(data: CreateConnectorRequest): Promise<Con
  * @param data 连接器更新数据
  */
 export async function updateConnector(
-  id: string,
-  data: UpdateConnectorRequest
+    id: string,
+    data: UpdateConnectorRequest
 ): Promise<Connector> {
-  const response = await apiClient.put<Connector>(`${CONNECTORS_BASE}/${id}`, data);
-  return response.data;
+    const response = await apiClient.put<Connector>(`${CONNECTORS_BASE}/${id}`, data);
+    return response.data;
 }
 
 /**
@@ -70,7 +70,7 @@ export async function updateConnector(
  * @param id 连接器 ID
  */
 export async function deleteConnector(id: string): Promise<void> {
-  await apiClient.delete(`${CONNECTORS_BASE}/${id}`);
+    await apiClient.delete(`${CONNECTORS_BASE}/${id}`);
 }
 
 /**
@@ -79,15 +79,15 @@ export async function deleteConnector(id: string): Promise<void> {
  * @param config 可选的临时配置用于测试
  */
 export async function testConnector(
-  id: string,
-  config?: Record<string, unknown>
+    id: string,
+    config?: Record<string, unknown>
 ): Promise<TestConnectorResponse> {
-  const requestBody: TestConnectorRequest = config ? {config} : {};
-  const response = await apiClient.post<TestConnectorResponse>(
-    `${CONNECTORS_BASE}/${id}/test`,
-    requestBody
-  );
-  return response.data;
+    const requestBody: TestConnectorRequest = config ? {config} : {};
+    const response = await apiClient.post<TestConnectorResponse>(
+        `${CONNECTORS_BASE}/${id}/test`,
+        requestBody
+    );
+    return response.data;
 }
 
 /**
@@ -97,15 +97,15 @@ export async function testConnector(
  * @param config 连接配置
  */
 export async function testConnectorConfig(
-  type: string,
-  config: Record<string, unknown>
+    type: string,
+    config: Record<string, unknown>
 ): Promise<TestConnectorResponse> {
-  // 使用特殊端点测试未保存的连接器配置
-  const response = await apiClient.post<TestConnectorResponse>(
-    `${CONNECTORS_BASE}/test-config`,
-    {type, config}
-  );
-  return response.data;
+    // 使用特殊端点测试未保存的连接器配置
+    const response = await apiClient.post<TestConnectorResponse>(
+        `${CONNECTORS_BASE}/test-config`,
+        {type, config}
+    );
+    return response.data;
 }
 
 /**
@@ -114,18 +114,18 @@ export async function testConnectorConfig(
  * @param refresh 是否刷新缓存
  */
 export async function getConnectorSchema(
-  id: string,
-  refresh: boolean = false
+    id: string,
+    refresh: boolean = false
 ): Promise<unknown> {
-  const params = new URLSearchParams();
-  if (refresh) {
-    params.append('refresh', 'true');
-  }
+    const params = new URLSearchParams();
+    if (refresh) {
+        params.append('refresh', 'true');
+    }
 
-  const response = await apiClient.get(
-    `${CONNECTORS_BASE}/${id}/schema?${params.toString()}`
-  );
-  return response.data;
+    const response = await apiClient.get(
+        `${CONNECTORS_BASE}/${id}/schema?${params.toString()}`
+    );
+    return response.data;
 }
 
 /**
@@ -136,15 +136,15 @@ export async function getConnectorSchema(
  * @param limit 结果限制
  */
 export async function executeQuery(
-  id: string,
-  query: string,
-  params?: Record<string, unknown>,
-  limit: number = 100
+    id: string,
+    query: string,
+    params?: Record<string, unknown>,
+    limit: number = 100
 ): Promise<unknown> {
-  const response = await apiClient.post(`${CONNECTORS_BASE}/${id}/query`, {
-    query,
-    params,
-    limit
-  });
-  return response.data;
+    const response = await apiClient.post(`${CONNECTORS_BASE}/${id}/query`, {
+        query,
+        params,
+        limit
+    });
+    return response.data;
 }

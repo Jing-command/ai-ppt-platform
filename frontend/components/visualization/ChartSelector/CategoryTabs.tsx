@@ -3,7 +3,7 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 import {
     BarChart3,
     TrendingUp,
@@ -11,7 +11,7 @@ import {
     GitBranch,
     Sparkles
 } from 'lucide-react';
-import type { ChartCategory } from '@/types/visualization';
+import type {ChartCategory} from '@/types/visualization';
 
 /**
  * 分类标签项配置
@@ -86,17 +86,17 @@ export default function CategoryTabs({
                         key={tab.key}
                         onClick={() => onChange(tab.key)}
                         // 按钮动画：悬停缩放
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{scale: 1.02}}
+                        whileTap={{scale: 0.98}}
                         className={`
                             relative flex items-center gap-1.5 px-3 py-2 rounded-lg
                             text-sm font-medium transition-colors duration-100
                             ${isActive
-                                // 激活状态：白色背景 + 主色调文字
-                                ? 'text-blue-600'
-                                // 非激活状态：灰色文字
-                                : 'text-gray-500 hover:text-gray-700'
-                            }
+                    // 激活状态：白色背景 + 主色调文字
+                        ? 'text-blue-600'
+                    // 非激活状态：灰色文字
+                        : 'text-gray-500 hover:text-gray-700'
+                    }
                         `}
                     >
                         {/* 激活状态背景 */}

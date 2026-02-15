@@ -3,8 +3,8 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
-import { Sparkles, User } from 'lucide-react';
+import {motion} from 'framer-motion';
+import {Sparkles, User} from 'lucide-react';
 import PromptCard from './PromptCard';
 
 /**
@@ -30,16 +30,16 @@ interface ChatMessageProps {
  * 根据角色显示不同样式的消息气泡
  * AI 消息支持显示优化后的提示词卡片
  */
-export default function ChatMessage({ message }: ChatMessageProps) {
+export default function ChatMessage({message}: ChatMessageProps) {
     // 判断是否是用户消息
     const isUser = message.role === 'user';
 
     return (
         <motion.div
             // 入场动画：淡入 + 滑动
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{opacity: 0, y: 20}}
+            animate={{opacity: 1, y: 0}}
+            transition={{duration: 0.3}}
             className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
         >
             {/* 头像区域 */}
@@ -62,17 +62,17 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                 {/* 消息气泡 */}
                 <motion.div
                     // 气泡动画：轻微缩放
-                    initial={{ scale: 0.95 }}
-                    animate={{ scale: 1 }}
-                    transition={{ duration: 0.2 }}
+                    initial={{scale: 0.95}}
+                    animate={{scale: 1}}
+                    transition={{duration: 0.2}}
                     className={`
                         inline-block px-5 py-3.5 rounded-2xl
                         ${isUser
-                            // 用户消息：蓝色背景，右对齐
-                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-tr-md'
-                            // AI 消息：灰色背景，左对齐
-                            : 'bg-white text-gray-800 rounded-tl-md shadow-sm border border-gray-100'
-                        }
+        // 用户消息：蓝色背景，右对齐
+            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-tr-md'
+        // AI 消息：灰色背景，左对齐
+            : 'bg-white text-gray-800 rounded-tl-md shadow-sm border border-gray-100'
+        }
                     `}
                 >
                     {/* 消息文本内容 */}
@@ -81,8 +81,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                         {/* 流式输出时的光标动画 */}
                         {message.isStreaming && (
                             <motion.span
-                                animate={{ opacity: [1, 0] }}
-                                transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
+                                animate={{opacity: [1, 0]}}
+                                transition={{duration: 0.5, repeat: Infinity, repeatType: 'reverse'}}
                                 className="inline-block w-2 h-4 ml-0.5 bg-current align-middle"
                             />
                         )}
@@ -93,9 +93,9 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                 {!isUser && message.optimizedPrompt && (
                     <motion.div
                         // 卡片入场动画：淡入 + 向上滑动
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: 0.2 }}
+                        initial={{opacity: 0, y: 10}}
+                        animate={{opacity: 1, y: 0}}
+                        transition={{duration: 0.3, delay: 0.2}}
                         className="mt-3"
                     >
                         <PromptCard optimizedPrompt={message.optimizedPrompt} />

@@ -97,15 +97,15 @@ class TestAuthAPI:
 
         with patch.object(db_session, "execute") as mock_execute:
             mock_result = MagicMock()
-            mock_result.scalar_one_or_none.return_value = MagicMock(
-                id=user_id,
-                email="login@example.com",
-                username="loginuser",
-                hashed_password=hashed_password,
-                is_active=True,
-                avatar=None,
-                created_at=datetime.now(timezone.utc),
-            )
+            mock_user = MagicMock()
+            mock_user.id = user_id
+            mock_user.email = "login@example.com"
+            mock_user.username = "loginuser"
+            mock_user.hashed_password = hashed_password
+            mock_user.is_active = True
+            mock_user.avatar_url = None
+            mock_user.created_at = datetime.now(timezone.utc)
+            mock_result.scalar_one_or_none.return_value = mock_user
             mock_execute.return_value = mock_result
 
             response = await client.post(

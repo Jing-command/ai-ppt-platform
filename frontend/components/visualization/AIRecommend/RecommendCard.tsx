@@ -3,9 +3,9 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, TrendingUp, BarChart3, PieChart } from 'lucide-react';
-import type { ChartType } from '@/types/visualization';
+import {motion} from 'framer-motion';
+import {Sparkles, ArrowRight, TrendingUp, BarChart3, PieChart} from 'lucide-react';
+import type {ChartType} from '@/types/visualization';
 
 /**
  * 推荐图表接口
@@ -92,9 +92,9 @@ export default function RecommendCard({
         <motion.div
             onClick={onClick}
             // 卡片动画：悬停上浮
-            whileHover={{ y: -4, scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
-            transition={{ duration: 0.1 }}
+            whileHover={{y: -4, scale: 1.01}}
+            whileTap={{scale: 0.99}}
+            transition={{duration: 0.1}}
             className="
                 p-4 rounded-xl border border-gray-200 bg-white
                 hover:border-blue-300 hover:shadow-md
@@ -133,9 +133,9 @@ export default function RecommendCard({
                 <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <motion.div
                         className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${chart.confidence}%` }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
+                        initial={{width: 0}}
+                        animate={{width: `${chart.confidence}%`}}
+                        transition={{duration: 0.5, delay: 0.2}}
                     />
                 </div>
             </div>
@@ -167,7 +167,7 @@ export default function RecommendCard({
             {/* 选择按钮 */}
             <motion.div
                 className="flex items-center justify-end gap-1 text-blue-500"
-                whileHover={{ x: 2 }}
+                whileHover={{x: 2}}
             >
                 <span className="text-xs font-medium">选择此图表</span>
                 <ArrowRight className="w-3.5 h-3.5" />

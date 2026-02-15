@@ -3,9 +3,9 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
-import { Palette, Type, Sparkles, Settings2 } from 'lucide-react';
-import type { ChartStyleConfig } from '@/types/visualization';
+import {motion} from 'framer-motion';
+import {Palette, Type, Sparkles, Settings2} from 'lucide-react';
+import type {ChartStyleConfig} from '@/types/visualization';
 
 /**
  * 预设配色方案
@@ -146,14 +146,14 @@ export default function StyleEditor({
                                 key={palette.name}
                                 onClick={() => handlePaletteChange(palette.colors)}
                                 // 按钮动画：悬停缩放
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
+                                whileHover={{scale: 1.02}}
+                                whileTap={{scale: 0.98}}
                                 className={`
                                     p-2 rounded-lg border-2 transition-colors duration-100
                                     ${isSelected
-                                        ? 'border-blue-500 bg-blue-50'
-                                        : 'border-gray-200 bg-white hover:border-gray-300'
-                                    }
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-gray-200 bg-white hover:border-gray-300'
+                            }
                                 `}
                             >
                                 {/* 配色名称 */}
@@ -167,7 +167,7 @@ export default function StyleEditor({
                                         <div
                                             key={index}
                                             className="w-4 h-4 rounded-sm"
-                                            style={{ backgroundColor: color }}
+                                            style={{backgroundColor: color}}
                                         />
                                     ))}
                                 </div>
@@ -185,30 +185,30 @@ export default function StyleEditor({
                 <div className="flex gap-2">
                     <motion.button
                         onClick={() => handleThemeChange('light')}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{scale: 1.02}}
+                        whileTap={{scale: 0.98}}
                         className={`
                             flex-1 py-2 px-3 rounded-lg text-sm font-medium
                             border-2 transition-colors duration-100
                             ${config.theme === 'light'
-                                ? 'border-blue-500 bg-blue-50 text-blue-700'
-                                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                            }
+            ? 'border-blue-500 bg-blue-50 text-blue-700'
+            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+        }
                         `}
                     >
                         浅色
                     </motion.button>
                     <motion.button
                         onClick={() => handleThemeChange('dark')}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{scale: 1.02}}
+                        whileTap={{scale: 0.98}}
                         className={`
                             flex-1 py-2 px-3 rounded-lg text-sm font-medium
                             border-2 transition-colors duration-100
                             ${config.theme === 'dark'
-                                ? 'border-blue-500 bg-blue-50 text-blue-700'
-                                : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                            }
+            ? 'border-blue-500 bg-blue-50 text-blue-700'
+            : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+        }
                         `}
                     >
                         深色
@@ -227,13 +227,13 @@ export default function StyleEditor({
                 <motion.button
                     onClick={() => handleAnimationChange(!config.animation.enabled)}
                     // 开关动画：切换效果
-                    whileTap={{ scale: 0.95 }}
+                    whileTap={{scale: 0.95}}
                     className={`
                         relative w-12 h-6 rounded-full transition-colors duration-100
                         ${config.animation.enabled
-                            ? 'bg-blue-500'
-                            : 'bg-gray-300'
-                        }
+            ? 'bg-blue-500'
+            : 'bg-gray-300'
+        }
                     `}
                 >
                     {/* 开关滑块 */}
@@ -242,7 +242,7 @@ export default function StyleEditor({
                         animate={{
                             left: config.animation.enabled ? '28px' : '4px'
                         }}
-                        transition={{ duration: 0.1 }}
+                        transition={{duration: 0.1}}
                     />
                 </motion.button>
             </div>
@@ -259,7 +259,7 @@ export default function StyleEditor({
                         <input
                             type="checkbox"
                             checked={config.showLegend}
-                            onChange={(e) => onChange({ ...config, showLegend: e.target.checked })}
+                            onChange={(e) => onChange({...config, showLegend: e.target.checked})}
                             className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500"
                         />
                         <span className="text-sm text-gray-600">显示图例</span>
@@ -270,7 +270,7 @@ export default function StyleEditor({
                         <input
                             type="checkbox"
                             checked={config.showTooltip}
-                            onChange={(e) => onChange({ ...config, showTooltip: e.target.checked })}
+                            onChange={(e) => onChange({...config, showTooltip: e.target.checked})}
                             className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500"
                         />
                         <span className="text-sm text-gray-600">显示工具提示</span>
@@ -281,7 +281,7 @@ export default function StyleEditor({
                         <input
                             type="checkbox"
                             checked={config.showGrid}
-                            onChange={(e) => onChange({ ...config, showGrid: e.target.checked })}
+                            onChange={(e) => onChange({...config, showGrid: e.target.checked})}
                             className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500"
                         />
                         <span className="text-sm text-gray-600">显示网格线</span>

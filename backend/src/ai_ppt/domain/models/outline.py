@@ -8,12 +8,13 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING, Any, Optional
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from sqlalchemy import JSON, DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ai_ppt.domain.models.base import Base
+from ai_ppt.core.custom_types import GUID
+from ai_ppt.domain.models.base import Base, UUIDPk
 
 if TYPE_CHECKING:
     from ai_ppt.domain.models.presentation import Presentation
@@ -161,10 +162,11 @@ class Outline(Base):
     __allow_unmapped__ = True  # 允许非 Mapped 注解
 
     # 主键
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    id: Mapped[UUIDPk]
 
     # 外键
-    user_id: Mapped[UUID] = mapped_column(
+    user_id: Mapped[str] = mapped_column(
+        GUID(),
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
     )
@@ -238,7 +240,7 @@ class Outline(Base):
     def __init__(
         self,
         title: str,
-        user_id: UUID,
+        user_id: str,
         description: Optional[str] = None,
         pages: Optional[list[dict[str, Any]]] = None,
         background: Optional[dict[str, Any]] = None,
@@ -246,7 +248,7 @@ class Outline(Base):
         status: Optional[str] = None,
         ai_prompt: Optional[str] = None,
         ai_parameters: Optional[dict[str, Any]] = None,
-        id: Optional[UUID] = None,
+        id: Optional[str] = None,
     ) -> None:
         if id is not None:
             self.id = id

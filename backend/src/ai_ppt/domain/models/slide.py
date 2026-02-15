@@ -7,11 +7,11 @@ from __future__ import annotations
 
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING, Any, Optional
-from uuid import UUID
 
 from sqlalchemy import JSON, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from ai_ppt.core.custom_types import GUID
 from ai_ppt.domain.models.base import (
     Base,
     DateTimeAuto,
@@ -98,7 +98,8 @@ class Slide(Base):
     )
 
     # 外键
-    presentation_id: Mapped[UUID] = mapped_column(
+    presentation_id: Mapped[str] = mapped_column(
+        GUID(),
         ForeignKey("presentations.id", ondelete="CASCADE"),
         nullable=False,
     )
@@ -116,7 +117,7 @@ class Slide(Base):
     def __init__(
         self,
         title: str,
-        presentation_id: UUID,
+        presentation_id: str,
         layout_type: SlideLayoutType = SlideLayoutType.TITLE_CONTENT,
         order_index: int = 0,
         content: Optional[dict[str, Any]] = None,
@@ -125,7 +126,7 @@ class Slide(Base):
         background_color: Optional[str] = None,
         text_color: Optional[str] = None,
         font_family: Optional[str] = None,
-        id: Optional[UUID] = None,
+        id: Optional[str] = None,
     ) -> None:
         if id is not None:
             self.id = id

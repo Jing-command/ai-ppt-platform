@@ -3,11 +3,11 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FolderOpen, Trash2, RefreshCw } from 'lucide-react';
-import type { StoredChart } from '@/types/visualization';
-import { ChartStorageManager } from '@/types/visualization';
+import {useState, useEffect} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
+import {FolderOpen, Trash2, RefreshCw} from 'lucide-react';
+import type {StoredChart} from '@/types/visualization';
+import {ChartStorageManager} from '@/types/visualization';
 import StoredChartCard from './StoredChartCard';
 
 /**
@@ -101,15 +101,15 @@ export default function StoredCharts({
                     <motion.button
                         onClick={loadCharts}
                         disabled={isLoading}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{scale: 1.05}}
+                        whileTap={{scale: 0.95}}
                         className={`
                             p-2 rounded-lg border border-gray-200
                             transition-colors duration-100
                             ${isLoading
-                                ? 'text-gray-300 cursor-not-allowed'
-                                : 'text-gray-500 hover:bg-gray-50'
-                            }
+            ? 'text-gray-300 cursor-not-allowed'
+            : 'text-gray-500 hover:bg-gray-50'
+        }
                         `}
                         title="刷新"
                     >
@@ -120,8 +120,8 @@ export default function StoredCharts({
                     {charts.length > 0 && (
                         <motion.button
                             onClick={handleClearAll}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{scale: 1.05}}
+                            whileTap={{scale: 0.95}}
                             className="
                                 p-2 rounded-lg border border-gray-200
                                 text-gray-500 hover:bg-red-50 hover:text-red-500 hover:border-red-200
@@ -142,9 +142,9 @@ export default function StoredCharts({
                     {isLoading && (
                         <motion.div
                             key="loading"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="flex items-center justify-center h-full"
                         >
                             <RefreshCw className="w-6 h-6 text-gray-400 animate-spin" />
@@ -155,18 +155,18 @@ export default function StoredCharts({
                     {!isLoading && charts.length > 0 && (
                         <motion.div
                             key="list"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="grid grid-cols-2 gap-3"
                         >
                             {charts.map((chart, index) => (
                                 <motion.div
                                     key={chart.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    transition={{ duration: 0.1, delay: index * 0.05 }}
+                                    initial={{opacity: 0, y: 20}}
+                                    animate={{opacity: 1, y: 0}}
+                                    exit={{opacity: 0, y: -20}}
+                                    transition={{duration: 0.1, delay: index * 0.05}}
                                 >
                                     <StoredChartCard
                                         chart={chart}
@@ -182,9 +182,9 @@ export default function StoredCharts({
                     {!isLoading && charts.length === 0 && (
                         <motion.div
                             key="empty"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="flex flex-col items-center justify-center h-full text-gray-400"
                         >
                             <FolderOpen className="w-16 h-16 mb-4" />
@@ -192,7 +192,7 @@ export default function StoredCharts({
                                 暂无存储的图表
                             </p>
                             <p className="text-xs text-gray-400">
-                                创建图表后点击"暂存"按钮保存
+                                创建图表后点击&quot;暂存&quot;按钮保存
                             </p>
                         </motion.div>
                     )}

@@ -3,8 +3,8 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
-import type { LucideIcon } from 'lucide-react';
+import {motion} from 'framer-motion';
+import type {LucideIcon} from 'lucide-react';
 
 /**
  * 快捷入口项配置类型
@@ -30,24 +30,24 @@ interface QuickEntryProps {
  * 快捷入口组件
  * 显示一个可点击的快捷操作卡片
  */
-export default function QuickEntry({ item, onClick, index = 0 }: QuickEntryProps) {
+export default function QuickEntry({item, onClick, index = 0}: QuickEntryProps) {
     const Icon = item.icon;
 
     return (
         <motion.button
             onClick={() => onClick(item.prompt)}
             // 入场动画：淡入 + 向上滑动，带延迟
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+            initial={{opacity: 0, y: 20}}
+            animate={{opacity: 1, y: 0}}
+            transition={{duration: 0.3, delay: index * 0.1}}
             // 悬停动画：缩放 + 上移
             whileHover={{
                 scale: 1.03,
                 y: -4,
-                transition: { duration: 0.2 }
+                transition: {duration: 0.2}
             }}
             // 点击动画：缩小
-            whileTap={{ scale: 0.98 }}
+            whileTap={{scale: 0.98}}
             className="group relative w-full bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl border border-gray-200/50 hover:border-blue-300/50 transition-all duration-300 text-left overflow-hidden"
         >
             {/* 悬停背景效果：渐变叠加 */}

@@ -3,7 +3,7 @@
 
 'use client';
 
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 import {
     ArrowDown,
     Hash,
@@ -12,7 +12,7 @@ import {
     ToggleLeft,
     Layers
 } from 'lucide-react';
-import type { DataField, ChartFieldMapping, FieldDataType } from '@/types/visualization';
+import type {DataField, ChartFieldMapping, FieldDataType} from '@/types/visualization';
 
 /**
  * 字段类型图标映射
@@ -173,14 +173,14 @@ export default function FieldMapper({
                                 <motion.label
                                     key={field.name}
                                     // 复选框动画：悬停效果
-                                    whileHover={{ scale: 1.01 }}
+                                    whileHover={{scale: 1.01}}
                                     className={`
                                         flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer
                                         transition-colors duration-100
                                         ${isChecked
-                                            ? 'bg-blue-100 border border-blue-200'
-                                            : 'bg-white border border-gray-200 hover:bg-gray-100'
-                                        }
+                                    ? 'bg-blue-100 border border-blue-200'
+                                    : 'bg-white border border-gray-200 hover:bg-gray-100'
+                                }
                                     `}
                                 >
                                     {/* 复选框 */}

@@ -6,11 +6,11 @@ from __future__ import annotations
 
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING, List, Optional
-from uuid import UUID
 
 from sqlalchemy import Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from ai_ppt.core.custom_types import GUID
 from ai_ppt.domain.models.base import (
     Base,
     BoolTrue,
@@ -66,11 +66,13 @@ class Presentation(Base):
     view_count: Mapped[int] = mapped_column(default=0)
 
     # 外键
-    outline_id: Mapped[Optional[UUID]] = mapped_column(
+    outline_id: Mapped[Optional[str]] = mapped_column(
+        GUID(),
         ForeignKey("outlines.id", ondelete="SET NULL"),
         nullable=True,
     )
-    owner_id: Mapped[UUID] = mapped_column(
+    owner_id: Mapped[str] = mapped_column(
+        GUID(),
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
     )
@@ -96,11 +98,11 @@ class Presentation(Base):
     def __init__(
         self,
         title: str,
-        owner_id: UUID,
+        owner_id: str,
         description: Optional[str] = None,
         theme: str = "default",
-        id: Optional[UUID] = None,
-        outline_id: Optional[UUID] = None,
+        id: Optional[str] = None,
+        outline_id: Optional[str] = None,
         status: Optional[PresentationStatus] = None,
     ) -> None:
         if id is not None:

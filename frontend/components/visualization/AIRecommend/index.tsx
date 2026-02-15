@@ -3,14 +3,14 @@
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Loader2, RefreshCw, Brain } from 'lucide-react';
-import type { ParsedData, ChartType, DataField } from '@/types/visualization';
-import RecommendCard, { type RecommendedChart } from './RecommendCard';
+import {useState, useEffect, useMemo} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Sparkles, RefreshCw, Brain} from 'lucide-react';
+import type {ParsedData, DataField} from '@/types/visualization';
+import RecommendCard, {type RecommendedChart} from './RecommendCard';
 
 // 重新导出 RecommendedChart 类型供外部使用
-export { type RecommendedChart } from './RecommendCard';
+export {type RecommendedChart} from './RecommendCard';
 
 /**
  * AIRecommend 组件属性
@@ -39,7 +39,7 @@ export default function AIRecommend({
      * 分析数据特征并生成推荐
      */
     const analyzeDataAndRecommend = useMemo(() => {
-        return (fields: DataField[], totalRows: number): RecommendedChart[] => {
+        return (fields: DataField[]): RecommendedChart[] => {
             const recommendations: RecommendedChart[] = [];
 
             // 统计字段类型
@@ -200,15 +200,15 @@ export default function AIRecommend({
                 <motion.button
                     onClick={handleRefresh}
                     disabled={isLoading}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{scale: 1.05}}
+                    whileTap={{scale: 0.95}}
                     className={`
                         p-2 rounded-lg border border-gray-200
                         transition-colors duration-100
                         ${isLoading
-                            ? 'text-gray-300 cursor-not-allowed'
-                            : 'text-gray-500 hover:bg-gray-50'
-                        }
+            ? 'text-gray-300 cursor-not-allowed'
+            : 'text-gray-500 hover:bg-gray-50'
+        }
                     `}
                 >
                     <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
@@ -222,9 +222,9 @@ export default function AIRecommend({
                     {isLoading && (
                         <motion.div
                             key="loading"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="flex flex-col items-center justify-center h-full"
                         >
                             {/* 加载动画 */}
@@ -248,9 +248,9 @@ export default function AIRecommend({
                     {!isLoading && recommendations.length > 0 && (
                         <motion.div
                             key="results"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="space-y-3"
                         >
                             {/* 数据概览 */}
@@ -278,9 +278,9 @@ export default function AIRecommend({
                             {recommendations.map((chart, index) => (
                                 <motion.div
                                     key={chart.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.1, delay: index * 0.1 }}
+                                    initial={{opacity: 0, y: 20}}
+                                    animate={{opacity: 1, y: 0}}
+                                    transition={{duration: 0.1, delay: index * 0.1}}
                                 >
                                     <RecommendCard
                                         chart={chart}
@@ -295,9 +295,9 @@ export default function AIRecommend({
                     {!isLoading && recommendations.length === 0 && (
                         <motion.div
                             key="empty"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            exit={{opacity: 0}}
                             className="flex flex-col items-center justify-center h-full text-gray-400"
                         >
                             <Sparkles className="w-12 h-12 mb-3" />
