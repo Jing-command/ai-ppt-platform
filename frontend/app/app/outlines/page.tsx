@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
 import {
   List,
   Plus,
@@ -17,27 +17,27 @@ import {
   ChevronDown,
   FolderTree,
   AlertCircle,
-  X,
+  X
 } from 'lucide-react';
-import { AppLayout } from '@/components/layout/AppLayout';
+import {AppLayout} from '@/components/layout/AppLayout';
 import {
   getOutlines,
   deleteOutline,
   createOutline,
-  generateOutline,
+  generateOutline
 } from '@/lib/api/outlines';
 import {
   OutlineResponse,
   OutlineStatus,
-  OutlineGenerateRequest,
+  OutlineGenerateRequest
 } from '@/types/outline';
 
 const statusOptions: { value: OutlineStatus | ''; label: string; color: string }[] = [
-  { value: '', label: '全部', color: 'bg-gray-100 text-gray-700' },
-  { value: 'draft', label: '草稿', color: 'bg-gray-100 text-gray-700' },
-  { value: 'generating', label: '生成中', color: 'bg-yellow-100 text-yellow-700' },
-  { value: 'completed', label: '已完成', color: 'bg-green-100 text-green-700' },
-  { value: 'archived', label: '已归档', color: 'bg-gray-100 text-gray-700' },
+  {value: '', label: '全部', color: 'bg-gray-100 text-gray-700'},
+  {value: 'draft', label: '草稿', color: 'bg-gray-100 text-gray-700'},
+  {value: 'generating', label: '生成中', color: 'bg-yellow-100 text-yellow-700'},
+  {value: 'completed', label: '已完成', color: 'bg-green-100 text-green-700'},
+  {value: 'archived', label: '已归档', color: 'bg-gray-100 text-gray-700'}
 ];
 
 function getStatusBadge(status: OutlineStatus) {
@@ -55,23 +55,23 @@ interface OutlineTreeProps {
   onToggle: () => void;
 }
 
-function OutlineTree({ outline, isExpanded, onToggle }: OutlineTreeProps) {
+function OutlineTree({outline, isExpanded, onToggle}: OutlineTreeProps) {
   return (
     <div className="mt-3 pl-4 border-l-2 border-[var(--color-border)]">
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{opacity: 0, height: 0}}
+            animate={{opacity: 1, height: 'auto'}}
+            exit={{opacity: 0, height: 0}}
             className="space-y-2"
           >
             {outline.pages.map((page, index) => (
               <motion.div
                 key={page.id}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
+                initial={{opacity: 0, x: -10}}
+                animate={{opacity: 1, x: 0}}
+                transition={{delay: index * 0.05}}
                 className="flex items-start gap-3 py-2"
               >
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-medium flex items-center justify-center">
@@ -118,7 +118,7 @@ export default function OutlinesPage() {
       const response = await getOutlines({
         page: 1,
         pageSize: 50,
-        status: statusFilter || undefined,
+        status: statusFilter || undefined
       });
       setOutlines(response.data);
     } catch (error) {
@@ -129,13 +129,13 @@ export default function OutlinesPage() {
   };
 
   const handleCreateOutline = async () => {
-    if (!newOutlineTitle.trim()) return;
+    if (!newOutlineTitle.trim()) { return; }
 
     try {
       const response = await createOutline({
         title: newOutlineTitle,
         description: '',
-        pages: [],
+        pages: []
       });
       setShowCreateModal(false);
       setNewOutlineTitle('');
@@ -146,7 +146,7 @@ export default function OutlinesPage() {
   };
 
   const handleGenerateOutline = async () => {
-    if (!generatePrompt.trim()) return;
+    if (!generatePrompt.trim()) { return; }
 
     setIsGenerating(true);
     try {
@@ -154,10 +154,10 @@ export default function OutlinesPage() {
         prompt: generatePrompt,
         numSlides,
         language: 'zh',
-        style: 'business',
+        style: 'business'
       };
       const response = await generateOutline(request);
-      
+
       if (response.taskId) {
         // Poll for completion
         setShowGenerateModal(false);
@@ -172,7 +172,7 @@ export default function OutlinesPage() {
   };
 
   const handleDeleteOutline = async (id: string) => {
-    if (!confirm('确定要删除这个大纲吗？')) return;
+    if (!confirm('确定要删除这个大纲吗？')) { return; }
 
     try {
       await deleteOutline(id);
@@ -210,8 +210,8 @@ export default function OutlinesPage() {
           </div>
           <div className="flex items-center gap-3">
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{scale: 1.02}}
+              whileTap={{scale: 0.98}}
               onClick={() => setShowGenerateModal(true)}
               className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium shadow-md hover:shadow-lg transition-all"
             >
@@ -219,8 +219,8 @@ export default function OutlinesPage() {
               AI 生成大纲
             </motion.button>
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{scale: 1.02}}
+              whileTap={{scale: 0.98}}
               onClick={() => setShowCreateModal(true)}
               className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md"
             >
@@ -272,8 +272,8 @@ export default function OutlinesPage() {
             <p className="text-sm text-[var(--color-text-muted)] mt-1">创建或生成您的大纲</p>
             <div className="flex items-center gap-3 mt-4">
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{scale: 1.02}}
+                whileTap={{scale: 0.98}}
                 onClick={() => setShowGenerateModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium"
               >
@@ -281,8 +281,8 @@ export default function OutlinesPage() {
                 AI 生成
               </motion.button>
               <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{scale: 1.02}}
+                whileTap={{scale: 0.98}}
                 onClick={() => setShowCreateModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium"
               >
@@ -296,8 +296,8 @@ export default function OutlinesPage() {
             {filteredOutlines.map((outline) => (
               <motion.div
                 key={outline.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{opacity: 0, y: 10}}
+                animate={{opacity: 1, y: 0}}
                 className="bg-white rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-card)] overflow-hidden"
               >
                 <div className="p-4">
@@ -377,14 +377,14 @@ export default function OutlinesPage() {
               onClick={() => setShowCreateModal(false)}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={{opacity: 0, scale: 0.95}}
+              animate={{opacity: 1, scale: 1}}
+              exit={{opacity: 0, scale: 0.95}}
               className="fixed inset-0 flex items-center justify-center z-50 p-4"
             >
               <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6"
-              onClick={(e) => e.stopPropagation()}
-            >
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-[var(--color-text)]">创建大纲</h2>
                   <button
@@ -411,8 +411,8 @@ export default function OutlinesPage() {
                   </div>
 
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{scale: 1.02}}
+                    whileTap={{scale: 0.98}}
                     onClick={handleCreateOutline}
                     disabled={!newOutlineTitle.trim()}
                     className="w-full py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -435,14 +435,14 @@ export default function OutlinesPage() {
               onClick={() => !isGenerating && setShowGenerateModal(false)}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={{opacity: 0, scale: 0.95}}
+              animate={{opacity: 1, scale: 1}}
+              exit={{opacity: 0, scale: 0.95}}
               className="fixed inset-0 flex items-center justify-center z-50 p-4"
             >
               <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6"
-              onClick={(e) => e.stopPropagation()}
-            >
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-purple-500" />
@@ -492,8 +492,8 @@ export default function OutlinesPage() {
                   </div>
 
                   <motion.button
-                    whileHover={{ scale: isGenerating ? 1 : 1.02 }}
-                    whileTap={{ scale: isGenerating ? 1 : 0.98 }}
+                    whileHover={{scale: isGenerating ? 1 : 1.02}}
+                    whileTap={{scale: isGenerating ? 1 : 0.98}}
                     onClick={handleGenerateOutline}
                     disabled={!generatePrompt.trim() || isGenerating}
                     className="w-full py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"

@@ -122,12 +122,12 @@ export const CONNECTOR_TYPE_CONFIGS: Record<string, ConnectorTypeConfig> = {
     icon: 'Database',
     description: '连接 MySQL 数据库',
     fields: [
-      { name: 'host', label: '主机地址', type: 'text', placeholder: 'localhost', required: true },
-      { name: 'port', label: '端口', type: 'number', placeholder: '3306', required: true, defaultValue: 3306 },
-      { name: 'database', label: '数据库名', type: 'text', placeholder: 'my_database', required: true },
-      { name: 'username', label: '用户名', type: 'text', placeholder: 'root', required: true },
-      { name: 'password', label: '密码', type: 'password', placeholder: '••••••••', required: true },
-    ],
+      {name: 'host', label: '主机地址', type: 'text', placeholder: 'localhost', required: true},
+      {name: 'port', label: '端口', type: 'number', placeholder: '3306', required: true, defaultValue: 3306},
+      {name: 'database', label: '数据库名', type: 'text', placeholder: 'my_database', required: true},
+      {name: 'username', label: '用户名', type: 'text', placeholder: 'root', required: true},
+      {name: 'password', label: '密码', type: 'password', placeholder: '••••••••', required: true}
+    ]
   },
   salesforce: {
     value: 'salesforce',
@@ -135,11 +135,11 @@ export const CONNECTOR_TYPE_CONFIGS: Record<string, ConnectorTypeConfig> = {
     icon: 'Cloud',
     description: '连接 Salesforce CRM',
     fields: [
-      { name: 'username', label: '用户名', type: 'text', placeholder: 'user@example.com', required: true },
-      { name: 'password', label: '密码', type: 'password', placeholder: '••••••••', required: true },
-      { name: 'securityToken', label: '安全令牌', type: 'password', placeholder: '••••••••', required: true },
-      { name: 'apiKey', label: 'API Key', type: 'password', placeholder: '••••••••', required: true },
-    ],
+      {name: 'username', label: '用户名', type: 'text', placeholder: 'user@example.com', required: true},
+      {name: 'password', label: '密码', type: 'password', placeholder: '••••••••', required: true},
+      {name: 'securityToken', label: '安全令牌', type: 'password', placeholder: '••••••••', required: true},
+      {name: 'apiKey', label: 'API Key', type: 'password', placeholder: '••••••••', required: true}
+    ]
   },
   postgresql: {
     value: 'postgresql',
@@ -147,13 +147,13 @@ export const CONNECTOR_TYPE_CONFIGS: Record<string, ConnectorTypeConfig> = {
     icon: 'Database',
     description: '连接 PostgreSQL 数据库',
     fields: [
-      { name: 'host', label: '主机地址', type: 'text', placeholder: 'localhost', required: true },
-      { name: 'port', label: '端口', type: 'number', placeholder: '5432', required: true, defaultValue: 5432 },
-      { name: 'database', label: '数据库名', type: 'text', placeholder: 'my_database', required: true },
-      { name: 'username', label: '用户名', type: 'text', placeholder: 'postgres', required: true },
-      { name: 'password', label: '密码', type: 'password', placeholder: '••••••••', required: true },
-    ],
-  },
+      {name: 'host', label: '主机地址', type: 'text', placeholder: 'localhost', required: true},
+      {name: 'port', label: '端口', type: 'number', placeholder: '5432', required: true, defaultValue: 5432},
+      {name: 'database', label: '数据库名', type: 'text', placeholder: 'my_database', required: true},
+      {name: 'username', label: '用户名', type: 'text', placeholder: 'postgres', required: true},
+      {name: 'password', label: '密码', type: 'password', placeholder: '••••••••', required: true}
+    ]
+  }
 };
 
 // 获取连接器显示状态
@@ -161,14 +161,14 @@ export function getConnectorDisplayStatus(
   connector: Connector
 ): { status: ConnectorStatus; label: string; color: string } {
   if (!connector.lastTestedAt) {
-    return { status: 'disconnected', label: '未测试', color: '#9ca3af' };
+    return {status: 'disconnected', label: '未测试', color: '#9ca3af'};
   }
-  
+
   if (connector.lastTestStatus === 'success') {
-    return { status: 'connected', label: '已连接', color: '#10b981' };
+    return {status: 'connected', label: '已连接', color: '#10b981'};
   }
-  
-  return { status: 'error', label: '连接错误', color: '#ef4444' };
+
+  return {status: 'error', label: '连接错误', color: '#ef4444'};
 }
 
 // 获取连接器类型标签

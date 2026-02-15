@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion} from 'framer-motion';
 import {
   FileText,
   Plus,
@@ -11,17 +11,17 @@ import {
   Clock,
   ChevronRight,
   Upload,
-  LayoutTemplate,
+  LayoutTemplate
 } from 'lucide-react';
-import { AppLayout } from '@/components/layout/AppLayout';
-import { getUser, isAuthenticated } from '@/lib/api/auth';
+import {AppLayout} from '@/components/layout/AppLayout';
+import {getUser, isAuthenticated} from '@/lib/api/auth';
 import {
   getPresentations,
-  createPresentation,
+  createPresentation
 } from '@/lib/api/presentations';
 import {
   PresentationResponse,
-  PresentationStatus,
+  PresentationStatus
 } from '@/types/presentation';
 
 interface StatCardProps {
@@ -32,10 +32,10 @@ interface StatCardProps {
   color: string;
 }
 
-function StatCard({ title, value, change, icon: Icon, color }: StatCardProps) {
+function StatCard({title, value, change, icon: Icon, color}: StatCardProps) {
   return (
     <motion.div
-      whileHover={{ y: -2 }}
+      whileHover={{y: -2}}
       className="bg-white rounded-xl p-6 shadow-[var(--shadow-card)] border border-[var(--color-border)]"
     >
       <div className="flex items-start justify-between">
@@ -51,9 +51,9 @@ function StatCard({ title, value, change, icon: Icon, color }: StatCardProps) {
         </div>
         <div
           className="w-12 h-12 rounded-xl flex items-center justify-center"
-          style={{ backgroundColor: `${color}15` }}
+          style={{backgroundColor: `${color}15`}}
         >
-          <Icon className="w-6 h-6" style={{ color }} />
+          <Icon className="w-6 h-6" style={{color}} />
         </div>
       </div>
     </motion.div>
@@ -68,19 +68,19 @@ interface QuickActionProps {
   color: string;
 }
 
-function QuickAction({ icon: Icon, label, description, onClick, color }: QuickActionProps) {
+function QuickAction({icon: Icon, label, description, onClick, color}: QuickActionProps) {
   return (
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{scale: 1.02}}
+      whileTap={{scale: 0.98}}
       onClick={onClick}
       className="flex items-center gap-4 p-4 bg-white rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all text-left w-full"
     >
       <div
         className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ backgroundColor: `${color}15` }}
+        style={{backgroundColor: `${color}15`}}
       >
-        <Icon className="w-6 h-6" style={{ color }} />
+        <Icon className="w-6 h-6" style={{color}} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-medium text-[var(--color-text)]">{label}</p>
@@ -93,11 +93,11 @@ function QuickAction({ icon: Icon, label, description, onClick, color }: QuickAc
 
 function getStatusBadge(status: PresentationStatus) {
   const statusConfig = {
-    draft: { label: 'Draft', color: 'bg-gray-100 text-gray-700' },
-    generating: { label: 'Generating', color: 'bg-yellow-100 text-yellow-700' },
-    completed: { label: 'Completed', color: 'bg-green-100 text-green-700' },
-    published: { label: 'Published', color: 'bg-blue-100 text-blue-700' },
-    archived: { label: 'Archived', color: 'bg-gray-100 text-gray-700' },
+    draft: {label: 'Draft', color: 'bg-gray-100 text-gray-700'},
+    generating: {label: 'Generating', color: 'bg-yellow-100 text-yellow-700'},
+    completed: {label: 'Completed', color: 'bg-green-100 text-green-700'},
+    published: {label: 'Published', color: 'bg-blue-100 text-blue-700'},
+    archived: {label: 'Archived', color: 'bg-gray-100 text-gray-700'}
   };
 
   const config = statusConfig[status];
@@ -116,7 +116,7 @@ export default function DashboardPage() {
     total: 0,
     thisMonth: 0,
     recent: 0,
-    storage: '0 MB',
+    storage: '0 MB'
   });
 
   useEffect(() => {
@@ -130,16 +130,16 @@ export default function DashboardPage() {
 
   const loadDashboardData = async () => {
     try {
-      const response = await getPresentations({ page: 1, pageSize: 10 });
+      const response = await getPresentations({page: 1, pageSize: 10});
       setPresentations(response.data.slice(0, 5));
-      
+
       const total = response.meta.total;
       const thisMonth = response.data.filter(p => {
         const date = new Date(p.createdAt);
         const now = new Date();
         return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
       }).length;
-      
+
       setStats({
         total,
         thisMonth,
@@ -149,7 +149,7 @@ export default function DashboardPage() {
           weekAgo.setDate(weekAgo.getDate() - 7);
           return date > weekAgo;
         }).length,
-        storage: `${(total * 2.5).toFixed(1)} MB`,
+        storage: `${(total * 2.5).toFixed(1)} MB`
       });
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
@@ -162,7 +162,7 @@ export default function DashboardPage() {
     try {
       const response = await createPresentation({
         title: 'Untitled Presentation',
-        description: '',
+        description: ''
       });
       router.push(`/app/presentations/${response.id}/edit`);
     } catch (error) {

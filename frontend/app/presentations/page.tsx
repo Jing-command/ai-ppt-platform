@@ -1,42 +1,42 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, FileText, Loader2, AlertCircle, RefreshCw, Clock, Layers, Presentation } from 'lucide-react';
-import { PresentationResponse, PresentationStatus } from '@/types/presentation';
-import { getPresentations, deletePresentation } from '@/lib/api/presentations';
-import { AxiosError } from 'axios';
+import {useEffect, useState, useCallback} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Plus, FileText, Loader2, AlertCircle, RefreshCw, Clock, Layers, Presentation} from 'lucide-react';
+import {PresentationResponse, PresentationStatus} from '@/types/presentation';
+import {getPresentations, deletePresentation} from '@/lib/api/presentations';
+import {AxiosError} from 'axios';
 
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {opacity: 0},
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.08,
-      delayChildren: 0.1,
-    },
-  },
+      delayChildren: 0.1
+    }
+  }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: {opacity: 0, y: 20},
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.4,
-      ease: [0.4, 0, 0.2, 1] as const,
-    },
-  },
+      ease: [0.4, 0, 0.2, 1] as const
+    }
+  }
 };
 
 const statusMap: Record<PresentationStatus, { label: string; color: string }> = {
-  draft: { label: '草稿', color: 'bg-gray-100 text-gray-700' },
-  generating: { label: '生成中', color: 'bg-blue-100 text-blue-700' },
-  completed: { label: '已完成', color: 'bg-green-100 text-green-700' },
-  published: { label: '已发布', color: 'bg-purple-100 text-purple-700' },
-  archived: { label: '已归档', color: 'bg-red-100 text-red-700' },
+  draft: {label: '草稿', color: 'bg-gray-100 text-gray-700'},
+  generating: {label: '生成中', color: 'bg-blue-100 text-blue-700'},
+  completed: {label: '已完成', color: 'bg-green-100 text-green-700'},
+  published: {label: '已发布', color: 'bg-purple-100 text-purple-700'},
+  archived: {label: '已归档', color: 'bg-red-100 text-red-700'}
 };
 
 function formatDate(dateString: string): string {
@@ -44,7 +44,7 @@ function formatDate(dateString: string): string {
   return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric',
+    day: 'numeric'
   });
 }
 
@@ -60,7 +60,7 @@ export default function PresentationsPage() {
     setError('');
 
     try {
-      const response = await getPresentations({ page: 1, pageSize: 100 });
+      const response = await getPresentations({page: 1, pageSize: 100});
       setPresentations(response.data);
     } catch (err) {
       const axiosError = err as AxiosError;
@@ -124,8 +124,8 @@ export default function PresentationsPage() {
 
             <motion.button
               onClick={() => router.push('/outlines')}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{scale: 1.02}}
+              whileTap={{scale: 0.98}}
               className="
                 inline-flex items-center gap-2
                 px-4 py-2 rounded-lg
@@ -147,8 +147,8 @@ export default function PresentationsPage() {
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* 页面标题 */}
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{opacity: 0, y: -10}}
+          animate={{opacity: 1, y: 0}}
           className="mb-8"
         >
           <h2 className="text-2xl font-bold text-[var(--color-text)]">
@@ -163,9 +163,9 @@ export default function PresentationsPage() {
         <AnimatePresence>
           {error && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              initial={{opacity: 0, height: 0}}
+              animate={{opacity: 1, height: 'auto'}}
+              exit={{opacity: 0, height: 0}}
               className="mb-6"
             >
               <div className="alert-error alert-error-icon">
@@ -197,8 +197,8 @@ export default function PresentationsPage() {
             {/* 空状态 */}
             {presentations.length === 0 && !error ? (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{opacity: 0, scale: 0.95}}
+                animate={{opacity: 1, scale: 1}}
                 className="text-center py-20"
               >
                 <div
@@ -218,8 +218,8 @@ export default function PresentationsPage() {
                 </p>
                 <motion.button
                   onClick={() => router.push('/outlines')}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{scale: 1.02}}
+                  whileTap={{scale: 0.98}}
                   className="
                     mt-6 inline-flex items-center gap-2
                     px-5 py-2.5 rounded-lg

@@ -1,20 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Database, Cloud, ChevronDown, AlertCircle, Loader2 } from 'lucide-react';
+import {useState, useEffect} from 'react';
+import {useForm, useWatch} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {z} from 'zod';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Database, Cloud, ChevronDown, AlertCircle, Loader2} from 'lucide-react';
 import {
   ConnectorType,
   Connector,
   CreateConnectorRequest,
   UpdateConnectorRequest,
   CONNECTOR_TYPE_CONFIGS,
-  ConnectorTypeConfig,
+  ConnectorTypeConfig
 } from '@/types/connector';
-import { TestConnectionButton } from './TestConnectionButton';
+import {TestConnectionButton} from './TestConnectionButton';
 
 // 动态生成验证 schema
 const createConnectorSchema = (typeConfig: ConnectorTypeConfig | null) => {
@@ -22,7 +22,7 @@ const createConnectorSchema = (typeConfig: ConnectorTypeConfig | null) => {
     return z.object({
       name: z.string().min(1, '请输入连接器名称').max(100, '名称最多100个字符'),
       type: z.string().min(1, '请选择连接器类型'),
-      description: z.string().max(500, '描述最多500个字符').optional(),
+      description: z.string().max(500, '描述最多500个字符').optional()
     });
   }
 
@@ -30,8 +30,8 @@ const createConnectorSchema = (typeConfig: ConnectorTypeConfig | null) => {
   typeConfig.fields.forEach((field) => {
     if (field.type === 'number') {
       configShape[field.name] = field.required
-        ? z.number({ invalid_type_error: `请输入有效的${field.label}` })
-            .min(1, `${field.label}必须大于0`)
+        ? z.number({invalid_type_error: `请输入有效的${field.label}`})
+          .min(1, `${field.label}必须大于0`)
         : z.number().optional();
     } else {
       configShape[field.name] = field.required
@@ -44,7 +44,7 @@ const createConnectorSchema = (typeConfig: ConnectorTypeConfig | null) => {
     name: z.string().min(1, '请输入连接器名称').max(100, '名称最多100个字符'),
     type: z.string().min(1, '请选择连接器类型'),
     description: z.string().max(500, '描述最多500个字符').optional(),
-    config: z.object(configShape),
+    config: z.object(configShape)
   });
 };
 
@@ -56,26 +56,26 @@ interface ConnectorFormProps {
 }
 
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {opacity: 0},
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.08,
-      delayChildren: 0.1,
-    },
-  },
+      delayChildren: 0.1
+    }
+  }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: {opacity: 0, y: 10},
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.3,
-      ease: "easeOut" as const,
-    },
-  },
+      ease: 'easeOut' as const
+    }
+  }
 };
 
 const typeIcons: Record<ConnectorType, React.ReactNode> = {
@@ -84,10 +84,10 @@ const typeIcons: Record<ConnectorType, React.ReactNode> = {
   mongodb: <Database className="w-5 h-5" />,
   salesforce: <Cloud className="w-5 h-5" />,
   csv: <Database className="w-5 h-5" />,
-  api: <Cloud className="w-5 h-5" />,
+  api: <Cloud className="w-5 h-5" />
 };
 
-export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: ConnectorFormProps) {
+export function ConnectorForm({initialData, onSubmit, onCancel, isLoading}: ConnectorFormProps) {
   const [selectedType, setSelectedType] = useState<ConnectorType | ''>(initialData?.type || '');
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const [testConfig, setTestConfig] = useState<Record<string, unknown> | null>(null);
@@ -98,24 +98,24 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {errors},
 
     setValue,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     reset,
-    control,
+    control
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       name: initialData?.name || '',
       type: initialData?.type || '',
       description: initialData?.description || '',
-      config: initialData?.config || {},
-    },
+      config: initialData?.config || {}
+    }
   });
 
   // 监听配置变化用于测试
-  const watchedConfig = useWatch({ control, name: 'config' });
+  const watchedConfig = useWatch({control, name: 'config'});
 
   useEffect(() => {
     if (selectedType && watchedConfig) {
@@ -224,10 +224,10 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
         <AnimatePresence>
           {showTypeDropdown && !initialData && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15 }}
+              initial={{opacity: 0, y: -10}}
+              animate={{opacity: 1, y: 0}}
+              exit={{opacity: 0, y: -10}}
+              transition={{duration: 0.15}}
               className="
                 absolute z-10 w-full mt-1
                 bg-white border border-[var(--color-border)] rounded-lg
@@ -291,9 +291,9 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
         {typeConfig && (
           <motion.div
             key={selectedType}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{opacity: 0, height: 0}}
+            animate={{opacity: 1, height: 'auto'}}
+            exit={{opacity: 0, height: 0}}
             className="space-y-4"
           >
             <div className="border-t border-[var(--color-border)] pt-4">
@@ -305,9 +305,9 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
                 {typeConfig.fields.map((field, index) => (
                   <motion.div
                     key={field.name}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    initial={{opacity: 0, x: -10}}
+                    animate={{opacity: 1, x: 0}}
+                    transition={{delay: index * 0.05}}
                   >
                     <label className="form-label">
                       {field.label}
@@ -333,9 +333,9 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
 
             {/* 测试连接按钮 */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
+              initial={{opacity: 0}}
+              animate={{opacity: 1}}
+              transition={{delay: 0.2}}
             >
               <TestConnectionButton
                 type={selectedType}
@@ -371,8 +371,8 @@ export function ConnectorForm({ initialData, onSubmit, onCancel, isLoading }: Co
         <motion.button
           type="submit"
           disabled={isLoading || !selectedType}
-          whileHover={{ scale: isLoading ? 1 : 1.02 }}
-          whileTap={{ scale: isLoading ? 1 : 0.98 }}
+          whileHover={{scale: isLoading ? 1 : 1.02}}
+          whileTap={{scale: isLoading ? 1 : 0.98}}
           className="
             px-5 py-2.5 rounded-lg
             text-white font-medium

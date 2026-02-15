@@ -4,8 +4,16 @@
  * @date 2026-02-14
  */
 
-import { apiClient } from './client';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } from '@/types/auth';
+import {apiClient} from './client';
+import {
+  AvatarUploadResponse,
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  UpdateUserRequest,
+  User,
+} from '@/types/auth';
 
 // localStorage keys
 const TOKEN_KEY = 'accessToken';
@@ -87,4 +95,52 @@ export function clearAuthData(): void {
  */
 export function isAuthenticated(): boolean {
   return !!getAccessToken();
+}
+
+/**
+ * 更新用户信息
+ * @param data 用户更新信息
+ * @returns 更新后的用户信息
+ */
+export async function updateUser(data: UpdateUserRequest): Promise<User> {
+  const response = await apiClient.put<User>('/auth/me', data);
+  // 更新本地存储的用户信息
+  const currentUser = getUser();
+  if (currentUser) {
+    const updatedUser = {...currentUser, ...response.data};
+    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
+  }
+  return response.data;
+}
+
+/**
+ * 上传头像
+ * @param file 头像文件
+ * @returns 上传后的头像URL
+ */
+export async function uploadAvatar(file: File): Promise<AvatarUploadResponse> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await apiClient.post<AvatarUploadResponse>('/auth/me/avatar', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  // 更新本地存储的用户信息
+  const currentUser = getUser();
+  if (currentUser) {
+    const updatedUser = {...currentUser, avatar: response.data.avatarUrl};
+    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
+  }
+  return response.data;
+}
+
+/**
+ * 更新本地存储的用户信息
+ * @param user 用户信息
+ */
+export function updateStoredUser(user: User): void {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  }
 }

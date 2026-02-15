@@ -6,18 +6,21 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
+from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ai_ppt.api.deps import get_current_user
 from ai_ppt.api.v1.schemas.auth import (
+    AvatarUploadResponse,
     LoginRequest,
     LoginResponse,
     RefreshRequest,
     RefreshResponse,
     RegisterRequest,
     RegisterResponse,
+    UpdateUserRequest,
     UserResponse,
 )
 from ai_ppt.api.v1.schemas.common import ErrorResponse
@@ -51,6 +54,7 @@ def _user_to_response(user: User) -> UserResponse:
         id=user.id,
         email=user.email,
         name=user.username,  # username 映射为 name
+        avatar=user.avatar_url,
         createdAt=user.created_at,
     )
 
@@ -249,3 +253,97 @@ async def get_me(current_user: User = Depends(get_current_user)) -> UserResponse
     需要有效的访问令牌
     """
     return _user_to_response(current_user)
+
+
+@router.put(
+    "/me",
+    response_model=UserResponse,
+    summary="更新当前用户信息",
+    responses={
+        401: {"model": ErrorResponse, "description": "未认证"},
+        403: {"model": ErrorResponse, "description": "用户账户已被禁用"},
+        500: {"model": ErrorResponse, "description": "服务器错误"},
+    },
+)
+async def update_me(
+    data: UpdateUserRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> UserResponse:
+    """
+    更新当前登录用户的信息
+
+    - **name**: 用户名称（可选）
+    - **avatar_url**: 头像URL（可选）
+    """
+    if data.name is not None:
+        current_user.username = data.name
+    if data.avatar_url is not None:
+        current_user.avatar_url = data.avatar_url
+
+    await db.commit()
+    await db.refresh(current_user)
+
+    return _user_to_response(current_user)
+
+
+@router.post(
+    "/me/avatar",
+    response_model=AvatarUploadResponse,
+    summary="上传头像",
+    responses={
+        401: {"model": ErrorResponse, "description": "未认证"},
+        413: {"model": ErrorResponse, "description": "文件太大"},
+        500: {"model": ErrorResponse, "description": "服务器错误"},
+    },
+)
+async def upload_avatar(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> AvatarUploadResponse:
+    """
+    上传用户头像
+
+    - **file**: 头像图片文件（支持 jpg, png, gif, webp，最大 2MB）
+    """
+    # 验证文件类型
+    allowed_types = {"image/jpeg", "image/png", "image/gif", "image/webp"}
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"code": "INVALID_FILE_TYPE", "message": "仅支持 jpg, png, gif, webp 格式"},
+        )
+
+    # 验证文件大小（2MB）
+    contents = await file.read()
+    if len(contents) > 2 * 1024 * 1024:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail={"code": "FILE_TOO_LARGE", "message": "文件大小不能超过 2MB"},
+        )
+
+    # 生成文件名
+    import uuid as uuid_module
+
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"{uuid_module.uuid4()}.{ext}"
+
+    # 保存文件（这里简化处理，实际应该保存到云存储）
+    import os
+    from pathlib import Path
+
+    avatar_dir = Path("uploads/avatars")
+    avatar_dir.mkdir(parents=True, exist_ok=True)
+    file_path = avatar_dir / filename
+
+    with open(file_path, "wb") as f:
+        f.write(contents)
+
+    # 更新用户头像URL
+    avatar_url = f"/uploads/avatars/{filename}"
+    current_user.avatar_url = avatar_url
+    await db.commit()
+    await db.refresh(current_user)
+
+    return AvatarUploadResponse(avatarUrl=avatar_url)

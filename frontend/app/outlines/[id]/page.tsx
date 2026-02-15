@@ -1,17 +1,17 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { 
-  ArrowLeft, Loader2, Save, Trash2, FileText, Plus, 
-  ImageIcon, Palette, Wand2, ChevronUp, ChevronDown 
+import {useEffect, useState, useCallback} from 'react';
+import {useParams, useRouter} from 'next/navigation';
+import {motion} from 'framer-motion';
+import {
+  ArrowLeft, Loader2, Save, Trash2, FileText, Plus,
+  ImageIcon, Palette, Wand2, ChevronUp, ChevronDown
 } from 'lucide-react';
-import { 
-  getOutline, updateOutline, deleteOutline, createPresentationFromOutline 
+import {
+  getOutline, updateOutline, deleteOutline, createPresentationFromOutline
 } from '@/lib/api/outlines';
-import { OutlineDetailResponse, OutlineUpdate, OutlineSection, PageType, OutlineBackground } from '@/types/outline';
-import { AxiosError } from 'axios';
+import {OutlineDetailResponse, OutlineUpdate, OutlineSection, PageType, OutlineBackground} from '@/types/outline';
+import {AxiosError} from 'axios';
 import BackgroundSettingsModal from '@/components/outlines/BackgroundSettingsModal';
 
 // 页面类型标签
@@ -20,7 +20,7 @@ const pageTypeLabels: Record<PageType, string> = {
   content: '内容',
   section: '章节页',
   chart: '图表',
-  conclusion: '总结',
+  conclusion: '总结'
 };
 
 const pageTypeColors: Record<PageType, string> = {
@@ -28,7 +28,7 @@ const pageTypeColors: Record<PageType, string> = {
   content: 'bg-blue-100 text-blue-700',
   section: 'bg-orange-100 text-orange-700',
   chart: 'bg-green-100 text-green-700',
-  conclusion: 'bg-gray-100 text-gray-700',
+  conclusion: 'bg-gray-100 text-gray-700'
 };
 
 // 生成唯一 ID
@@ -43,7 +43,7 @@ function generateDefaultImagePrompt(pageTitle: string, pageType: PageType): stri
     content: '专业商务场景配图，清晰现代风格',
     section: '章节分隔背景，视觉层次分明',
     chart: '数据可视化背景，科技感配色',
-    conclusion: '总结页背景，温暖专业氛围',
+    conclusion: '总结页背景，温暖专业氛围'
   };
   return `${typePrompts[pageType]}，主题：${pageTitle}`;
 }
@@ -74,10 +74,10 @@ export default function OutlineDetailPage() {
       setDescription(data.description || '');
       setPages(data.pages || []);
       setBackground(data.background);
-      
+
       // 如果没有背景设置，默认使用纯色白色
       if (!data.background) {
-        setBackground({ type: 'solid', color: '#ffffff' });
+        setBackground({type: 'solid', color: '#ffffff'});
       }
     } catch (err) {
       const axiosError = err as AxiosError;
@@ -114,9 +114,9 @@ export default function OutlineDetailPage() {
       title: `第 ${pages.length + 1} 页`,
       content: '',
       pageType: 'content',
-      imagePrompt: generateDefaultImagePrompt(`第 ${pages.length + 1} 页`, 'content'),
+      imagePrompt: generateDefaultImagePrompt(`第 ${pages.length + 1} 页`, 'content')
     };
-    
+
     if (index !== undefined) {
       const newPages = [...pages];
       newPages.splice(index + 1, 0, newPage);
@@ -132,8 +132,8 @@ export default function OutlineDetailPage() {
 
   const handleUpdatePage = (index: number, updates: Partial<OutlineSection>) => {
     const newPages = [...pages];
-    newPages[index] = { ...newPages[index], ...updates };
-    
+    newPages[index] = {...newPages[index], ...updates};
+
     // 如果更新了标题或类型，且没有自定义插图提示词，则重新生成
     if ((updates.title || updates.pageType) && !newPages[index].imagePrompt?.includes('自定义')) {
       newPages[index].imagePrompt = generateDefaultImagePrompt(
@@ -141,12 +141,12 @@ export default function OutlineDetailPage() {
         newPages[index].pageType || 'content'
       );
     }
-    
+
     setPages(newPages);
   };
 
   const handleDeletePage = (index: number) => {
-    if (!confirm('确定要删除这一页吗？')) return;
+    if (!confirm('确定要删除这一页吗？')) { return; }
     const newPages = pages.filter((_, i) => i !== index);
     // 重新计算页码
     newPages.forEach((p, i) => {
@@ -156,13 +156,13 @@ export default function OutlineDetailPage() {
   };
 
   const handleMovePage = (index: number, direction: 'up' | 'down') => {
-    if (direction === 'up' && index === 0) return;
-    if (direction === 'down' && index === pages.length - 1) return;
-    
+    if (direction === 'up' && index === 0) { return; }
+    if (direction === 'down' && index === pages.length - 1) { return; }
+
     const newPages = [...pages];
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     [newPages[index], newPages[targetIndex]] = [newPages[targetIndex], newPages[index]];
-    
+
     // 重新计算页码
     newPages.forEach((p, i) => {
       p.pageNumber = i + 1;
@@ -173,7 +173,7 @@ export default function OutlineDetailPage() {
   const handleRegenerateImagePrompt = (index: number) => {
     const page = pages[index];
     const newPrompt = generateDefaultImagePrompt(page.title, page.pageType || 'content');
-    handleUpdatePage(index, { imagePrompt: newPrompt });
+    handleUpdatePage(index, {imagePrompt: newPrompt});
   };
 
   const handleSave = async () => {
@@ -191,9 +191,9 @@ export default function OutlineDetailPage() {
         description: description.trim() || undefined,
         pages: pages.map((p, idx) => ({
           ...p,
-          pageNumber: idx + 1,
+          pageNumber: idx + 1
         })),
-        background,
+        background
       };
 
       await updateOutline(outlineId, data);
@@ -211,7 +211,7 @@ export default function OutlineDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm('确定要删除这个大纲吗？此操作不可恢复。')) return;
+    if (!confirm('确定要删除这个大纲吗？此操作不可恢复。')) { return; }
 
     try {
       await deleteOutline(outlineId);
@@ -237,7 +237,7 @@ export default function OutlineDetailPage() {
 
     try {
       await createPresentationFromOutline(outlineId, {
-        generateContent: true,
+        generateContent: true
       });
       alert('PPT 创建任务已提交！');
       router.push('/presentations');
@@ -254,32 +254,32 @@ export default function OutlineDetailPage() {
   };
 
   const getBackgroundPreview = () => {
-    if (!background) return '#ffffff';
-    
+    if (!background) { return '#ffffff'; }
+
     switch (background.type) {
-      case 'solid':
-        return background.color || '#ffffff';
-      case 'upload':
-        return background.url ? `url(${background.url})` : '#f3f4f6';
-      case 'ai':
-        return 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; // AI生成的占位渐变
-      default:
-        return '#ffffff';
+    case 'solid':
+      return background.color || '#ffffff';
+    case 'upload':
+      return background.url ? `url(${background.url})` : '#f3f4f6';
+    case 'ai':
+      return 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; // AI生成的占位渐变
+    default:
+      return '#ffffff';
     }
   };
 
   const getBackgroundLabel = () => {
-    if (!background) return '未设置';
-    
+    if (!background) { return '未设置'; }
+
     switch (background.type) {
-      case 'ai':
-        return 'AI生成';
-      case 'upload':
-        return '自定义图片';
-      case 'solid':
-        return '纯色';
-      default:
-        return '未设置';
+    case 'ai':
+      return 'AI生成';
+    case 'upload':
+      return '自定义图片';
+    case 'solid':
+      return '纯色';
+    default:
+      return '未设置';
     }
   };
 
@@ -352,8 +352,8 @@ export default function OutlineDetailPage() {
       {/* 主内容 */}
       <main className="max-w-5xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{opacity: 0, y: 20}}
+          animate={{opacity: 1, y: 0}}
           className="space-y-6"
         >
           {/* 错误提示 */}
@@ -412,7 +412,7 @@ export default function OutlineDetailPage() {
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 opacity: background?.opacity ?? 1,
-                filter: background?.blur ? `blur(${background.blur}px)` : undefined,
+                filter: background?.blur ? `blur(${background.blur}px)` : undefined
               }}
             >
               <span className="text-gray-400 text-sm bg-white/80 px-3 py-1 rounded">
@@ -447,9 +447,9 @@ export default function OutlineDetailPage() {
               {pages.map((page, index) => (
                 <motion.div
                   key={page.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.03 }}
+                  initial={{opacity: 0, x: -20}}
+                  animate={{opacity: 1, x: 0}}
+                  transition={{delay: index * 0.03}}
                   className="
                     bg-white rounded-xl border border-[var(--color-border)]
                     shadow-sm overflow-hidden
@@ -485,18 +485,18 @@ export default function OutlineDetailPage() {
                         <div className="flex items-center gap-3">
                           <select
                             value={page.pageType || 'content'}
-                            onChange={(e) => handleUpdatePage(index, { pageType: e.target.value as PageType })}
+                            onChange={(e) => handleUpdatePage(index, {pageType: e.target.value as PageType})}
                             className={`px-2 py-1 rounded text-xs font-medium ${pageTypeColors[page.pageType || 'content']}`}
                           >
                             {Object.entries(pageTypeLabels).map(([type, label]) => (
                               <option key={type} value={type}>{label}</option>
                             ))}
                           </select>
-                          
+
                           <input
                             type="text"
                             value={page.title}
-                            onChange={(e) => handleUpdatePage(index, { title: e.target.value })}
+                            onChange={(e) => handleUpdatePage(index, {title: e.target.value})}
                             className="flex-1 font-medium bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none px-2 py-1"
                             placeholder="页面标题"
                           />
@@ -505,7 +505,7 @@ export default function OutlineDetailPage() {
                         {/* 页面内容 */}
                         <textarea
                           value={page.content || ''}
-                          onChange={(e) => handleUpdatePage(index, { content: e.target.value })}
+                          onChange={(e) => handleUpdatePage(index, {content: e.target.value})}
                           className="w-full text-sm text-[var(--color-text-muted)] bg-gray-50 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                           rows={2}
                           placeholder="这一页的主要内容..."
@@ -530,12 +530,12 @@ export default function OutlineDetailPage() {
                               {expandedPages.has(index) ? '收起' : '展开'}
                             </span>
                           </button>
-                          
+
                           {expandedPages.has(index) && (
                             <div className="p-3 space-y-2">
                               <textarea
                                 value={page.imagePrompt || ''}
-                                onChange={(e) => handleUpdatePage(index, { imagePrompt: e.target.value })}
+                                onChange={(e) => handleUpdatePage(index, {imagePrompt: e.target.value})}
                                 className="w-full text-sm bg-white border border-gray-200 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 rows={3}
                                 placeholder="描述这页PPT需要的插图..."
@@ -560,7 +560,7 @@ export default function OutlineDetailPage() {
                         <input
                           type="text"
                           value={page.notes || ''}
-                          onChange={(e) => handleUpdatePage(index, { notes: e.target.value })}
+                          onChange={(e) => handleUpdatePage(index, {notes: e.target.value})}
                           className="w-full text-xs text-gray-400 bg-transparent border-b border-dashed border-gray-200 hover:border-gray-400 focus:border-blue-500 focus:outline-none px-3 py-1"
                           placeholder="演讲备注（可选）"
                         />
@@ -608,8 +608,8 @@ export default function OutlineDetailPage() {
             <motion.button
               onClick={handleSave}
               disabled={saving}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
+              whileHover={{scale: 1.01}}
+              whileTap={{scale: 0.99}}
               className="
                 flex-1 py-3 px-4 rounded-lg
                 text-white font-medium
@@ -637,8 +637,8 @@ export default function OutlineDetailPage() {
             <motion.button
               onClick={handleCreatePresentation}
               disabled={creating || pages.length === 0}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
+              whileHover={{scale: 1.01}}
+              whileTap={{scale: 0.99}}
               className="
                 flex-1 py-3 px-4 rounded-lg
                 text-white font-medium

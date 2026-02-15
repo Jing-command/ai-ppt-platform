@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { motion } from 'framer-motion';
+import {useEffect, useState} from 'react';
+import {useRouter, useParams} from 'next/navigation';
+import {motion} from 'framer-motion';
 import {
   ChevronLeft,
   Save,
@@ -15,25 +15,25 @@ import {
   Type,
   Layout,
   BarChart3,
-  Check,
+  Check
 } from 'lucide-react';
 import {
   getOutline,
   updateOutline,
-  createPresentationFromOutline,
+  createPresentationFromOutline
 } from '@/lib/api/outlines';
 import {
   OutlineResponse,
   OutlineSection,
-  PageType,
+  PageType
 } from '@/types/outline';
 
 const pageTypeOptions: { type: PageType; label: string; icon: React.ElementType }[] = [
-  { type: 'title', label: 'Title', icon: Type },
-  { type: 'content', label: 'Content', icon: Type },
-  { type: 'section', label: 'Section', icon: Layout },
-  { type: 'chart', label: 'Chart', icon: BarChart3 },
-  { type: 'conclusion', label: 'Conclusion', icon: Check },
+  {type: 'title', label: 'Title', icon: Type},
+  {type: 'content', label: 'Content', icon: Type},
+  {type: 'section', label: 'Section', icon: Layout},
+  {type: 'chart', label: 'Chart', icon: BarChart3},
+  {type: 'conclusion', label: 'Conclusion', icon: Check}
 ];
 
 export default function OutlineEditPage() {
@@ -65,14 +65,14 @@ export default function OutlineEditPage() {
   };
 
   const handleSave = async () => {
-    if (!outline) return;
+    if (!outline) { return; }
 
     setIsSaving(true);
     try {
       await updateOutline(outlineId, {
         title: outline.title,
         description: outline.description,
-        pages: outline.pages,
+        pages: outline.pages
       });
     } catch (error) {
       console.error('Failed to save outline:', error);
@@ -82,14 +82,14 @@ export default function OutlineEditPage() {
   };
 
   const handleAddPage = () => {
-    if (!outline) return;
+    if (!outline) { return; }
 
     const newPage: OutlineSection = {
       id: `temp-${Date.now()}`,
       pageNumber: outline.pages.length + 1,
       title: 'New Page',
       content: '',
-      pageType: 'content',
+      pageType: 'content'
     };
 
     const updatedPages = [...outline.pages, newPage];
@@ -97,36 +97,36 @@ export default function OutlineEditPage() {
       p.pageNumber = i + 1;
     });
 
-    setOutline({ ...outline, pages: updatedPages, totalSlides: updatedPages.length });
+    setOutline({...outline, pages: updatedPages, totalSlides: updatedPages.length});
     setActivePageId(newPage.id);
   };
 
   const handleDeletePage = (pageId: string) => {
-    if (!outline) return;
+    if (!outline) { return; }
 
     const updatedPages = outline.pages.filter(p => p.id !== pageId);
     updatedPages.forEach((p, i) => {
       p.pageNumber = i + 1;
     });
 
-    setOutline({ ...outline, pages: updatedPages, totalSlides: updatedPages.length });
+    setOutline({...outline, pages: updatedPages, totalSlides: updatedPages.length});
     if (activePageId === pageId && updatedPages.length > 0) {
       setActivePageId(updatedPages[0].id);
     }
   };
 
   const handleUpdatePage = (pageId: string, updates: Partial<OutlineSection>) => {
-    if (!outline) return;
+    if (!outline) { return; }
 
     const updatedPages = outline.pages.map(p =>
-      p.id === pageId ? { ...p, ...updates } : p
+      p.id === pageId ? {...p, ...updates} : p
     );
 
-    setOutline({ ...outline, pages: updatedPages });
+    setOutline({...outline, pages: updatedPages});
   };
 
   const handleMovePage = (pageId: string, direction: 'up' | 'down') => {
-    if (!outline) return;
+    if (!outline) { return; }
 
     const index = outline.pages.findIndex(p => p.id === pageId);
     if (
@@ -145,14 +145,14 @@ export default function OutlineEditPage() {
       p.pageNumber = i + 1;
     });
 
-    setOutline({ ...outline, pages: updatedPages });
+    setOutline({...outline, pages: updatedPages});
   };
 
   const handleGeneratePPT = async () => {
     try {
       const response = await createPresentationFromOutline(outlineId, {
         title: outline?.title,
-        generateContent: true,
+        generateContent: true
       });
       router.push(`/app/presentations/${response.presentationId}/edit`);
     } catch (error) {
@@ -192,7 +192,7 @@ export default function OutlineEditPage() {
             <input
               type="text"
               value={outline.title}
-              onChange={(e) => setOutline({ ...outline, title: e.target.value })}
+              onChange={(e) => setOutline({...outline, title: e.target.value})}
               className="font-medium text-[var(--color-text)] bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1 -ml-2"
             />
             <p className="text-xs text-[var(--color-text-muted)]">{outline.pages.length} pages</p>
@@ -289,8 +289,8 @@ export default function OutlineEditPage() {
         <main className="flex-1 bg-[var(--color-surface)] p-8 overflow-y-auto">
           {activePage ? (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{opacity: 0, y: 20}}
+              animate={{opacity: 1, y: 0}}
               className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8"
             >
               <div className="space-y-6">
@@ -306,7 +306,7 @@ export default function OutlineEditPage() {
                   <input
                     type="text"
                     value={activePage.title}
-                    onChange={(e) => handleUpdatePage(activePage.id, { title: e.target.value })}
+                    onChange={(e) => handleUpdatePage(activePage.id, {title: e.target.value})}
                     className="w-full px-4 py-3 text-lg font-medium bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                     placeholder="Enter page title..."
                   />
@@ -323,7 +323,7 @@ export default function OutlineEditPage() {
                       return (
                         <button
                           key={option.type}
-                          onClick={() => handleUpdatePage(activePage.id, { pageType: option.type })}
+                          onClick={() => handleUpdatePage(activePage.id, {pageType: option.type})}
                           className={`flex flex-col items-center gap-2 p-3 rounded-lg border text-sm transition-colors ${
                             isActive
                               ? 'border-blue-500 bg-blue-50 text-blue-600'
@@ -344,7 +344,7 @@ export default function OutlineEditPage() {
                   </label>
                   <textarea
                     value={activePage.content || ''}
-                    onChange={(e) => handleUpdatePage(activePage.id, { content: e.target.value })}
+                    onChange={(e) => handleUpdatePage(activePage.id, {content: e.target.value})}
                     rows={8}
                     className="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition-colors resize-none"
                     placeholder="Enter page content..."
@@ -357,7 +357,7 @@ export default function OutlineEditPage() {
                   </label>
                   <textarea
                     value={activePage.notes || ''}
-                    onChange={(e) => handleUpdatePage(activePage.id, { notes: e.target.value })}
+                    onChange={(e) => handleUpdatePage(activePage.id, {notes: e.target.value})}
                     rows={3}
                     className="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition-colors resize-none"
                     placeholder="Add notes (optional)..."
@@ -371,7 +371,7 @@ export default function OutlineEditPage() {
                   <input
                     type="text"
                     value={activePage.imagePrompt || ''}
-                    onChange={(e) => handleUpdatePage(activePage.id, { imagePrompt: e.target.value })}
+                    onChange={(e) => handleUpdatePage(activePage.id, {imagePrompt: e.target.value})}
                     className="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg text-[var(--color-text)] focus:outline-none focus:border-[var(--color-primary)] transition-colors"
                     placeholder="Describe the image you want..."
                   />

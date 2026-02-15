@@ -1,12 +1,12 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { 
-  Undo2, 
-  Redo2, 
-  Plus, 
-  Trash2, 
-  ChevronLeft, 
+import {motion} from 'framer-motion';
+import {
+  Undo2,
+  Redo2,
+  Plus,
+  Trash2,
+  ChevronLeft,
   ChevronRight,
   Download,
   Eye,
@@ -44,7 +44,7 @@ export default function SlideToolbar({
   onSave,
   onExport,
   onPreview,
-  saving = false,
+  saving = false
 }: SlideToolbarProps) {
   return (
     <div className="bg-white border-t border-gray-200 px-4 py-3">
@@ -54,14 +54,14 @@ export default function SlideToolbar({
           <motion.button
             onClick={onUndo}
             disabled={!canUndo}
-            whileHover={canUndo ? { scale: 1.05 } : {}}
-            whileTap={canUndo ? { scale: 0.95 } : {}}
+            whileHover={canUndo ? {scale: 1.05} : {}}
+            whileTap={canUndo ? {scale: 0.95} : {}}
             className={`
               flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
-              ${canUndo 
-                ? 'text-gray-700 hover:bg-gray-100' 
-                : 'text-gray-300 cursor-not-allowed'
-              }
+              ${canUndo
+      ? 'text-gray-700 hover:bg-gray-100'
+      : 'text-gray-300 cursor-not-allowed'
+    }
             `}
             title="撤销 (Ctrl+Z)"
           >
@@ -72,14 +72,14 @@ export default function SlideToolbar({
           <motion.button
             onClick={onRedo}
             disabled={!canRedo}
-            whileHover={canRedo ? { scale: 1.05 } : {}}
-            whileTap={canRedo ? { scale: 0.95 } : {}}
+            whileHover={canRedo ? {scale: 1.05} : {}}
+            whileTap={canRedo ? {scale: 0.95} : {}}
             className={`
               flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
-              ${canRedo 
-                ? 'text-gray-700 hover:bg-gray-100' 
-                : 'text-gray-300 cursor-not-allowed'
-              }
+              ${canRedo
+      ? 'text-gray-700 hover:bg-gray-100'
+      : 'text-gray-300 cursor-not-allowed'
+    }
             `}
             title="重做 (Ctrl+Y)"
           >
@@ -91,8 +91,8 @@ export default function SlideToolbar({
 
           <motion.button
             onClick={onAddSlide}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{scale: 1.05}}
+            whileTap={{scale: 0.95}}
             className="
               flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
               text-blue-600 hover:bg-blue-50
@@ -106,14 +106,14 @@ export default function SlideToolbar({
           <motion.button
             onClick={onDeleteSlide}
             disabled={totalSlides <= 1}
-            whileHover={totalSlides > 1 ? { scale: 1.05 } : {}}
-            whileTap={totalSlides > 1 ? { scale: 0.95 } : {}}
+            whileHover={totalSlides > 1 ? {scale: 1.05} : {}}
+            whileTap={totalSlides > 1 ? {scale: 0.95} : {}}
             className={`
               flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
-              ${totalSlides > 1 
-                ? 'text-red-600 hover:bg-red-50' 
-                : 'text-gray-300 cursor-not-allowed'
-              }
+              ${totalSlides > 1
+      ? 'text-red-600 hover:bg-red-50'
+      : 'text-gray-300 cursor-not-allowed'
+    }
             `}
             title="删除当前幻灯片"
           >
@@ -127,14 +127,14 @@ export default function SlideToolbar({
           <motion.button
             onClick={onPrevSlide}
             disabled={currentSlideIndex === 0}
-            whileHover={currentSlideIndex > 0 ? { scale: 1.05 } : {}}
-            whileTap={currentSlideIndex > 0 ? { scale: 0.95 } : {}}
+            whileHover={currentSlideIndex > 0 ? {scale: 1.05} : {}}
+            whileTap={currentSlideIndex > 0 ? {scale: 0.95} : {}}
             className={`
               p-2 rounded-lg
-              ${currentSlideIndex > 0 
-                ? 'text-gray-700 hover:bg-gray-100' 
-                : 'text-gray-300 cursor-not-allowed'
-              }
+              ${currentSlideIndex > 0
+      ? 'text-gray-700 hover:bg-gray-100'
+      : 'text-gray-300 cursor-not-allowed'
+    }
             `}
           >
             <ChevronLeft className="w-5 h-5" />
@@ -153,14 +153,14 @@ export default function SlideToolbar({
           <motion.button
             onClick={onNextSlide}
             disabled={currentSlideIndex >= totalSlides - 1}
-            whileHover={currentSlideIndex < totalSlides - 1 ? { scale: 1.05 } : {}}
-            whileTap={currentSlideIndex < totalSlides - 1 ? { scale: 0.95 } : {}}
+            whileHover={currentSlideIndex < totalSlides - 1 ? {scale: 1.05} : {}}
+            whileTap={currentSlideIndex < totalSlides - 1 ? {scale: 0.95} : {}}
             className={`
               p-2 rounded-lg
-              ${currentSlideIndex < totalSlides - 1 
-                ? 'text-gray-700 hover:bg-gray-100' 
-                : 'text-gray-300 cursor-not-allowed'
-              }
+              ${currentSlideIndex < totalSlides - 1
+      ? 'text-gray-700 hover:bg-gray-100'
+      : 'text-gray-300 cursor-not-allowed'
+    }
             `}
           >
             <ChevronRight className="w-5 h-5" />
@@ -171,8 +171,8 @@ export default function SlideToolbar({
         <div className="flex items-center gap-2">
           <motion.button
             onClick={onPreview}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{scale: 1.02}}
+            whileTap={{scale: 0.98}}
             className="
               flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
               text-gray-700 hover:bg-gray-100
@@ -184,8 +184,8 @@ export default function SlideToolbar({
 
           <motion.button
             onClick={onExport}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{scale: 1.02}}
+            whileTap={{scale: 0.98}}
             className="
               flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
               text-gray-700 hover:bg-gray-100
@@ -200,8 +200,8 @@ export default function SlideToolbar({
           <motion.button
             onClick={onSave}
             disabled={saving}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{scale: 1.02}}
+            whileTap={{scale: 0.98}}
             className="
               flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium
               text-white bg-gradient-to-r from-blue-600 to-blue-500

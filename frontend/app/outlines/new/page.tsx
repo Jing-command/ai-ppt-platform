@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
 import {
   ArrowLeft,
   Sparkles,
@@ -19,19 +19,19 @@ import {
   Palette,
   LayoutTemplate
 } from 'lucide-react';
-import { generateOutline } from '@/lib/api/outlines';
-import { AxiosError } from 'axios';
+import {generateOutline} from '@/lib/api/outlines';
+import {AxiosError} from 'axios';
 
 // 分类配置
 const categories = [
-  { id: 'work', label: '工作汇报', icon: Briefcase },
-  { id: 'education', label: '教育课件', icon: BookOpen },
-  { id: 'business', label: '商业计划', icon: Lightbulb },
-  { id: 'marketing', label: '市场营销', icon: BarChart3 },
+  {id: 'work', label: '工作汇报', icon: Briefcase},
+  {id: 'education', label: '教育课件', icon: BookOpen},
+  {id: 'business', label: '商业计划', icon: Lightbulb},
+  {id: 'marketing', label: '市场营销', icon: BarChart3}
 ];
 
 // 场景示例配置
-import type { LucideIcon } from 'lucide-react';
+import type {LucideIcon} from 'lucide-react';
 
 const examples: Record<string, Array<{ id: string; title: string; icon: LucideIcon; content: string; description: string }>> = {
   work: [
@@ -70,7 +70,7 @@ const examples: Record<string, Array<{ id: string; title: string; icon: LucideIc
 - 下月目标规划
 适合部门会议或季度汇报使用`,
       description: '适合部门会议或季度汇报使用'
-    },
+    }
   ],
   education: [
     {
@@ -108,7 +108,7 @@ const examples: Record<string, Array<{ id: string; title: string; icon: LucideIc
 - 职业发展规划
 适合企业HR部门培训使用`,
       description: '适合企业HR部门培训使用'
-    },
+    }
   ],
   business: [
     {
@@ -146,7 +146,7 @@ const examples: Record<string, Array<{ id: string; title: string; icon: LucideIc
 - 来年战略规划
 适合公司年会或董事会汇报',`,
       description: '适合公司年会或董事会汇报'
-    },
+    }
   ],
   marketing: [
     {
@@ -184,22 +184,22 @@ const examples: Record<string, Array<{ id: string; title: string; icon: LucideIc
 - 数据驱动的决策建议
 适合数据分析师业务汇报使用`,
       description: '适合数据分析师业务汇报使用'
-    },
-  ],
+    }
+  ]
 };
 
 // 语言选项
 const languages = [
-  { value: 'zh', label: '中文', flag: '🇨🇳' },
-  { value: 'en', label: 'English', flag: '🇺🇸' },
+  {value: 'zh', label: '中文', flag: '🇨🇳'},
+  {value: 'en', label: 'English', flag: '🇺🇸'}
 ];
 
 // 风格选项
 const styles = [
-  { value: 'business', label: '商务专业', color: 'bg-blue-500' },
-  { value: 'education', label: '教育简洁', color: 'bg-green-500' },
-  { value: 'creative', label: '创意设计', color: 'bg-purple-500' },
-  { value: 'technical', label: '技术严谨', color: 'bg-gray-600' },
+  {value: 'business', label: '商务专业', color: 'bg-blue-500'},
+  {value: 'education', label: '教育简洁', color: 'bg-green-500'},
+  {value: 'creative', label: '创意设计', color: 'bg-purple-500'},
+  {value: 'technical', label: '技术严谨', color: 'bg-gray-600'}
 ];
 
 export default function GenerateOutlinePage() {
@@ -237,18 +237,24 @@ export default function GenerateOutlinePage() {
         prompt: prompt.trim(),
         numSlides,
         language,
-        style,
+        style
       });
 
       alert(`生成任务已提交！\n任务 ID: ${response.taskId}\n预计时间: ${response.estimatedTime} 秒`);
       router.push('/outlines');
     } catch (err) {
       const axiosError = err as AxiosError;
-      if (axiosError.response?.status === 401) {
+      // 处理 401 错误或未登录情况
+      if (axiosError.response?.status === 401 || 
+          (err as Error).message?.includes('未登录')) {
         router.push('/login');
-      } else {
-        setError((axiosError.response?.data as { message?: string })?.message || '生成失败，请稍后重试');
+        return;
       }
+      // 显示错误信息
+      const errorMessage = (axiosError.response?.data as { message?: string })?.message 
+        || (err as Error).message 
+        || '生成失败，请稍后重试';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -265,8 +271,8 @@ export default function GenerateOutlinePage() {
 
       {/* 导航栏 */}
       <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{opacity: 0, y: -20}}
+        animate={{opacity: 1, y: 0}}
         className="relative z-10 bg-white/80 backdrop-blur-md border-b border-gray-200/50"
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -294,15 +300,15 @@ export default function GenerateOutlinePage() {
       <main className="relative z-10 max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         {/* 标题区域 */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.6 }}
+          initial={{opacity: 0, y: 30}}
+          animate={{opacity: 1, y: 0}}
+          transition={{delay: 0.1, duration: 0.6}}
           className="text-center mb-12"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+            initial={{scale: 0.9, opacity: 0}}
+            animate={{scale: 1, opacity: 1}}
+            transition={{delay: 0.2, duration: 0.5}}
             className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100/80 rounded-full mb-6"
           >
             <Sparkles className="w-4 h-4 text-blue-600" />
@@ -318,9 +324,9 @@ export default function GenerateOutlinePage() {
 
         {/* 分类标签 */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          initial={{opacity: 0, y: 20}}
+          animate={{opacity: 1, y: 0}}
+          transition={{delay: 0.3}}
           className="flex justify-center mb-8"
         >
           <div className="inline-flex bg-white/80 backdrop-blur-sm p-1.5 rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-200/50">
@@ -336,14 +342,14 @@ export default function GenerateOutlinePage() {
                       ? 'text-white'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100/50'
                   }`}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{scale: 1.02}}
+                  whileTap={{scale: 0.98}}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="activeCategory"
                       className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl"
-                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                      transition={{type: 'spring', bounce: 0.2, duration: 0.6}}
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-2">
@@ -358,18 +364,18 @@ export default function GenerateOutlinePage() {
 
         {/* 场景卡片 */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
+          initial={{opacity: 0}}
+          animate={{opacity: 1}}
+          transition={{delay: 0.4}}
           className="mb-10"
         >
           <AnimatePresence mode="wait">
             <motion.div
               key={activeCategory}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              initial={{opacity: 0, y: 20}}
+              animate={{opacity: 1, y: 0}}
+              exit={{opacity: 0, y: -20}}
+              transition={{duration: 0.3}}
               className="grid grid-cols-1 sm:grid-cols-3 gap-4"
             >
               {examples[activeCategory]?.map((example, index) => {
@@ -378,20 +384,20 @@ export default function GenerateOutlinePage() {
                   <motion.button
                     key={example.id}
                     onClick={() => handleExampleClick(example.content)}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ 
-                      scale: 1.03, 
+                    initial={{opacity: 0, y: 20}}
+                    animate={{opacity: 1, y: 0}}
+                    transition={{delay: index * 0.1}}
+                    whileHover={{
+                      scale: 1.03,
                       y: -4,
-                      transition: { duration: 0.2 }
+                      transition: {duration: 0.2}
                     }}
-                    whileTap={{ scale: 0.98 }}
+                    whileTap={{scale: 0.98}}
                     className="group relative bg-white rounded-2xl p-5 shadow-sm hover:shadow-xl border border-gray-200/50 hover:border-blue-300/50 transition-all duration-300 text-left overflow-hidden"
                   >
                     {/* 悬停背景效果 */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-50/0 via-blue-50/0 to-indigo-50/0 group-hover:from-blue-50/80 group-hover:via-blue-50/40 group-hover:to-indigo-50/60 transition-all duration-500" />
-                    
+
                     <div className="relative z-10">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                         <Icon className="w-6 h-6 text-blue-600" />
@@ -402,7 +408,7 @@ export default function GenerateOutlinePage() {
                       <p className="text-sm text-gray-500 line-clamp-2">
                         {example.description}
                       </p>
-                      
+
                       {/* 点击提示 */}
                       <div className="mt-3 flex items-center gap-1 text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <Sparkles className="w-3 h-3" />
@@ -418,18 +424,18 @@ export default function GenerateOutlinePage() {
 
         {/* 输入区域 */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          initial={{opacity: 0, y: 30}}
+          animate={{opacity: 1, y: 0}}
+          transition={{delay: 0.5}}
           className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-200/50 overflow-hidden"
         >
           {/* 错误提示 */}
           <AnimatePresence>
             {error && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{opacity: 0, height: 0}}
+                animate={{opacity: 1, height: 'auto'}}
+                exit={{opacity: 0, height: 0}}
                 className="bg-red-50 border-b border-red-100 px-6 py-4"
               >
                 <p className="text-red-600 text-sm flex items-center gap-2">
@@ -444,7 +450,7 @@ export default function GenerateOutlinePage() {
             {/* 输入框区域 - 对话气泡样式 */}
             <div className="relative mb-6">
               <motion.div
-                whileFocus={{ scale: 1.01 }}
+                whileFocus={{scale: 1.01}}
                 className="relative"
               >
                 <textarea
@@ -455,7 +461,7 @@ export default function GenerateOutlinePage() {
                   disabled={loading}
                   className="w-full px-6 py-5 bg-gray-50/50 rounded-2xl border-2 border-gray-200/50 text-gray-900 placeholder:text-gray-400 resize-none focus:outline-none focus:border-blue-400 focus:bg-white focus:shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-300"
                 />
-                
+
                 {/* AI 头像装饰 */}
                 <div className="absolute -top-3 -left-3 w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
                   <Sparkles className="w-4 h-4 text-white" />
@@ -470,8 +476,8 @@ export default function GenerateOutlinePage() {
                 <div className={`flex items-center gap-2 text-sm transition-colors ${isValid ? 'text-green-600' : 'text-gray-400'}`}>
                   {isValid && (
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
+                      initial={{scale: 0}}
+                      animate={{scale: 1}}
                       className="flex items-center gap-1"
                     >
                       <Check className="w-4 h-4" />
@@ -484,29 +490,27 @@ export default function GenerateOutlinePage() {
 
             {/* 设置区域 */}
             <div className="flex flex-wrap items-center gap-4 mb-6">
-              {/* 页数选择 */}
-              <div className="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-2.5 border border-gray-200/50">
-                <LayoutTemplate className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-600">页数</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setNumSlides(Math.max(3, numSlides - 1))}
-                    disabled={loading || numSlides <= 3}
-                    className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition-colors"
-                  >
-                    -
-                  </button>
-                  <span className="w-8 text-center font-medium text-gray-900">{numSlides}</span>
-                  <button
-                    type="button"
-                    onClick={() => setNumSlides(Math.min(50, numSlides + 1))}
-                    disabled={loading || numSlides >= 50}
-                    className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition-colors"
-                  >
-                    +
-                  </button>
+              {/* 页数选择 - 滑动条 */}
+              <div className="flex items-center gap-4 bg-gray-50 rounded-xl px-4 py-2.5 border border-gray-200/50 flex-1 min-w-[200px]">
+                <LayoutTemplate className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-sm text-gray-600 flex-shrink-0">页数</span>
+                <div className="flex-1 flex items-center gap-3">
+                  <span className="text-xs text-gray-400 w-4">5</span>
+                  <input
+                    type="range"
+                    min={5}
+                    max={30}
+                    value={numSlides}
+                    onChange={(e) => setNumSlides(Number(e.target.value))}
+                    disabled={loading}
+                    className="flex-1 h-1.5 bg-gray-200 rounded-full appearance-none cursor-pointer accent-blue-500 hover:accent-blue-600 transition-all"
+                    style={{
+                      background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${((numSlides - 5) / (30 - 5)) * 100}%, #e5e7eb ${((numSlides - 5) / (30 - 5)) * 100}%, #e5e7eb 100%)`
+                    }}
+                  />
+                  <span className="text-xs text-gray-400 w-6">30</span>
                 </div>
+                <span className="w-8 text-center font-semibold text-blue-600 bg-blue-50 rounded-lg py-1 text-sm">{numSlides}</span>
               </div>
 
               {/* 语言选择 */}
@@ -524,13 +528,13 @@ export default function GenerateOutlinePage() {
                   <span>{languages.find(l => l.value === language)?.flag} {languages.find(l => l.value === language)?.label}</span>
                   <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showLangDropdown ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 <AnimatePresence>
                   {showLangDropdown && (
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
+                      initial={{opacity: 0, y: -10}}
+                      animate={{opacity: 1, y: 0}}
+                      exit={{opacity: 0, y: -10}}
                       className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200/50 py-2 min-w-[140px] z-20"
                     >
                       {languages.map((lang) => (
@@ -568,13 +572,13 @@ export default function GenerateOutlinePage() {
                   <span>{styles.find(s => s.value === style)?.label}</span>
                   <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showStyleDropdown ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 <AnimatePresence>
                   {showStyleDropdown && (
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
+                      initial={{opacity: 0, y: -10}}
+                      animate={{opacity: 1, y: 0}}
+                      exit={{opacity: 0, y: -10}}
                       className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200/50 py-2 min-w-[140px] z-20"
                     >
                       {styles.map((s) => (
@@ -602,17 +606,17 @@ export default function GenerateOutlinePage() {
             <motion.button
               type="submit"
               disabled={loading || !isValid}
-              whileHover={!loading && isValid ? { scale: 1.02 } : {}}
-              whileTap={!loading && isValid ? { scale: 0.98 } : {}}
+              whileHover={!loading && isValid ? {scale: 1.02} : {}}
+              whileTap={!loading && isValid ? {scale: 0.98} : {}}
               className={`
                 w-full py-4 px-6 rounded-2xl
                 text-white font-semibold text-lg
                 flex items-center justify-center gap-3
                 transition-all duration-300
                 ${isValid && !loading
-                  ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30' 
-                  : 'bg-gray-300 cursor-not-allowed'
-                }
+      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30'
+      : 'bg-gray-300 cursor-not-allowed'
+    }
               `}
             >
               {loading ? (
@@ -637,15 +641,15 @@ export default function GenerateOutlinePage() {
 
         {/* 底部特性说明 */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
+          initial={{opacity: 0}}
+          animate={{opacity: 1}}
+          transition={{delay: 0.7}}
           className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center"
         >
           {[
-            { icon: Sparkles, title: '智能规划', desc: 'AI 自动分析主题，生成逻辑清晰的页面结构' },
-            { icon: LayoutTemplate, title: '多种场景', desc: '支持周报、课件、商业计划等多种应用场景' },
-            { icon: Check, title: '一键生成', desc: '输入主题即可生成，支持二次编辑调整' },
+            {icon: Sparkles, title: '智能规划', desc: 'AI 自动分析主题，生成逻辑清晰的页面结构'},
+            {icon: LayoutTemplate, title: '多种场景', desc: '支持周报、课件、商业计划等多种应用场景'},
+            {icon: Check, title: '一键生成', desc: '输入主题即可生成，支持二次编辑调整'}
           ].map((feature, index) => {
             const Icon = feature.icon;
             return (

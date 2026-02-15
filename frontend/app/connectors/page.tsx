@@ -1,26 +1,26 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Database, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
-import { Connector } from '@/types/connector';
+import {useEffect, useState, useCallback} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Plus, Database, Loader2, AlertCircle, RefreshCw} from 'lucide-react';
+import {Connector} from '@/types/connector';
 import {
   getConnectors,
-  deleteConnector,
+  deleteConnector
 } from '@/lib/api/connectors';
-import { ConnectorCard } from '@/components/connectors/ConnectorCard';
-import { AxiosError } from 'axios';
+import {ConnectorCard} from '@/components/connectors/ConnectorCard';
+import {AxiosError} from 'axios';
 
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {opacity: 0},
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.08,
-      delayChildren: 0.1,
-    },
-  },
+      delayChildren: 0.1
+    }
+  }
 };
 
 export default function ConnectorsPage() {
@@ -106,8 +106,8 @@ export default function ConnectorsPage() {
 
             <motion.button
               onClick={() => router.push('/connectors/new')}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{scale: 1.02}}
+              whileTap={{scale: 0.98}}
               className="
                 inline-flex items-center gap-2
                 px-4 py-2 rounded-lg
@@ -129,8 +129,8 @@ export default function ConnectorsPage() {
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* 页面标题 */}
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{opacity: 0, y: -10}}
+          animate={{opacity: 1, y: 0}}
           className="mb-8"
         >
           <h2 className="text-2xl font-bold text-[var(--color-text)]">
@@ -145,9 +145,9 @@ export default function ConnectorsPage() {
         <AnimatePresence>
           {error && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              initial={{opacity: 0, height: 0}}
+              animate={{opacity: 1, height: 'auto'}}
+              exit={{opacity: 0, height: 0}}
               className="mb-6"
             >
               <div className="alert-error alert-error-icon">
@@ -179,8 +179,8 @@ export default function ConnectorsPage() {
             {/* 空状态 */}
             {connectors.length === 0 && !error ? (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{opacity: 0, scale: 0.95}}
+                animate={{opacity: 1, scale: 1}}
                 className="text-center py-20"
               >
                 <div
@@ -200,8 +200,8 @@ export default function ConnectorsPage() {
                 </p>
                 <motion.button
                   onClick={() => router.push('/connectors/new')}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{scale: 1.02}}
+                  whileTap={{scale: 0.98}}
                   className="
                     mt-6 inline-flex items-center gap-2
                     px-5 py-2.5 rounded-lg

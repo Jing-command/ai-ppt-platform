@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import {useEffect, useState, useCallback} from 'react';
+import {useRouter, useParams} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
 import {
   ChevronLeft,
   Save,
@@ -18,7 +18,7 @@ import {
   Layout,
   Check,
   Sparkles,
-  X,
+  X
 } from 'lucide-react';
 import {
   getPresentation,
@@ -27,30 +27,30 @@ import {
   updateSlide,
   deleteSlide,
   undoSlide,
-  redoSlide,
+  redoSlide
 } from '@/lib/api/presentations';
 import {
   PresentationDetailResponse,
   Slide,
   SlideType,
   SlideCreate,
-  SlideUpdate,
+  SlideUpdate
 } from '@/types/presentation';
 
 const slideTypeOptions: { type: SlideType; label: string; icon: React.ElementType }[] = [
-  { type: 'title', label: 'Title', icon: Type },
-  { type: 'content', label: 'Content', icon: Type },
-  { type: 'section', label: 'Section', icon: Layout },
-  { type: 'chart', label: 'Chart', icon: BarChart3 },
-  { type: 'conclusion', label: 'Conclusion', icon: Check },
+  {type: 'title', label: 'Title', icon: Type},
+  {type: 'content', label: 'Content', icon: Type},
+  {type: 'section', label: 'Section', icon: Layout},
+  {type: 'chart', label: 'Chart', icon: BarChart3},
+  {type: 'conclusion', label: 'Conclusion', icon: Check}
 ];
 
 const themeOptions = [
-  { id: 'default', name: 'Default', primary: '#2563eb', bg: '#ffffff' },
-  { id: 'dark', name: 'Dark', primary: '#3b82f6', bg: '#1e293b' },
-  { id: 'warm', name: 'Warm', primary: '#f59e0b', bg: '#fff7ed' },
-  { id: 'nature', name: 'Nature', primary: '#10b981', bg: '#f0fdf4' },
-  { id: 'elegant', name: 'Elegant', primary: '#8b5cf6', bg: '#faf5ff' },
+  {id: 'default', name: 'Default', primary: '#2563eb', bg: '#ffffff'},
+  {id: 'dark', name: 'Dark', primary: '#3b82f6', bg: '#1e293b'},
+  {id: 'warm', name: 'Warm', primary: '#f59e0b', bg: '#fff7ed'},
+  {id: 'nature', name: 'Nature', primary: '#10b981', bg: '#f0fdf4'},
+  {id: 'elegant', name: 'Elegant', primary: '#8b5cf6', bg: '#faf5ff'}
 ];
 
 export default function PresentationEditPage() {
@@ -89,14 +89,14 @@ export default function PresentationEditPage() {
   };
 
   const handleSave = async () => {
-    if (!presentation) return;
-    
+    if (!presentation) { return; }
+
     setIsSaving(true);
     try {
       await updatePresentation(presentationId, {
         title: presentation.title,
         description: presentation.description,
-        slides,
+        slides
       });
     } catch (error) {
       console.error('Failed to save presentation:', error);
@@ -111,10 +111,10 @@ export default function PresentationEditPage() {
         type,
         content: {
           title: type === 'title' ? 'Title' : 'New Slide',
-          text: type === 'content' ? 'Enter content here...' : '',
-        },
+          text: type === 'content' ? 'Enter content here...' : ''
+        }
       };
-      
+
       const response = await addSlide(presentationId, newSlideData);
       setSlides(response.slides || []);
       const newSlide = response.slides?.[response.slides.length - 1];
@@ -130,7 +130,7 @@ export default function PresentationEditPage() {
   const handleUpdateSlide = async (slideId: string, updates: SlideUpdate) => {
     try {
       const updatedSlide = await updateSlide(presentationId, slideId, updates);
-      setSlides(prev => 
+      setSlides(prev =>
         prev.map(s => s.id === slideId ? updatedSlide : s)
       );
       setCanUndo(true);
@@ -140,8 +140,8 @@ export default function PresentationEditPage() {
   };
 
   const handleDeleteSlide = async (slideId: string) => {
-    if (!confirm('Delete this slide?')) return;
-    
+    if (!confirm('Delete this slide?')) { return; }
+
     try {
       await deleteSlide(presentationId, slideId);
       setSlides(prev => {
@@ -157,7 +157,7 @@ export default function PresentationEditPage() {
   };
 
   const handleUndo = async () => {
-    if (!activeSlideId) return;
+    if (!activeSlideId) { return; }
     try {
       const response = await undoSlide(presentationId, activeSlideId);
       if (response.success) {
@@ -171,7 +171,7 @@ export default function PresentationEditPage() {
   };
 
   const handleRedo = async () => {
-    if (!activeSlideId) return;
+    if (!activeSlideId) { return; }
     try {
       const response = await redoSlide(presentationId, activeSlideId);
       if (response.success) {
@@ -215,7 +215,7 @@ export default function PresentationEditPage() {
             <input
               type="text"
               value={presentation.title}
-              onChange={(e) => setPresentation({ ...presentation, title: e.target.value })}
+              onChange={(e) => setPresentation({...presentation, title: e.target.value})}
               className="font-medium text-[var(--color-text)] bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1 -ml-2"
             />
             <p className="text-xs text-[var(--color-text-muted)]">{slides.length} slides</p>
@@ -316,7 +316,7 @@ export default function PresentationEditPage() {
                   value={activeSlide.content.title || ''}
                   onChange={(e) =>
                     handleUpdateSlide(activeSlide.id, {
-                      content: { ...activeSlide.content, title: e.target.value },
+                      content: {...activeSlide.content, title: e.target.value}
                     })
                   }
                   className="w-full text-4xl font-bold text-[var(--color-text)] bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded placeholder-gray-300"
@@ -326,7 +326,7 @@ export default function PresentationEditPage() {
                   value={activeSlide.content.text || ''}
                   onChange={(e) =>
                     handleUpdateSlide(activeSlide.id, {
-                      content: { ...activeSlide.content, text: e.target.value },
+                      content: {...activeSlide.content, text: e.target.value}
                     })
                   }
                   className="w-full mt-6 text-lg text-[var(--color-text-secondary)] bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded resize-none placeholder-gray-300"
@@ -341,7 +341,7 @@ export default function PresentationEditPage() {
                   value={activeSlide.notes || ''}
                   onChange={(e) =>
                     handleUpdateSlide(activeSlide.id, {
-                      notes: e.target.value,
+                      notes: e.target.value
                     })
                   }
                   className="w-full text-sm text-[var(--color-text-secondary)] bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded resize-none"
@@ -378,7 +378,7 @@ export default function PresentationEditPage() {
                       key={option.type}
                       onClick={() =>
                         activeSlide &&
-                        handleUpdateSlide(activeSlide.id, { type: option.type })
+                        handleUpdateSlide(activeSlide.id, {type: option.type})
                       }
                       className={`flex items-center gap-2 p-2 rounded-lg border text-sm transition-colors ${
                         isActive
@@ -406,7 +406,7 @@ export default function PresentationEditPage() {
                   >
                     <div
                       className="w-8 h-8 rounded-lg border"
-                      style={{ backgroundColor: theme.bg, borderColor: theme.primary }}
+                      style={{backgroundColor: theme.bg, borderColor: theme.primary}}
                     />
                     <span className="text-sm">{theme.name}</span>
                   </button>
@@ -433,9 +433,9 @@ export default function PresentationEditPage() {
               onClick={() => setShowAddMenu(false)}
             />
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{opacity: 0, y: -10}}
+              animate={{opacity: 1, y: 0}}
+              exit={{opacity: 0, y: -10}}
               className="absolute top-14 left-1/2 -translate-x-1/2 z-50 w-96 bg-white rounded-xl shadow-xl border border-[var(--color-border)] p-4"
             >
               <h3 className="text-sm font-medium text-[var(--color-text)] mb-3">Select Layout</h3>

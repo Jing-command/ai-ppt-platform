@@ -107,13 +107,13 @@ class LLMClient:
             model: 模型名称，默认使用提供商推荐模型
             timeout: 请求超时时间（秒）
         """
-        self.provider = LLMProvider(provider or settings.ai.provider)
+        self.provider = LLMProvider(provider or settings.ai_provider)
 
         # 优先使用传入的 api_key（仅当不为 None），其次从 settings 读取，最后从环境变量读取
         if api_key is not None:
             _api_key = api_key
         else:
-            _api_key = settings.ai.api_key.get_secret_value()
+            _api_key = settings.ai_api_key.get_secret_value()
         if not _api_key:
             # 尝试从环境变量直接读取（兼容不同的环境变量命名）
             _api_key = (
@@ -121,9 +121,9 @@ class LLMClient:
             )
 
         self.api_key = _api_key
-        self.base_url = base_url or self.DEFAULT_BASE_URLS[self.provider]
-        self.model = model or settings.ai.model or self.DEFAULT_MODELS[self.provider]
-        self.timeout = timeout
+        self.base_url = base_url or settings.ai_base_url or self.DEFAULT_BASE_URLS[self.provider]
+        self.model = model or settings.ai_model or self.DEFAULT_MODELS[self.provider]
+        self.timeout = timeout or settings.ai_timeout
 
         # 验证 API key 是否配置
         if not self.api_key or not self.api_key.strip():
@@ -164,12 +164,9 @@ class LLMClient:
             "stream": request.stream,
         }
 
-        # Kimi 和 DeepSeek 支持 response_format
-        if request.response_format and self.provider != LLMProvider.OPENAI:
-            body["response_format"] = request.response_format
-
-        # OpenAI 的 JSON 模式需要特定参数
-        if request.response_format and self.provider == LLMProvider.OPENAI:
+        # OpenAI、Kimi 和 DeepSeek 都支持 response_format
+        # 使用 OpenAI 兼容格式
+        if request.response_format:
             body["response_format"] = request.response_format
 
         return body
@@ -212,6 +209,11 @@ class LLMClient:
         """
         body = self._build_request_body(request)
         start_time = time.time()
+
+        # 调试日志
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"LLM Request to {self.provider.value}: model={self.model}, body={body}")
 
         try:
             response = await self._client.post("/chat/completions", json=body)

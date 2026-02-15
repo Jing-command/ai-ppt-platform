@@ -1,0 +1,12 @@
+export { DashboardNavbar } from './DashboardNavbar';
+export { DashboardHero } from './DashboardHero';
+export { DashboardStats } from './DashboardStats';
+export { DashboardQuickActions } from './DashboardQuickActions';
+export { DashboardRecentActivity } from './DashboardRecentActivity';
+export { DashboardFeatures } from './DashboardFeatures';
+export { DashboardTemplates } from './DashboardTemplates';
+export { DashboardTips } from './DashboardTips';
+export { DashboardFooter } from './DashboardFooter';
+export { DashboardBackground } from './DashboardBackground';
+export { DashboardLoading } from './DashboardLoading';
+export { ActivityItem } from './ActivityItem';

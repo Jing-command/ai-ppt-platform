@@ -7,6 +7,8 @@ from fastapi import APIRouter
 
 from ai_ppt.api.v1.endpoints import (
     auth,
+    chart,
+    chat,
     connectors,
     dashboard,
     exports,
@@ -20,6 +22,8 @@ router = APIRouter(prefix="/api/v1")
 
 # 注册子路由
 router.include_router(auth.router)
+router.include_router(chart.router)
+router.include_router(chat.router)
 router.include_router(connectors.router)
 router.include_router(dashboard.router)
 router.include_router(outlines.router)

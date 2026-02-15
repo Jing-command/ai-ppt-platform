@@ -1,9 +1,15 @@
 'use client';
 
-import { ReactNode } from 'react';
+/**
+ * @fileoverview 应用布局组件
+ * @author Frontend Agent
+ * @date 2026-02-15
+ */
+
+import {ReactNode} from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import {usePathname, useRouter} from 'next/navigation';
+import {motion} from 'framer-motion';
 import {
   LayoutDashboard,
   FileText,
@@ -16,26 +22,29 @@ import {
   User,
   ChevronDown,
 } from 'lucide-react';
-import { clearAuthData, getUser } from '@/lib/api/auth';
-import { useState, useEffect } from 'react';
+import {clearAuthData, getUser} from '@/lib/api/auth';
+import {useState, useEffect} from 'react';
+import {UserProfileModal} from './UserProfileModal';
+import {User as UserType} from '@/types/auth';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 const navItems = [
-  { href: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/app/presentations', label: 'PPT', icon: FileText },
-  { href: '/app/outlines', label: 'Outlines', icon: List },
-  { href: '/app/connectors', label: 'Connectors', icon: Plug },
-  { href: '/app/settings', label: 'Settings', icon: Settings },
+  {href: '/app/dashboard', label: 'Dashboard', icon: LayoutDashboard},
+  {href: '/app/presentations', label: 'PPT', icon: FileText},
+  {href: '/app/outlines', label: 'Outlines', icon: List},
+  {href: '/app/connectors', label: 'Connectors', icon: Plug},
+  {href: '/app/settings', label: 'Settings', icon: Settings}
 ];
 
-export function AppLayout({ children }: AppLayoutProps) {
+export function AppLayout({children}: AppLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   useEffect(() => {
     const currentUser = getUser();
@@ -43,6 +52,13 @@ export function AppLayout({ children }: AppLayoutProps) {
       setUser(currentUser);
     }
   }, []);
+
+  /**
+   * 处理用户信息更新
+   */
+  const handleUserUpdate = (updatedUser: UserType) => {
+    setUser(updatedUser);
+  };
 
   const handleLogout = () => {
     clearAuthData();
@@ -60,7 +76,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               <div
                 className="w-9 h-9 rounded-lg flex items-center justify-center"
                 style={{
-                  background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)',
+                  background: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)'
                 }}
               >
                 <FileText className="w-5 h-5 text-white" />
@@ -100,9 +116,17 @@ export function AppLayout({ children }: AppLayoutProps) {
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               className="flex items-center gap-3 w-full px-3 py-2 rounded-lg hover:bg-[var(--color-surface)] transition-colors"
             >
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-medium">
-                {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
-              </div>
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt="Avatar"
+                  className="w-9 h-9 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-medium">
+                  {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+                </div>
+              )}
               <div className="flex-1 text-left">
                 <p className="text-sm font-medium text-[var(--color-text)] truncate">
                   {user?.name || user?.email}
@@ -116,10 +140,20 @@ export function AppLayout({ children }: AppLayoutProps) {
 
             {isUserMenuOpen && (
               <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{opacity: 0, y: -10}}
+                animate={{opacity: 1, y: 0}}
                 className="mt-2 py-1 bg-white rounded-lg border border-[var(--color-border)] shadow-lg"
               >
+                <button
+                  onClick={() => {
+                    setIsUserMenuOpen(false);
+                    setIsProfileModalOpen(true);
+                  }}
+                  className="flex items-center gap-2 w-full px-4 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-surface)] transition-colors"
+                >
+                  <User className="w-4 h-4" />
+                  个人资料
+                </button>
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -166,6 +200,16 @@ export function AppLayout({ children }: AppLayoutProps) {
           {children}
         </main>
       </div>
+
+      {/* User Profile Modal */}
+      {user && (
+        <UserProfileModal
+          user={user}
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          onUserUpdate={handleUserUpdate}
+        />
+      )}
     </div>
   );
 }

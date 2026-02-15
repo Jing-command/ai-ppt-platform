@@ -12,11 +12,11 @@ from ai_ppt.infrastructure.config import settings
 
 # 创建异步引擎
 engine = create_async_engine(
-    str(settings.database.url),
-    pool_size=settings.database.pool_size,
-    max_overflow=settings.database.max_overflow,
-    pool_timeout=settings.database.pool_timeout,
-    echo=settings.database.echo,
+    str(settings.db_url),
+    pool_size=settings.db_pool_size,
+    max_overflow=settings.db_max_overflow,
+    pool_timeout=settings.db_pool_timeout,
+    echo=settings.db_echo,
     future=True,
 )
 

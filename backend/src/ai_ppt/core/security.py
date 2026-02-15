@@ -10,7 +10,7 @@ from uuid import UUID
 import jwt
 from passlib.context import CryptContext
 
-from ai_ppt.config import settings
+from ai_ppt.infrastructure.config import settings
 
 # 密码哈希上下文
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -18,13 +18,17 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """验证密码"""
-    result: bool = pwd_context.verify(plain_password, hashed_password)
+    # bcrypt 限制密码最长 72 字节
+    truncated_password = plain_password[:72] if len(plain_password) > 72 else plain_password
+    result: bool = pwd_context.verify(truncated_password, hashed_password)
     return result
 
 
 def get_password_hash(password: str) -> str:
     """生成密码哈希"""
-    result: str = pwd_context.hash(password)
+    # bcrypt 限制密码最长 72 字节
+    truncated_password = password[:72] if len(password) > 72 else password
+    result: str = pwd_context.hash(truncated_password)
     return result
 
 
@@ -45,7 +49,7 @@ def create_access_token(
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(
-            minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+            minutes=settings.security_access_token_expire_minutes
         )
 
     to_encode = {
@@ -56,7 +60,7 @@ def create_access_token(
     }
 
     encoded_jwt = jwt.encode(
-        to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
+        to_encode, settings.security_secret_key, algorithm=settings.security_algorithm
     )
     return encoded_jwt
 
@@ -72,7 +76,7 @@ def create_refresh_token(user_id: UUID) -> str:
         JWT 刷新令牌字符串
     """
     expire = datetime.now(timezone.utc) + timedelta(
-        days=settings.JWT_REFRESH_TOKEN_EXPIRE_DAYS
+        days=settings.security_refresh_token_expire_days
     )
 
     to_encode = {
@@ -83,7 +87,7 @@ def create_refresh_token(user_id: UUID) -> str:
     }
 
     encoded_jwt = jwt.encode(
-        to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
+        to_encode, settings.security_secret_key, algorithm=settings.security_algorithm
     )
     return encoded_jwt
 
@@ -105,7 +109,7 @@ def decode_token(
     """
     try:
         payload = jwt.decode(
-            token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]
+            token, settings.security_secret_key, algorithms=[settings.security_algorithm]
         )
 
         # 验证令牌类型

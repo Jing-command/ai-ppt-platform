@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
 import {
   Plug,
   Plus,
@@ -16,19 +16,19 @@ import {
   Edit,
   RefreshCw,
   X,
-  ChevronRight,
+  ChevronRight
 } from 'lucide-react';
-import { AppLayout } from '@/components/layout/AppLayout';
+import {AppLayout} from '@/components/layout/AppLayout';
 import {
   getConnectors,
   deleteConnector,
-  testConnector,
+  testConnector
 } from '@/lib/api/connectors';
 import {
   Connector,
   ConnectorType,
   getConnectorTypeLabel,
-  getConnectorDisplayStatus,
+  getConnectorDisplayStatus
 } from '@/types/connector';
 
 const connectorTypes: { type: ConnectorType; label: string; icon: React.ElementType; description: string; color: string }[] = [
@@ -37,43 +37,43 @@ const connectorTypes: { type: ConnectorType; label: string; icon: React.ElementT
     label: 'MySQL',
     icon: Database,
     description: 'Connect to MySQL database',
-    color: '#4479A1',
+    color: '#4479A1'
   },
   {
     type: 'postgresql',
     label: 'PostgreSQL',
     icon: Database,
     description: 'Connect to PostgreSQL database',
-    color: '#336791',
+    color: '#336791'
   },
   {
     type: 'mongodb',
     label: 'MongoDB',
     icon: Database,
     description: 'Connect to MongoDB document database',
-    color: '#47A248',
+    color: '#47A248'
   },
   {
     type: 'salesforce',
     label: 'Salesforce',
     icon: Cloud,
     description: 'Connect to Salesforce CRM data',
-    color: '#00A1E0',
+    color: '#00A1E0'
   },
   {
     type: 'csv',
     label: 'CSV File',
     icon: HardDrive,
     description: 'Import data from CSV files',
-    color: '#28A745',
+    color: '#28A745'
   },
   {
     type: 'api',
     label: 'REST API',
     icon: Globe,
     description: 'Fetch data via REST API',
-    color: '#FF6C37',
-  },
+    color: '#FF6C37'
+  }
 ];
 
 function getConnectorIcon(type: ConnectorType) {
@@ -123,7 +123,7 @@ export default function ConnectorsPage() {
   };
 
   const handleDeleteConnector = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this connector?')) return;
+    if (!confirm('Are you sure you want to delete this connector?')) { return; }
 
     try {
       await deleteConnector(id);
@@ -150,8 +150,8 @@ export default function ConnectorsPage() {
             </p>
           </div>
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{scale: 1.02}}
+            whileTap={{scale: 0.98}}
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md"
           >
@@ -169,15 +169,15 @@ export default function ConnectorsPage() {
             return (
               <motion.div
                 key={type.type}
-                whileHover={{ y: -2 }}
+                whileHover={{y: -2}}
                 className="bg-white rounded-xl p-5 border border-[var(--color-border)] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all"
               >
                 <div className="flex items-start gap-4">
                   <div
                     className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: `${type.color}15` }}
+                    style={{backgroundColor: `${type.color}15`}}
                   >
-                    <Icon className="w-6 h-6" style={{ color: type.color }} />
+                    <Icon className="w-6 h-6" style={{color: type.color}} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -238,16 +238,16 @@ export default function ConnectorsPage() {
                   return (
                     <motion.div
                       key={connector.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      initial={{opacity: 0}}
+                      animate={{opacity: 1}}
                       className="p-4 flex items-center justify-between hover:bg-[var(--color-surface)] transition-colors"
                     >
                       <div className="flex items-center gap-4">
                         <div
                           className="w-10 h-10 rounded-lg flex items-center justify-center"
-                          style={{ backgroundColor: `${color}15` }}
+                          style={{backgroundColor: `${color}15`}}
                         >
-                          <Icon className="w-5 h-5" style={{ color }} />
+                          <Icon className="w-5 h-5" style={{color}} />
                         </div>
                         <div>
                           <h3 className="font-medium text-[var(--color-text)]">{connector.name}</h3>
@@ -257,9 +257,9 @@ export default function ConnectorsPage() {
                             </span>
                             <span
                               className="w-1.5 h-1.5 rounded-full"
-                              style={{ backgroundColor: status.color }}
+                              style={{backgroundColor: status.color}}
                             />
-                            <span className="text-xs" style={{ color: status.color }}>
+                            <span className="text-xs" style={{color: status.color}}>
                               {status.label}
                             </span>
                           </div>
@@ -305,9 +305,9 @@ export default function ConnectorsPage() {
               onClick={() => setShowAddModal(false)}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={{opacity: 0, scale: 0.95}}
+              animate={{opacity: 1, scale: 1}}
+              exit={{opacity: 0, scale: 0.95}}
               className="fixed inset-0 flex items-center justify-center z-50 p-4"
             >
               <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[80vh] overflow-hidden"
@@ -332,8 +332,8 @@ export default function ConnectorsPage() {
                       return (
                         <motion.button
                           key={type.type}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                          whileHover={{scale: 1.02}}
+                          whileTap={{scale: 0.98}}
                           onClick={() => {
                             setShowAddModal(false);
                             router.push(`/app/connectors/new?type=${type.type}`);
@@ -342,9 +342,9 @@ export default function ConnectorsPage() {
                         >
                           <div
                             className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                            style={{ backgroundColor: `${type.color}15` }}
+                            style={{backgroundColor: `${type.color}15`}}
                           >
-                            <Icon className="w-6 h-6" style={{ color: type.color }} />
+                            <Icon className="w-6 h-6" style={{color: type.color}} />
                           </div>
                           <div>
                             <h3 className="font-medium text-[var(--color-text)]">{type.label}</h3>

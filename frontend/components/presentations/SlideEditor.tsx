@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Trash2, GripVertical, Image as ImageIcon, Type, AlignLeft, List } from 'lucide-react';
-import { Slide, SlideType, SlideContent } from '@/types/presentation';
+import {useState, useEffect} from 'react';
+import {motion} from 'framer-motion';
+import {Plus, Trash2, GripVertical, Image as ImageIcon, Type, AlignLeft, List} from 'lucide-react';
+import {Slide, SlideType, SlideContent} from '@/types/presentation';
 
 interface SlideEditorProps {
   slide: Slide;
@@ -12,44 +12,44 @@ interface SlideEditorProps {
 }
 
 const slideTypeOptions: { value: SlideType; label: string; icon: React.ReactNode; description: string }[] = [
-  { 
-    value: 'title', 
-    label: '封面页', 
+  {
+    value: 'title',
+    label: '封面页',
     icon: <Type className="w-4 h-4" />,
     description: 'PPT 标题和副标题'
   },
-  { 
-    value: 'content', 
-    label: '内容页', 
+  {
+    value: 'content',
+    label: '内容页',
     icon: <AlignLeft className="w-4 h-4" />,
     description: '文本和列表内容'
   },
-  { 
-    value: 'section', 
-    label: '章节页', 
+  {
+    value: 'section',
+    label: '章节页',
     icon: <List className="w-4 h-4" />,
     description: '章节分隔页'
   },
-  { 
-    value: 'chart', 
-    label: '图表页', 
+  {
+    value: 'chart',
+    label: '图表页',
     icon: <ImageIcon className="w-4 h-4" />,
     description: '数据可视化'
   },
-  { 
-    value: 'conclusion', 
-    label: '总结页', 
+  {
+    value: 'conclusion',
+    label: '总结页',
     icon: <Type className="w-4 h-4" />,
     description: '总结和结论'
-  },
+  }
 ];
 
-export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEditorProps) {
-  const { content, type } = slide;
+export default function SlideEditor({slide, onUpdate, onTypeChange}: SlideEditorProps) {
+  const {content, type} = slide;
   const [bullets, setBullets] = useState<string[]>(content.bullets || ['']);
   const [imagePrompt, setImagePrompt] = useState(slide.imagePrompt || '');
 
-/* eslint-disable react-hooks/exhaustive-deps */
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     setBullets(content.bullets || ['']);
     setImagePrompt(slide.imagePrompt || '');
@@ -59,7 +59,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
     const newBullets = [...bullets];
     newBullets[index] = value;
     setBullets(newBullets);
-    onUpdate({ bullets: newBullets.filter(b => b.trim() !== '') });
+    onUpdate({bullets: newBullets.filter(b => b.trim() !== '')});
   };
 
   const handleAddBullet = () => {
@@ -69,7 +69,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
   const handleRemoveBullet = (index: number) => {
     const newBullets = bullets.filter((_, i) => i !== index);
     setBullets(newBullets.length > 0 ? newBullets : ['']);
-    onUpdate({ bullets: newBullets.filter(b => b.trim() !== '') });
+    onUpdate({bullets: newBullets.filter(b => b.trim() !== '')});
   };
 
   const handleImagePromptChange = (value: string) => {
@@ -85,7 +85,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <input
           type="text"
           value={content.title || ''}
-          onChange={(e) => onUpdate({ title: e.target.value })}
+          onChange={(e) => onUpdate({title: e.target.value})}
           className="input-field text-lg"
           placeholder="输入 PPT 标题"
         />
@@ -96,7 +96,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <input
           type="text"
           value={content.subtitle || ''}
-          onChange={(e) => onUpdate({ subtitle: e.target.value })}
+          onChange={(e) => onUpdate({subtitle: e.target.value})}
           className="input-field"
           placeholder="输入副标题（可选）"
         />
@@ -107,7 +107,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <input
           type="text"
           value={content.author || ''}
-          onChange={(e) => onUpdate({ author: e.target.value })}
+          onChange={(e) => onUpdate({author: e.target.value})}
           className="input-field"
           placeholder="输入演讲者或作者名称"
         />
@@ -122,7 +122,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <input
           type="text"
           value={content.title || ''}
-          onChange={(e) => onUpdate({ title: e.target.value })}
+          onChange={(e) => onUpdate({title: e.target.value})}
           className="input-field"
           placeholder="输入页面标题"
         />
@@ -132,7 +132,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <label className="label-text">正文内容</label>
         <textarea
           value={content.text || ''}
-          onChange={(e) => onUpdate({ text: e.target.value })}
+          onChange={(e) => onUpdate({text: e.target.value})}
           className="input-field resize-none"
           rows={6}
           placeholder="输入正文内容..."
@@ -154,8 +154,8 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
           {bullets.map((bullet, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{opacity: 0, x: -10}}
+              animate={{opacity: 1, x: 0}}
               className="flex items-center gap-2"
             >
               <GripVertical className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -186,7 +186,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <input
           type="text"
           value={content.title || ''}
-          onChange={(e) => onUpdate({ title: e.target.value })}
+          onChange={(e) => onUpdate({title: e.target.value})}
           className="input-field text-lg"
           placeholder="输入章节标题"
         />
@@ -196,7 +196,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <label className="label-text">章节描述</label>
         <textarea
           value={content.description || ''}
-          onChange={(e) => onUpdate({ description: e.target.value })}
+          onChange={(e) => onUpdate({description: e.target.value})}
           className="input-field resize-none"
           rows={4}
           placeholder="输入章节描述（可选）"
@@ -208,7 +208,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <input
           type="text"
           value={content.subtitle || ''}
-          onChange={(e) => onUpdate({ subtitle: e.target.value })}
+          onChange={(e) => onUpdate({subtitle: e.target.value})}
           className="input-field w-24"
           placeholder="如：第 1 章"
         />
@@ -223,7 +223,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <input
           type="text"
           value={content.title || ''}
-          onChange={(e) => onUpdate({ title: e.target.value })}
+          onChange={(e) => onUpdate({title: e.target.value})}
           className="input-field"
           placeholder="输入图表标题"
         />
@@ -233,7 +233,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <label className="label-text">图表说明</label>
         <textarea
           value={content.description || ''}
-          onChange={(e) => onUpdate({ description: e.target.value })}
+          onChange={(e) => onUpdate({description: e.target.value})}
           className="input-field resize-none"
           rows={3}
           placeholder="输入图表说明文字"
@@ -256,7 +256,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <input
           type="text"
           value={content.title || ''}
-          onChange={(e) => onUpdate({ title: e.target.value })}
+          onChange={(e) => onUpdate({title: e.target.value})}
           className="input-field text-lg"
           placeholder="输入总结标题"
         />
@@ -266,7 +266,7 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
         <label className="label-text">总结内容</label>
         <textarea
           value={content.text || ''}
-          onChange={(e) => onUpdate({ text: e.target.value })}
+          onChange={(e) => onUpdate({text: e.target.value})}
           className="input-field resize-none"
           rows={6}
           placeholder="输入总结内容..."
@@ -279,8 +279,8 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
           {bullets.map((bullet, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{opacity: 0, x: -10}}
+              animate={{opacity: 1, x: 0}}
               className="flex items-center gap-2"
             >
               <GripVertical className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -313,18 +313,18 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
 
   const renderEditorByType = () => {
     switch (type) {
-      case 'title':
-        return renderTitleEditor();
-      case 'content':
-        return renderContentEditor();
-      case 'section':
-        return renderSectionEditor();
-      case 'chart':
-        return renderChartEditor();
-      case 'conclusion':
-        return renderConclusionEditor();
-      default:
-        return renderContentEditor();
+    case 'title':
+      return renderTitleEditor();
+    case 'content':
+      return renderContentEditor();
+    case 'section':
+      return renderSectionEditor();
+    case 'chart':
+      return renderChartEditor();
+    case 'conclusion':
+      return renderConclusionEditor();
+    default:
+      return renderContentEditor();
     }
   };
 
@@ -343,9 +343,9 @@ export default function SlideEditor({ slide, onUpdate, onTypeChange }: SlideEdit
               className={`
                 flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all
                 ${type === option.value
-                  ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                }
+              ? 'border-blue-500 bg-blue-50 text-blue-700'
+              : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+            }
               `}
               title={option.description}
             >

@@ -5,7 +5,7 @@ import {
   UpdateConnectorRequest,
   TestConnectorRequest,
   TestConnectorResponse,
-  PaginatedResponse,
+  PaginatedResponse
 } from '@/types/connector';
 
 const CONNECTORS_BASE = '/connectors';
@@ -27,7 +27,7 @@ export async function getConnectors(
   if (connectorType) {
     params.append('connectorType', connectorType);
   }
-  
+
   const response = await apiClient.get<PaginatedResponse<Connector>>(
     `${CONNECTORS_BASE}?${params.toString()}`
   );
@@ -82,7 +82,7 @@ export async function testConnector(
   id: string,
   config?: Record<string, unknown>
 ): Promise<TestConnectorResponse> {
-  const requestBody: TestConnectorRequest = config ? { config } : {};
+  const requestBody: TestConnectorRequest = config ? {config} : {};
   const response = await apiClient.post<TestConnectorResponse>(
     `${CONNECTORS_BASE}/${id}/test`,
     requestBody
@@ -103,7 +103,7 @@ export async function testConnectorConfig(
   // 使用特殊端点测试未保存的连接器配置
   const response = await apiClient.post<TestConnectorResponse>(
     `${CONNECTORS_BASE}/test-config`,
-    { type, config }
+    {type, config}
   );
   return response.data;
 }
@@ -121,7 +121,7 @@ export async function getConnectorSchema(
   if (refresh) {
     params.append('refresh', 'true');
   }
-  
+
   const response = await apiClient.get(
     `${CONNECTORS_BASE}/${id}/schema?${params.toString()}`
   );
@@ -144,7 +144,7 @@ export async function executeQuery(
   const response = await apiClient.post(`${CONNECTORS_BASE}/${id}/query`, {
     query,
     params,
-    limit,
+    limit
   });
   return response.data;
 }

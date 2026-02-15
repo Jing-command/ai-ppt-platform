@@ -4,12 +4,12 @@
 /**
  * 页面类型
  */
-export type PageType = "title" | "content" | "section" | "chart" | "conclusion";
+export type PageType = 'title' | 'content' | 'section' | 'chart' | 'conclusion';
 
 /**
  * 背景类型
  */
-export type BackgroundType = "ai" | "upload" | "solid";
+export type BackgroundType = 'ai' | 'upload' | 'solid';
 
 /**
  * PPT背景设置
@@ -66,7 +66,7 @@ export interface OutlineUpdate {
 /**
  * 大纲状态
  */
-export type OutlineStatus = "draft" | "generating" | "completed" | "archived";
+export type OutlineStatus = 'draft' | 'generating' | 'completed' | 'archived';
 
 /**
  * 大纲响应
@@ -96,8 +96,8 @@ export type OutlineDetailResponse = OutlineResponse;
 export interface OutlineGenerateRequest {
   prompt: string;
   numSlides?: number;  // 总页数，默认15，范围3-50
-  language?: "zh" | "en";
-  style?: "business" | "education" | "creative" | "technical";
+  language?: 'zh' | 'en';
+  style?: 'business' | 'education' | 'creative' | 'technical';
   contextData?: Record<string, any>;
   connectorId?: string;
 }
@@ -107,7 +107,7 @@ export interface OutlineGenerateRequest {
  */
 export interface OutlineGenerateResponse {
   taskId: string;
-  status: "pending" | "processing" | "completed" | "failed";
+  status: 'pending' | 'processing' | 'completed' | 'failed';
   estimatedTime: number;
   message: string;
 }
@@ -119,7 +119,7 @@ export interface OutlineToPresentationRequest {
   title?: string;
   templateId?: string;
   theme?: string;
-  slideLayout?: "auto" | "detailed" | "minimal";
+  slideLayout?: 'auto' | 'detailed' | 'minimal';
   generateContent?: boolean;
   provider?: string;
 }

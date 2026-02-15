@@ -9,6 +9,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  avatar?: string;
   createdAt: string;
 }
 
@@ -38,4 +39,15 @@ export interface RegisterResponse {
   email: string;
   name: string;
   created_at: string;
+}
+
+/** 更新用户请求 */
+export interface UpdateUserRequest {
+  name?: string;
+  avatar_url?: string;
+}
+
+/** 头像上传响应 */
+export interface AvatarUploadResponse {
+  avatarUrl: string;
 }

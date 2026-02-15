@@ -15,19 +15,19 @@ import {
   PaginatedResponse,
   UndoRedoResponse,
   ExportRequest,
-  ExportResponse,
-} from "@/types/presentation";
+  ExportResponse
+} from '@/types/presentation';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 /**
  * 获取认证头
  */
 function getAuthHeaders(): HeadersInit {
-  const token = typeof window !== 'undefined' ? localStorage.getItem("accessToken") : null;
+  const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
   return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
   };
 }
 
@@ -37,10 +37,10 @@ function getAuthHeaders(): HeadersInit {
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error = await response.json().catch(() => ({
-      message: "请求失败",
-      code: "UNKNOWN_ERROR",
+      message: '请求失败',
+      code: 'UNKNOWN_ERROR'
     }));
-    throw new Error(error.message || "请求失败");
+    throw new Error(error.message || '请求失败');
   }
   return response.json();
 }
@@ -52,12 +52,12 @@ export async function getPresentations(
   params: PresentationListParams = {}
 ): Promise<PaginatedResponse<PresentationResponse>> {
   const searchParams = new URLSearchParams();
-  if (params.page) searchParams.set("page", params.page.toString());
-  if (params.pageSize) searchParams.set("pageSize", params.pageSize.toString());
-  if (params.status) searchParams.set("status", params.status);
+  if (params.page) { searchParams.set('page', params.page.toString()); }
+  if (params.pageSize) { searchParams.set('pageSize', params.pageSize.toString()); }
+  if (params.status) { searchParams.set('status', params.status); }
 
   const response = await fetch(`${API_BASE}/api/v1/presentations?${searchParams}`, {
-    headers: getAuthHeaders(),
+    headers: getAuthHeaders()
   });
   return handleResponse(response);
 }
@@ -67,7 +67,7 @@ export async function getPresentations(
  */
 export async function getPresentation(id: string): Promise<PresentationDetailResponse> {
   const response = await fetch(`${API_BASE}/api/v1/presentations/${id}`, {
-    headers: getAuthHeaders(),
+    headers: getAuthHeaders()
   });
   return handleResponse(response);
 }
@@ -79,9 +79,9 @@ export async function createPresentation(
   data: PresentationCreate
 ): Promise<PresentationDetailResponse> {
   const response = await fetch(`${API_BASE}/api/v1/presentations`, {
-    method: "POST",
+    method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
   return handleResponse(response);
 }
@@ -94,9 +94,9 @@ export async function updatePresentation(
   data: PresentationUpdate
 ): Promise<PresentationDetailResponse> {
   const response = await fetch(`${API_BASE}/api/v1/presentations/${id}`, {
-    method: "PUT",
+    method: 'PUT',
     headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
   return handleResponse(response);
 }
@@ -106,12 +106,12 @@ export async function updatePresentation(
  */
 export async function deletePresentation(id: string): Promise<void> {
   const response = await fetch(`${API_BASE}/api/v1/presentations/${id}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
+    method: 'DELETE',
+    headers: getAuthHeaders()
   });
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: "删除失败" }));
-    throw new Error(error.message || "删除失败");
+    const error = await response.json().catch(() => ({message: '删除失败'}));
+    throw new Error(error.message || '删除失败');
   }
 }
 
@@ -122,9 +122,9 @@ export async function generatePresentation(
   data: GeneratePresentationRequest
 ): Promise<GeneratePresentationResponse> {
   const response = await fetch(`${API_BASE}/api/v1/presentations/generate`, {
-    method: "POST",
+    method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
   return handleResponse(response);
 }
@@ -139,9 +139,9 @@ export async function addSlide(
   const response = await fetch(
     `${API_BASE}/api/v1/presentations/${presentationId}/slides`,
     {
-      method: "POST",
+      method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(slideData),
+      body: JSON.stringify(slideData)
     }
   );
   return handleResponse(response);
@@ -158,9 +158,9 @@ export async function updateSlide(
   const response = await fetch(
     `${API_BASE}/api/v1/presentations/${presentationId}/slides/${slideId}`,
     {
-      method: "PUT",
+      method: 'PUT',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     }
   );
   return handleResponse(response);
@@ -176,13 +176,13 @@ export async function deleteSlide(
   const response = await fetch(
     `${API_BASE}/api/v1/presentations/${presentationId}/slides/${slideId}`,
     {
-      method: "DELETE",
-      headers: getAuthHeaders(),
+      method: 'DELETE',
+      headers: getAuthHeaders()
     }
   );
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: "删除失败" }));
-    throw new Error(error.message || "删除失败");
+    const error = await response.json().catch(() => ({message: '删除失败'}));
+    throw new Error(error.message || '删除失败');
   }
 }
 
@@ -196,8 +196,8 @@ export async function undoSlide(
   const response = await fetch(
     `${API_BASE}/api/v1/presentations/${presentationId}/slides/${slideId}/undo`,
     {
-      method: "POST",
-      headers: getAuthHeaders(),
+      method: 'POST',
+      headers: getAuthHeaders()
     }
   );
   return handleResponse(response);
@@ -213,8 +213,8 @@ export async function redoSlide(
   const response = await fetch(
     `${API_BASE}/api/v1/presentations/${presentationId}/slides/${slideId}/redo`,
     {
-      method: "POST",
-      headers: getAuthHeaders(),
+      method: 'POST',
+      headers: getAuthHeaders()
     }
   );
   return handleResponse(response);
@@ -230,12 +230,12 @@ export async function exportPresentation(
   const response = await fetch(
     `${API_BASE}/api/v1/exports/${data.format}`,
     {
-      method: "POST",
+      method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify({
         presentationId,
-        ...data,
-      }),
+        ...data
+      })
     }
   );
   return handleResponse(response);

@@ -6,12 +6,12 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import {useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {z} from 'zod';
+import {useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
 import {
   User,
   Mail,
@@ -20,10 +20,10 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
-  CheckCircle2,
+  CheckCircle2
 } from 'lucide-react';
-import { register as registerUser, saveAuthData, login } from '@/lib/api/auth';
-import { AxiosError } from 'axios';
+import {register as registerUser, saveAuthData, login} from '@/lib/api/auth';
+import {AxiosError} from 'axios';
 
 // Zod 验证 schema
 const registerSchema = z
@@ -34,11 +34,11 @@ const registerSchema = z
       .max(20, '用户名最多20个字符'),
     email: z.string().email('请输入有效的邮箱地址'),
     password: z.string().min(6, '密码至少6位'),
-    confirmPassword: z.string(),
+    confirmPassword: z.string()
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: '两次输入的密码不一致',
-    path: ['confirmPassword'],
+    path: ['confirmPassword']
   });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -49,57 +49,57 @@ interface RegisterFormProps {
 
 // Animation variants
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {opacity: 0},
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.1,
-    },
-  },
+      delayChildren: 0.1
+    }
+  }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: {opacity: 0, y: 10},
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.3,
-      ease: 'easeOut' as const,
-    },
-  },
+      ease: 'easeOut' as const
+    }
+  }
 };
 
 const errorVariants = {
-  hidden: { opacity: 0, height: 0, marginBottom: 0 },
+  hidden: {opacity: 0, height: 0, marginBottom: 0},
   visible: {
     opacity: 1,
     height: 'auto',
     marginBottom: 16,
     transition: {
       duration: 0.2,
-      ease: 'easeOut' as const,
-    },
+      ease: 'easeOut' as const
+    }
   },
   exit: {
     opacity: 0,
     height: 0,
     marginBottom: 0,
     transition: {
-      duration: 0.15,
-    },
-  },
+      duration: 0.15
+    }
+  }
 };
 
 const shakeVariants = {
   shake: {
     x: [-4, 4, -4, 4, -2, 2, 0],
-    transition: { duration: 0.4 },
-  },
+    transition: {duration: 0.4}
+  }
 };
 
-export function RegisterForm({ className }: RegisterFormProps) {
+export function RegisterForm({className}: RegisterFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -111,15 +111,15 @@ export function RegisterForm({ className }: RegisterFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {errors}
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: '',
       email: '',
       password: '',
-      confirmPassword: '',
-    },
+      confirmPassword: ''
+    }
   });
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -131,14 +131,14 @@ export function RegisterForm({ className }: RegisterFormProps) {
       await registerUser({
         name: data.name,
         email: data.email,
-        password: data.password,
+        password: data.password
       });
 
       // 注册成功后自动登录
       try {
         const loginResponse = await login({
           email: data.email,
-          password: data.password,
+          password: data.password
         });
         saveAuthData(loginResponse);
         setIsSuccess(true);
@@ -157,17 +157,17 @@ export function RegisterForm({ className }: RegisterFormProps) {
         const detail = error.response?.data?.detail;
 
         switch (status) {
-          case 409:
-            setErrorMessage(detail || '该邮箱已被注册');
-            break;
-          case 422:
-            setErrorMessage(detail || '表单验证错误，请检查输入');
-            break;
-          case 500:
-            setErrorMessage('服务器错误，请稍后重试');
-            break;
-          default:
-            setErrorMessage(detail || '注册失败，请稍后重试');
+        case 409:
+          setErrorMessage(detail || '该邮箱已被注册');
+          break;
+        case 422:
+          setErrorMessage(detail || '表单验证错误，请检查输入');
+          break;
+        case 500:
+          setErrorMessage('服务器错误，请稍后重试');
+          break;
+        default:
+          setErrorMessage(detail || '注册失败，请稍后重试');
         }
       } else {
         setErrorMessage('网络错误，请检查网络连接');
@@ -182,14 +182,14 @@ export function RegisterForm({ className }: RegisterFormProps) {
     return (
       <motion.div
         className='flex flex-col items-center justify-center py-8'
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
+        initial={{opacity: 0, scale: 0.9}}
+        animate={{opacity: 1, scale: 1}}
+        transition={{duration: 0.3}}
       >
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          initial={{scale: 0}}
+          animate={{scale: 1}}
+          transition={{type: 'spring', stiffness: 200, damping: 15}}
         >
           <CheckCircle2 className='w-16 h-16 text-green-500 mb-4' />
         </motion.div>
@@ -243,9 +243,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </label>
         <motion.div
           animate={{
-            scale: focusedField === 'name' ? 1.01 : 1,
+            scale: focusedField === 'name' ? 1.01 : 1
           }}
-          transition={{ duration: 0.2, ease: 'easeOut' as const }}
+          transition={{duration: 0.2, ease: 'easeOut' as const}}
           className='relative'
         >
           <div className='absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none'>
@@ -267,15 +267,15 @@ export function RegisterForm({ className }: RegisterFormProps) {
                        focus:outline-none focus:border-[var(--color-primary)]
                        disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--color-surface)]'
             style={{
-              boxShadow: focusedField === 'name' ? 'var(--shadow-focus)' : undefined,
+              boxShadow: focusedField === 'name' ? 'var(--shadow-focus)' : undefined
             }}
             placeholder='请输入您的用户名'
           />
         </motion.div>
         {errors.name && (
           <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{opacity: 0, y: -5}}
+            animate={{opacity: 1, y: 0}}
             className='mt-1.5 text-sm text-[var(--color-error)] flex items-center gap-1'
           >
             <AlertCircle className='w-3.5 h-3.5' />
@@ -294,9 +294,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </label>
         <motion.div
           animate={{
-            scale: focusedField === 'email' ? 1.01 : 1,
+            scale: focusedField === 'email' ? 1.01 : 1
           }}
-          transition={{ duration: 0.2, ease: 'easeOut' as const }}
+          transition={{duration: 0.2, ease: 'easeOut' as const}}
           className='relative'
         >
           <div className='absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none'>
@@ -318,15 +318,15 @@ export function RegisterForm({ className }: RegisterFormProps) {
                        focus:outline-none focus:border-[var(--color-primary)]
                        disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--color-surface)]'
             style={{
-              boxShadow: focusedField === 'email' ? 'var(--shadow-focus)' : undefined,
+              boxShadow: focusedField === 'email' ? 'var(--shadow-focus)' : undefined
             }}
             placeholder='name@company.com'
           />
         </motion.div>
         {errors.email && (
           <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{opacity: 0, y: -5}}
+            animate={{opacity: 1, y: 0}}
             className='mt-1.5 text-sm text-[var(--color-error)] flex items-center gap-1'
           >
             <AlertCircle className='w-3.5 h-3.5' />
@@ -345,9 +345,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </label>
         <motion.div
           animate={{
-            scale: focusedField === 'password' ? 1.01 : 1,
+            scale: focusedField === 'password' ? 1.01 : 1
           }}
-          transition={{ duration: 0.2, ease: 'easeOut' as const }}
+          transition={{duration: 0.2, ease: 'easeOut' as const}}
           className='relative'
         >
           <div className='absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none'>
@@ -369,7 +369,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                        focus:outline-none focus:border-[var(--color-primary)]
                        disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--color-surface)]'
             style={{
-              boxShadow: focusedField === 'password' ? 'var(--shadow-focus)' : undefined,
+              boxShadow: focusedField === 'password' ? 'var(--shadow-focus)' : undefined
             }}
             placeholder='至少6位字符'
           />
@@ -388,8 +388,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </motion.div>
         {errors.password && (
           <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{opacity: 0, y: -5}}
+            animate={{opacity: 1, y: 0}}
             className='mt-1.5 text-sm text-[var(--color-error)] flex items-center gap-1'
           >
             <AlertCircle className='w-3.5 h-3.5' />
@@ -408,9 +408,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </label>
         <motion.div
           animate={{
-            scale: focusedField === 'confirmPassword' ? 1.01 : 1,
+            scale: focusedField === 'confirmPassword' ? 1.01 : 1
           }}
-          transition={{ duration: 0.2, ease: 'easeOut' as const }}
+          transition={{duration: 0.2, ease: 'easeOut' as const}}
           className='relative'
         >
           <div className='absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none'>
@@ -432,7 +432,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                        focus:outline-none focus:border-[var(--color-primary)]
                        disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--color-surface)]'
             style={{
-              boxShadow: focusedField === 'confirmPassword' ? 'var(--shadow-focus)' : undefined,
+              boxShadow: focusedField === 'confirmPassword' ? 'var(--shadow-focus)' : undefined
             }}
             placeholder='再次输入密码'
           />
@@ -451,8 +451,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </motion.div>
         {errors.confirmPassword && (
           <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{opacity: 0, y: -5}}
+            animate={{opacity: 1, y: 0}}
             className='mt-1.5 text-sm text-[var(--color-error)] flex items-center gap-1'
           >
             <AlertCircle className='w-3.5 h-3.5' />
@@ -466,9 +466,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
         <motion.button
           type='submit'
           disabled={isLoading}
-          whileHover={{ scale: isLoading ? 1 : 1.01 }}
-          whileTap={{ scale: isLoading ? 1 : 0.98 }}
-          transition={{ duration: 0.1 }}
+          whileHover={{scale: isLoading ? 1 : 1.01}}
+          whileTap={{scale: isLoading ? 1 : 0.98}}
+          transition={{duration: 0.1}}
           className='w-full flex items-center justify-center px-4 py-3
                      text-white font-medium text-base rounded-lg
                      bg-gradient-to-r from-blue-600 to-blue-500

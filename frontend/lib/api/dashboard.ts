@@ -3,7 +3,7 @@
  * 提供 Dashboard 页面数据获取功能
  */
 
-import { apiClient } from './client';
+import {apiClient} from './client';
 
 // Dashboard 统计数据类型
 export interface RecentActivity {
@@ -51,5 +51,5 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 }
 
 export default {
-  getDashboardStats,
+  getDashboardStats
 };

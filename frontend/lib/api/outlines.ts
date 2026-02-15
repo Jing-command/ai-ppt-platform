@@ -11,19 +11,22 @@ import {
   OutlineToPresentationRequest,
   OutlineToPresentationResponse,
   OutlineListParams,
-  PaginatedResponse,
-} from "@/types/outline";
+  PaginatedResponse
+} from '@/types/outline';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 /**
  * 获取认证头
  */
 function getAuthHeaders(): HeadersInit {
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem('accessToken');
+  if (!token || token === 'null' || token === 'undefined') {
+    throw new Error('未登录，请先登录');
+  }
   return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
   };
 }
 
@@ -33,10 +36,10 @@ function getAuthHeaders(): HeadersInit {
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error = await response.json().catch(() => ({
-      message: "请求失败",
-      code: "UNKNOWN_ERROR",
+      message: '请求失败',
+      code: 'UNKNOWN_ERROR'
     }));
-    throw new Error(error.message || "请求失败");
+    throw new Error(error.message || '请求失败');
   }
   return response.json();
 }
@@ -48,12 +51,12 @@ export async function getOutlines(
   params: OutlineListParams = {}
 ): Promise<PaginatedResponse<OutlineResponse>> {
   const searchParams = new URLSearchParams();
-  if (params.page) searchParams.set("page", params.page.toString());
-  if (params.pageSize) searchParams.set("pageSize", params.pageSize.toString());
-  if (params.status) searchParams.set("status", params.status);
+  if (params.page) { searchParams.set('page', params.page.toString()); }
+  if (params.pageSize) { searchParams.set('pageSize', params.pageSize.toString()); }
+  if (params.status) { searchParams.set('status', params.status); }
 
   const response = await fetch(`${API_BASE}/api/v1/outlines?${searchParams}`, {
-    headers: getAuthHeaders(),
+    headers: getAuthHeaders()
   });
   return handleResponse(response);
 }
@@ -63,7 +66,7 @@ export async function getOutlines(
  */
 export async function getOutline(id: string): Promise<OutlineDetailResponse> {
   const response = await fetch(`${API_BASE}/api/v1/outlines/${id}`, {
-    headers: getAuthHeaders(),
+    headers: getAuthHeaders()
   });
   return handleResponse(response);
 }
@@ -75,9 +78,9 @@ export async function createOutline(
   data: OutlineCreate
 ): Promise<OutlineResponse> {
   const response = await fetch(`${API_BASE}/api/v1/outlines`, {
-    method: "POST",
+    method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
   return handleResponse(response);
 }
@@ -90,9 +93,9 @@ export async function updateOutline(
   data: OutlineUpdate
 ): Promise<OutlineResponse> {
   const response = await fetch(`${API_BASE}/api/v1/outlines/${id}`, {
-    method: "PUT",
+    method: 'PUT',
     headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
   return handleResponse(response);
 }
@@ -102,12 +105,12 @@ export async function updateOutline(
  */
 export async function deleteOutline(id: string): Promise<void> {
   const response = await fetch(`${API_BASE}/api/v1/outlines/${id}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
+    method: 'DELETE',
+    headers: getAuthHeaders()
   });
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: "删除失败" }));
-    throw new Error(error.message || "删除失败");
+    const error = await response.json().catch(() => ({message: '删除失败'}));
+    throw new Error(error.message || '删除失败');
   }
 }
 
@@ -118,9 +121,9 @@ export async function generateOutline(
   data: OutlineGenerateRequest
 ): Promise<OutlineGenerateResponse> {
   const response = await fetch(`${API_BASE}/api/v1/outlines/generate`, {
-    method: "POST",
+    method: 'POST',
     headers: getAuthHeaders(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
   return handleResponse(response);
 }
@@ -135,9 +138,9 @@ export async function createPresentationFromOutline(
   const response = await fetch(
     `${API_BASE}/api/v1/outlines/${outlineId}/presentations`,
     {
-      method: "POST",
+      method: 'POST',
       headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     }
   );
   return handleResponse(response);

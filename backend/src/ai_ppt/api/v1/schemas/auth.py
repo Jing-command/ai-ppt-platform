@@ -28,6 +28,7 @@ class UserResponse(BaseModel):
     id: UUID = Field(..., description="用户ID")
     email: EmailStr = Field(..., description="邮箱地址")
     name: str = Field(..., description="用户名称")
+    avatar: str | None = Field(None, description="头像URL")
     created_at: datetime = Field(..., alias="createdAt", description="创建时间")
 
     model_config = ConfigDict(populate_by_name=True, from_attributes=True)
@@ -73,6 +74,21 @@ class RegisterRequest(BaseModel):
     email: EmailStr = Field(..., description="邮箱地址")
     password: str = Field(..., min_length=6, description="密码")
     name: str = Field(..., min_length=1, max_length=100, description="用户名称")
+
+
+class UpdateUserRequest(BaseModel):
+    """更新用户信息请求"""
+
+    name: str | None = Field(None, min_length=1, max_length=100, description="用户名称")
+    avatar_url: str | None = Field(None, description="头像URL")
+
+
+class AvatarUploadResponse(BaseModel):
+    """头像上传响应"""
+
+    avatar_url: str = Field(..., alias="avatarUrl", description="头像URL")
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class RegisterResponse(LoginResponse):

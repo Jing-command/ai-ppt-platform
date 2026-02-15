@@ -1,36 +1,36 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Database, Loader2 } from 'lucide-react';
-import { ConnectorForm } from '@/components/connectors/ConnectorForm';
-import { CreateConnectorRequest, UpdateConnectorRequest } from '@/types/connector';
-import { createConnector } from '@/lib/api/connectors';
-import { AxiosError } from 'axios';
+import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion} from 'framer-motion';
+import {ArrowLeft, Database, Loader2} from 'lucide-react';
+import {ConnectorForm} from '@/components/connectors/ConnectorForm';
+import {CreateConnectorRequest, UpdateConnectorRequest} from '@/types/connector';
+import {createConnector} from '@/lib/api/connectors';
+import {AxiosError} from 'axios';
 
 const pageVariants = {
-  hidden: { opacity: 0 },
+  hidden: {opacity: 0},
   visible: {
     opacity: 1,
     transition: {
       duration: 0.4,
-      ease: [0.4, 0, 0.2, 1] as const,
-    },
-  },
+      ease: [0.4, 0, 0.2, 1] as const
+    }
+  }
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.96 },
+  hidden: {opacity: 0, y: 30, scale: 0.96},
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
     transition: {
       duration: 0.5,
-      ease: [0.4, 0, 0.2, 1] as const,
-    },
-  },
+      ease: [0.4, 0, 0.2, 1] as const
+    }
+  }
 };
 
 export default function NewConnectorPage() {
@@ -85,8 +85,8 @@ export default function NewConnectorPage() {
           <div className="flex items-center h-16 gap-4">
             <motion.button
               onClick={() => router.push('/connectors')}
-              whileHover={{ x: -2 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{x: -2}}
+              whileTap={{scale: 0.95}}
               className="
                 p-2 rounded-lg
                 text-[var(--color-text-muted)]
@@ -137,8 +137,8 @@ export default function NewConnectorPage() {
           {/* 错误提示 */}
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{opacity: 0, y: -10}}
+              animate={{opacity: 1, y: 0}}
               className="mb-6"
             >
               <div className="alert-error alert-error-icon">
@@ -158,9 +158,9 @@ export default function NewConnectorPage() {
 
         {/* 帮助信息 */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          initial={{opacity: 0}}
+          animate={{opacity: 1}}
+          transition={{delay: 0.3}}
           className="mt-8 text-center"
         >
           <p className="text-sm text-[var(--color-text-muted)]">

@@ -1,25 +1,25 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ArrowLeft, 
-  Loader2, 
-  Save, 
-  Trash2, 
+import {useEffect, useState, useCallback} from 'react';
+import {useParams, useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
+import {
+  ArrowLeft,
+  Loader2,
+  Save,
+  Trash2,
   LayoutTemplate,
   Wand2,
-  Image as ImageIcon,
+  Image as ImageIcon
 } from 'lucide-react';
-import { 
-  getPresentation, 
+import {
+  getPresentation,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  updatePresentation, 
-  deletePresentation,
+  updatePresentation,
+  deletePresentation
 } from '@/lib/api/presentations';
-import { PresentationDetailResponse, Slide, SlideType, SlideContent } from '@/types/presentation';
-import { AxiosError } from 'axios';
+import {PresentationDetailResponse, Slide, SlideType, SlideContent} from '@/types/presentation';
+import {AxiosError} from 'axios';
 import SlideThumbnail from '@/components/presentations/SlideThumbnail';
 import SlideEditor from '@/components/presentations/SlideEditor';
 import SlideToolbar from '@/components/presentations/SlideToolbar';
@@ -37,7 +37,7 @@ function generateDefaultImagePrompt(slideTitle: string, slideType: SlideType): s
     content: '专业商务场景配图，清晰现代风格',
     section: '章节分隔背景，视觉层次分明',
     chart: '数据可视化背景，科技感配色',
-    conclusion: '总结页背景，温暖专业氛围',
+    conclusion: '总结页背景，温暖专业氛围'
   };
   return `${typePrompts[slideType]}，主题：${slideTitle}`;
 }
@@ -50,10 +50,10 @@ function createDefaultSlide(index: number): Slide {
     content: {
       title: `第 ${index + 1} 页`,
       text: '',
-      bullets: [],
+      bullets: []
     },
     orderIndex: index,
-    imagePrompt: generateDefaultImagePrompt(`第 ${index + 1} 页`, 'content'),
+    imagePrompt: generateDefaultImagePrompt(`第 ${index + 1} 页`, 'content')
   };
 }
 
@@ -70,7 +70,7 @@ export default function PresentationEditorPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  
+
   // 撤销重做历史
   const [history, setHistory] = useState<Slide[][]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
@@ -84,7 +84,7 @@ export default function PresentationEditorPage() {
       setDescription(data.description || '');
       const sortedSlides = [...data.slides].sort((a, b) => a.orderIndex - b.orderIndex);
       setSlides(sortedSlides);
-      
+
       // 初始化历史
       setHistory([sortedSlides]);
       setHistoryIndex(0);
@@ -158,8 +158,8 @@ export default function PresentationEditorPage() {
       alert('至少需要保留一页幻灯片');
       return;
     }
-    if (!confirm('确定要删除当前幻灯片吗？')) return;
-    
+    if (!confirm('确定要删除当前幻灯片吗？')) { return; }
+
     const newSlides = slides.filter((_, i) => i !== currentSlideIndex);
     newSlides.forEach((slide, index) => {
       slide.orderIndex = index;
@@ -177,8 +177,8 @@ export default function PresentationEditorPage() {
       ...currentSlide,
       content: {
         ...currentSlide.content,
-        ...contentUpdates,
-      },
+        ...contentUpdates
+      }
     };
     setSlides(newSlides);
     saveToHistory(newSlides);
@@ -197,8 +197,8 @@ export default function PresentationEditorPage() {
         subtitle: type === 'title' ? currentSlide.content.subtitle : undefined,
         text: ['content', 'conclusion'].includes(type) ? currentSlide.content.text || '' : undefined,
         bullets: ['content', 'conclusion'].includes(type) ? currentSlide.content.bullets || [] : undefined,
-        description: ['section', 'chart'].includes(type) ? currentSlide.content.description : undefined,
-      },
+        description: ['section', 'chart'].includes(type) ? currentSlide.content.description : undefined
+      }
     };
     setSlides(newSlides);
     saveToHistory(newSlides);
@@ -220,8 +220,8 @@ export default function PresentationEditorPage() {
         description: description.trim() || undefined,
         slides: slides.map((slide, index) => ({
           ...slide,
-          orderIndex: index,
-        })),
+          orderIndex: index
+        }))
       });
       // 显示成功提示
       // 实际项目中可以使用 toast 通知
@@ -239,7 +239,7 @@ export default function PresentationEditorPage() {
 
   // 删除 PPT
   const handleDelete = async () => {
-    if (!confirm('确定要删除这个 PPT 吗？此操作不可恢复。')) return;
+    if (!confirm('确定要删除这个 PPT 吗？此操作不可恢复。')) { return; }
 
     try {
       await deletePresentation(presentationId);
@@ -339,9 +339,9 @@ export default function PresentationEditorPage() {
 
             <div className="flex items-center gap-2">
               <ExportButton presentationId={presentationId} />
-              
+
               <div className="h-6 w-px bg-[var(--color-border)]" />
-              
+
               <button
                 onClick={handleDelete}
                 className="
@@ -357,8 +357,8 @@ export default function PresentationEditorPage() {
               <motion.button
                 onClick={handleSave}
                 disabled={saving}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{scale: 1.02}}
+                whileTap={{scale: 0.98}}
                 className="
                   flex items-center gap-2 px-4 py-2 rounded-lg
                   text-white font-medium
@@ -381,9 +381,9 @@ export default function PresentationEditorPage() {
       <AnimatePresence>
         {error && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{opacity: 0, height: 0}}
+            animate={{opacity: 1, height: 'auto'}}
+            exit={{opacity: 0, height: 0}}
             className="bg-red-50 border-b border-red-200"
           >
             <div className="max-w-[1600px] mx-auto px-4 py-3 text-red-700 text-sm">
@@ -423,9 +423,9 @@ export default function PresentationEditorPage() {
             {currentSlide && (
               <motion.div
                 key={currentSlide.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
+                initial={{opacity: 0, y: 10}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.2}}
               >
                 <SlideEditor
                   slide={currentSlide}
@@ -472,7 +472,7 @@ export default function PresentationEditorPage() {
                   <button
                     key={color}
                     className="w-8 h-8 rounded-full border-2 border-white shadow-sm hover:scale-110 transition-transform"
-                    style={{ backgroundColor: color }}
+                    style={{backgroundColor: color}}
                   />
                 ))}
               </div>

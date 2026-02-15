@@ -3,7 +3,7 @@ Dashboard API - 仪表盘统计接口
 提供 Dashboard 页面所需的统计数据
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -24,7 +24,7 @@ router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
 def get_week_start() -> datetime:
     """获取本周开始时间（周一 00:00:00）"""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     # weekday(): Monday is 0, Sunday is 6
     days_since_monday = now.weekday()
     monday = now - timedelta(days=days_since_monday)
@@ -33,7 +33,7 @@ def get_week_start() -> datetime:
 
 def get_seven_days_ago() -> datetime:
     """获取7天前的时间"""
-    return datetime.utcnow() - timedelta(days=7)
+    return datetime.now(timezone.utc) - timedelta(days=7)
 
 
 def format_relative_time(updated_at: datetime) -> str:
@@ -41,7 +41,10 @@ def format_relative_time(updated_at: datetime) -> str:
     将时间格式化为相对时间（人性化格式）
     如：2小时前、昨天、3天前
     """
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
+    # 如果 updated_at 没有时区信息，假设它是 UTC
+    if updated_at.tzinfo is None:
+        updated_at = updated_at.replace(tzinfo=timezone.utc)
     diff = now - updated_at
 
     # 小于1分钟

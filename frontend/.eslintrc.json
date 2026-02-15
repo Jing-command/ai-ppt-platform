@@ -9,6 +9,57 @@
   "rules": {
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
-    "no-console": "off"
+    "no-console": "off",
+
+    "quotes": ["error", "single"],
+    "semi": ["error", "always"],
+    "eqeqeq": ["error", "always", {"null": "ignore"}],
+    "curly": ["error", "all"],
+    "no-empty": "error",
+    "no-debugger": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-trailing-spaces": "error",
+    "eol-last": ["error", "always"],
+    "no-multiple-empty-lines": ["error", { "max": 2 }],
+    "no-mixed-spaces-and-tabs": "error",
+
+    "indent": ["warn", 2],
+    "comma-dangle": ["warn", "never"],
+    "object-curly-spacing": ["warn", "never"],
+    "array-bracket-spacing": ["warn", "never"],
+    "space-infix-ops": ["warn"],
+    "space-before-blocks": ["warn"],
+    "keyword-spacing": ["warn"],
+    "comma-spacing": ["warn"],
+    "key-spacing": ["warn"],
+    "arrow-spacing": ["warn"],
+    "block-spacing": ["warn"],
+    "computed-property-spacing": ["warn"],
+    "func-call-spacing": ["warn"],
+    "semi-spacing": ["warn"],
+    "switch-colon-spacing": ["warn"],
+
+    "@typescript-eslint/naming-convention": [
+      "warn",
+      {
+        "selector": "variable",
+        "format": ["camelCase", "UPPER_CASE", "PascalCase"]
+      },
+      {
+        "selector": "function",
+        "format": ["camelCase", "PascalCase"]
+      },
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      }
+    ],
+
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-inferrable-types": "off",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/no-non-null-assertion": "off"
   }
 }

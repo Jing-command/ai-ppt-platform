@@ -1,8 +1,8 @@
-# API Contract v1.0
+# API Contract v1.3
 
 > AI PPT Platform - 完整 API 契约文档  
-> 版本: 1.0  
-> 更新日期: 2026-02-12  
+> 版本: 1.3  
+> 更新日期: 2026-02-15  
 > 状态: 已实现
 
 ## 通用规范
@@ -83,7 +83,23 @@ interface User {
   id: string;          // UUID
   email: string;       // format: email
   name: string;        // 用户名
+  avatar?: string;     // 头像URL（可选）
   createdAt: string;   // ISO 8601 datetime
+}
+```
+
+#### UpdateUserRequest
+```typescript
+interface UpdateUserRequest {
+  name?: string;       // 用户名，minLength: 1, maxLength: 100
+  avatar_url?: string; // 头像URL
+}
+```
+
+#### AvatarUploadResponse
+```typescript
+interface AvatarUploadResponse {
+  avatarUrl: string;   // 上传后的头像URL
 }
 ```
 
@@ -130,6 +146,76 @@ interface RefreshRequest {
 interface RefreshResponse {
   accessToken: string;
   tokenType: "bearer";
+}
+```
+
+---
+
+### Chat 模块
+
+#### MessageRole
+```typescript
+type MessageRole = "user" | "assistant" | "system";
+```
+
+#### ChatMessage
+```typescript
+interface ChatMessage {
+  role: MessageRole;     // 消息角色
+  content: string;       // 消息内容
+}
+```
+
+#### ChatContext
+```typescript
+interface ChatContext {
+  presentationId?: string;   // 当前演示文稿 ID
+  slideId?: string;          // 当前幻灯片 ID
+  currentPrompt?: string;    // 用户当前正在编辑的提示词
+  metadata?: Record<string, any>;  // 额外的元数据信息
+}
+```
+
+#### ChatRequest
+```typescript
+interface ChatRequest {
+  messages: ChatMessage[];   // 聊天消息列表，minLength: 1
+  context?: ChatContext;     // 可选的上下文信息
+  stream?: boolean;          // 是否使用流式响应，默认: true
+}
+```
+
+#### ChatResponseChunk
+```typescript
+interface ChatResponseChunk {
+  content: string;               // 响应内容片段
+  isFinished: boolean;           // 是否响应结束
+  hasOptimizedPrompt: boolean;   // 是否包含优化后的提示词
+  optimizedPrompt?: string;      // 优化后的提示词
+}
+```
+
+#### ChatResponse
+```typescript
+interface ChatResponse {
+  message: ChatMessage;          // AI 响应消息
+  hasOptimizedPrompt: boolean;   // 是否包含优化后的提示词
+  optimizedPrompt?: string;      // 优化后的提示词
+}
+```
+
+#### IntentType
+```typescript
+type IntentType = "clarification" | "prompt_optimization" | "suggestion" | "general";
+```
+
+#### IntentAnalysis
+```typescript
+interface IntentAnalysis {
+  intentType: IntentType;        // 意图类型
+  confidence: number;            // 置信度 (0.0 - 1.0)
+  missingInfo?: string[];        // 缺失的信息列表
+  suggestedQuestions?: string[]; // 建议的问题列表
 }
 ```
 
@@ -637,6 +723,119 @@ interface ExportStatusResponse {
 
 ## 端点规范
 
+### Chat 模块
+
+#### POST /chat
+**描述**: 发送聊天消息
+
+**请求头**:
+```
+Authorization: Bearer {accessToken}  // 可选
+Content-Type: application/json
+```
+
+**请求**:
+```typescript
+ChatRequest
+```
+
+**成功响应 (200)**:
+- 流式响应: SSE (Server-Sent Events) 格式
+- 非流式响应: `ChatResponse`
+
+**错误响应**:
+- `400` INVALID_REQUEST - 参数错误
+- `500` INTERNAL_ERROR - 服务器错误
+
+**示例**:
+```bash
+curl -X POST http://localhost:8000/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "user", "content": "帮我生成一个销售报告 PPT"}
+    ],
+    "context": {
+      "presentationId": "xxx",
+      "currentPrompt": "销售报告"
+    },
+    "stream": true
+  }'
+```
+
+**响应示例 (SSE 格式)**:
+```
+data: {"content": "根据", "isFinished": false, "hasOptimizedPrompt": false}
+
+data: {"content": "您的描述", "isFinished": false, "hasOptimizedPrompt": false}
+
+data: {"content": "...", "isFinished": true, "hasOptimizedPrompt": true, "optimizedPrompt": "主题：销售报告\n目标受众：领导"}
+```
+
+**响应示例 (非流式)**:
+```json
+{
+  "message": {
+    "role": "assistant",
+    "content": "根据您的描述，我已经为您优化了提示词..."
+  },
+  "hasOptimizedPrompt": true,
+  "optimizedPrompt": "主题：销售报告\n目标受众：领导\n演示目的：工作汇报\n设计风格：商务专业"
+}
+```
+
+---
+
+#### POST /chat/analyze
+**描述**: 分析用户意图
+
+**请求头**:
+```
+Authorization: Bearer {accessToken}  // 可选
+Content-Type: application/json
+```
+
+**请求**:
+```typescript
+ChatRequest
+```
+
+**成功响应 (200)**:
+```typescript
+IntentAnalysis
+```
+
+**错误响应**:
+- `400` INVALID_REQUEST - 参数错误
+- `500` INTERNAL_ERROR - 服务器错误
+
+**示例**:
+```bash
+curl -X POST http://localhost:8000/api/v1/chat/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "messages": [
+      {"role": "user", "content": "帮我做一个PPT"}
+    ]
+  }'
+```
+
+**响应示例**:
+```json
+{
+  "intentType": "clarification",
+  "confidence": 0.85,
+  "missingInfo": ["主题", "受众", "目的", "风格"],
+  "suggestedQuestions": [
+    "您想制作什么主题的 PPT？",
+    "这个 PPT 的目标受众是谁？（如：客户、领导、同事等）",
+    "您希望通过这个 PPT 达到什么目的？（如：汇报、销售、培训等）"
+  ]
+}
+```
+
+---
+
 ### Auth 模块
 
 #### POST /auth/register
@@ -796,7 +995,93 @@ curl -X GET http://localhost:8000/api/v1/auth/me \
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "email": "test@example.com",
   "name": "Test User",
+  "avatar": "https://cdn.example.com/avatars/xxx.jpg",
   "createdAt": "2024-01-01T00:00:00Z"
+}
+```
+
+---
+
+#### PUT /auth/me
+**描述**: 更新当前用户信息
+
+**请求头**:
+```
+Authorization: Bearer {accessToken}
+```
+
+**请求**:
+```typescript
+UpdateUserRequest
+```
+
+**成功响应 (200)**:
+```typescript
+User
+```
+
+**错误响应**:
+- `400` INVALID_REQUEST - 参数错误
+- `401` UNAUTHORIZED - 未认证
+
+**示例**:
+```bash
+curl -X PUT http://localhost:8000/api/v1/auth/me \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "新用户名"
+  }'
+```
+
+**响应示例**:
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "email": "test@example.com",
+  "name": "新用户名",
+  "avatar": "https://cdn.example.com/avatars/xxx.jpg",
+  "createdAt": "2024-01-01T00:00:00Z"
+}
+```
+
+---
+
+#### POST /auth/me/avatar
+**描述**: 上传用户头像
+
+**请求头**:
+```
+Authorization: Bearer {accessToken}
+Content-Type: multipart/form-data
+```
+
+**请求体**:
+| 字段名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| file | File | 是 | 头像图片文件，支持 jpg/png/gif/webp，最大 2MB |
+
+**成功响应 (200)**:
+```typescript
+AvatarUploadResponse
+```
+
+**错误响应**:
+- `400` INVALID_FILE_TYPE - 不支持的文件类型
+- `400` FILE_TOO_LARGE - 文件大小超过限制
+- `401` UNAUTHORIZED - 未认证
+
+**示例**:
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/me/avatar \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -F "file=@/path/to/avatar.jpg"
+```
+
+**响应示例**:
+```json
+{
+  "avatarUrl": "https://cdn.example.com/avatars/550e8400-e29b-41d4-a716-446655440000.jpg"
 }
 ```
 
@@ -2077,6 +2362,350 @@ curl -X GET http://localhost:8000/api/v1/exports/550e8400-e29b-41d4-a716-4466554
 
 ---
 
+### Charts 模块
+
+#### ChartTypeEnum
+```typescript
+type ChartType = "bar" | "line" | "pie" | "scatter" | "area" | "radar" | "funnel" | "gauge" | "treemap" | "sunburst";
+```
+
+#### FieldTypeEnum
+```typescript
+type FieldType = "dimension" | "measure";
+```
+
+#### DataFieldType
+```typescript
+type DataFieldType = "string" | "number" | "date" | "boolean";
+```
+
+#### DataFieldInfo
+```typescript
+interface DataFieldInfo {
+  name: string;                    // 字段名称
+  fieldType: FieldType;            // 字段类型: dimension/measure
+  dataType: DataFieldType;         // 数据类型: string/number/date/boolean
+  uniqueCount: number;             // 唯一值数量
+  nullCount: number;               // 空值数量
+  sampleValues?: any[];            // 样本值列表
+  minValue?: number;               // 最小值（数值字段）
+  maxValue?: number;               // 最大值（数值字段）
+  avgValue?: number;               // 平均值（数值字段）
+}
+```
+
+#### DataAnalyzeRequest
+```typescript
+interface DataAnalyzeRequest {
+  data: Record<string, any>[];     // 数据列表，minLength: 1
+  sampleSize?: number;             // 采样大小，默认: 100
+}
+```
+
+#### DataAnalyzeResponse
+```typescript
+interface DataAnalyzeResponse {
+  totalRows: number;               // 总行数
+  totalColumns: number;            // 总列数
+  fields: DataFieldInfo[];         // 字段信息列表
+  suggestions?: string[];          // 数据建议列表
+}
+```
+
+#### FieldMapping
+```typescript
+interface FieldMapping {
+  xField?: string;                 // X 轴字段
+  yField?: string;                 // Y 轴字段
+  seriesField?: string;            // 系列字段
+  valueField?: string;             // 值字段（饼图等）
+  nameField?: string;              // 名称字段
+  sizeField?: string;              // 大小字段（散点图）
+}
+```
+
+#### ChartStyleConfig
+```typescript
+interface ChartStyleConfig {
+  title?: string;                  // 图表标题
+  subtitle?: string;               // 图表副标题
+  width?: number;                  // 图表宽度
+  height?: number;                 // 图表高度
+  colorPalette?: string[];         // 颜色调色板
+  showLegend?: boolean;            // 是否显示图例，默认: true
+  showTooltip?: boolean;           // 是否显示提示框，默认: true
+  showGrid?: boolean;              // 是否显示网格，默认: true
+  animation?: boolean;             // 是否启用动画，默认: true
+  theme?: string;                  // 主题名称，默认: "default"
+}
+```
+
+#### ChartGenerateRequest
+```typescript
+interface ChartGenerateRequest {
+  chartType: ChartType;            // 图表类型
+  data: Record<string, any>[];     // 数据列表，minLength: 1
+  fieldMapping: FieldMapping;      // 字段映射配置
+  styleConfig?: ChartStyleConfig;  // 样式配置
+}
+```
+
+#### ChartGenerateResponse
+```typescript
+interface ChartGenerateResponse {
+  chartType: ChartType;            // 图表类型
+  echartsOption: Record<string, any>;  // ECharts 配置
+  dataCount: number;               // 数据条数
+  generatedAt: string;             // 生成时间，ISO 8601 datetime
+}
+```
+
+#### RecommendedChart
+```typescript
+interface RecommendedChart {
+  chartType: ChartType;            // 推荐图表类型
+  confidence: number;              // 推荐置信度 (0.0 - 1.0)
+  reason: string;                  // 推荐理由
+  fieldMapping: FieldMapping;      // 建议的字段映射
+  previewOption?: Record<string, any>;  // 预览配置（可选）
+}
+```
+
+#### ChartRecommendRequest
+```typescript
+interface ChartRecommendRequest {
+  data: Record<string, any>[];     // 数据列表，minLength: 1
+  context?: string;                // 上下文描述（可选）
+  maxRecommendations?: number;     // 最大推荐数量，范围: 1-5，默认: 3
+}
+```
+
+#### ChartRecommendResponse
+```typescript
+interface ChartRecommendResponse {
+  recommendations: RecommendedChart[];  // 推荐图表列表
+  dataSummary: string;             // 数据摘要
+  analyzedAt: string;              // 分析时间，ISO 8601 datetime
+}
+```
+
+---
+
+#### POST /charts/analyze
+**描述**: 分析数据
+
+**请求头**:
+```
+Content-Type: application/json
+```
+
+**请求**:
+```typescript
+DataAnalyzeRequest
+```
+
+**成功响应 (200)**:
+```typescript
+DataAnalyzeResponse
+```
+
+**错误响应**:
+- `400` INVALID_REQUEST - 参数错误
+- `500` INTERNAL_ERROR - 服务器错误
+
+**示例**:
+```bash
+curl -X POST http://localhost:8000/api/v1/charts/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      {"category": "A", "value": 100, "date": "2024-01-01"},
+      {"category": "B", "value": 200, "date": "2024-01-02"},
+      {"category": "C", "value": 150, "date": "2024-01-03"}
+    ],
+    "sampleSize": 100
+  }'
+```
+
+**响应示例**:
+```json
+{
+  "totalRows": 3,
+  "totalColumns": 3,
+  "fields": [
+    {
+      "name": "category",
+      "fieldType": "dimension",
+      "dataType": "string",
+      "uniqueCount": 3,
+      "nullCount": 0,
+      "sampleValues": ["A", "B", "C"]
+    },
+    {
+      "name": "value",
+      "fieldType": "measure",
+      "dataType": "number",
+      "uniqueCount": 3,
+      "nullCount": 0,
+      "minValue": 100,
+      "maxValue": 200,
+      "avgValue": 150
+    },
+    {
+      "name": "date",
+      "fieldType": "dimension",
+      "dataType": "date",
+      "uniqueCount": 3,
+      "nullCount": 0,
+      "sampleValues": ["2024-01-01", "2024-01-02", "2024-01-03"]
+    }
+  ],
+  "suggestions": ["数据适合生成柱状图、折线图或饼图"]
+}
+```
+
+---
+
+#### POST /charts/generate
+**描述**: 生成图表
+
+**请求头**:
+```
+Content-Type: application/json
+```
+
+**请求**:
+```typescript
+ChartGenerateRequest
+```
+
+**成功响应 (200)**:
+```typescript
+ChartGenerateResponse
+```
+
+**错误响应**:
+- `400` INVALID_REQUEST - 参数错误
+- `500` INTERNAL_ERROR - 服务器错误
+
+**示例**:
+```bash
+curl -X POST http://localhost:8000/api/v1/charts/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "chartType": "bar",
+    "data": [
+      {"category": "A", "value": 100},
+      {"category": "B", "value": 200},
+      {"category": "C", "value": 150}
+    ],
+    "fieldMapping": {
+      "xField": "category",
+      "yField": "value"
+    },
+    "styleConfig": {
+      "title": "销售数据",
+      "showLegend": true,
+      "animation": true
+    }
+  }'
+```
+
+**响应示例**:
+```json
+{
+  "chartType": "bar",
+  "echartsOption": {
+    "title": {"text": "销售数据", "left": "center"},
+    "tooltip": {"trigger": "axis"},
+    "legend": {"orient": "horizontal", "bottom": 10},
+    "xAxis": {"type": "category", "data": ["A", "B", "C"]},
+    "yAxis": {"type": "value"},
+    "series": [{"name": "value", "type": "bar", "data": [100, 200, 150]}]
+  },
+  "dataCount": 3,
+  "generatedAt": "2024-01-01T00:00:00"
+}
+```
+
+---
+
+#### POST /charts/recommend
+**描述**: 推荐图表
+
+**请求头**:
+```
+Content-Type: application/json
+```
+
+**请求**:
+```typescript
+ChartRecommendRequest
+```
+
+**成功响应 (200)**:
+```typescript
+ChartRecommendResponse
+```
+
+**错误响应**:
+- `400` INVALID_REQUEST - 参数错误
+- `500` INTERNAL_ERROR - 服务器错误
+
+**示例**:
+```bash
+curl -X POST http://localhost:8000/api/v1/charts/recommend \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      {"category": "A", "value": 100, "date": "2024-01-01"},
+      {"category": "B", "value": 200, "date": "2024-01-02"},
+      {"category": "C", "value": 150, "date": "2024-01-03"}
+    ],
+    "context": "销售数据分析",
+    "maxRecommendations": 3
+  }'
+```
+
+**响应示例**:
+```json
+{
+  "recommendations": [
+    {
+      "chartType": "bar",
+      "confidence": 0.9,
+      "reason": "数据包含维度字段（category）和度量字段（value），适合使用柱状图展示对比关系",
+      "fieldMapping": {
+        "xField": "category",
+        "yField": "value"
+      }
+    },
+    {
+      "chartType": "line",
+      "confidence": 0.88,
+      "reason": "数据包含时间维度（date），适合使用折线图展示趋势变化",
+      "fieldMapping": {
+        "xField": "date",
+        "yField": "value"
+      }
+    },
+    {
+      "chartType": "pie",
+      "confidence": 0.85,
+      "reason": "维度字段（category）有 3 个唯一值，适合使用饼图展示占比分布",
+      "fieldMapping": {
+        "nameField": "category",
+        "valueField": "value"
+      }
+    }
+  ],
+  "dataSummary": "共 3 行数据，3 个字段，2 个维度字段，1 个度量字段",
+  "analyzedAt": "2024-01-01T00:00:00"
+}
+```
+
+---
+
 ## 错误码定义
 
 | 错误码 | 状态码 | 描述 |
@@ -2108,6 +2737,31 @@ curl -X GET http://localhost:8000/api/v1/exports/550e8400-e29b-41d4-a716-4466554
 ---
 
 ## 变更日志
+
+### v1.3 (2026-02-15)
+- 新增 Charts 模块（数据可视化）
+- 新增 `POST /charts/analyze` 数据分析端点
+- 新增 `POST /charts/generate` 图表生成端点
+- 新增 `POST /charts/recommend` 图表推荐端点
+- 新增 `ChartType`, `FieldType`, `DataFieldType` 类型
+- 新增 `DataFieldInfo`, `DataAnalyzeRequest`, `DataAnalyzeResponse` 类型
+- 新增 `FieldMapping`, `ChartStyleConfig`, `ChartGenerateRequest`, `ChartGenerateResponse` 类型
+- 新增 `RecommendedChart`, `ChartRecommendRequest`, `ChartRecommendResponse` 类型
+- 支持柱状图、折线图、饼图、散点图、面积图、雷达图、漏斗图等图表类型
+
+### v1.2 (2026-02-15)
+- 新增 Chat 模块（AI 提示词助手）
+- 新增 `POST /chat` 聊天端点，支持流式响应 (SSE)
+- 新增 `POST /chat/analyze` 意图分析端点
+- 新增 `ChatMessage`, `ChatContext`, `ChatRequest`, `ChatResponse`, `ChatResponseChunk` 类型
+- 新增 `IntentType`, `IntentAnalysis` 类型
+
+### v1.1 (2026-02-15)
+- 新增 `PUT /auth/me` 更新用户信息接口
+- 新增 `POST /auth/me/avatar` 上传头像接口
+- User 类型新增 `avatar` 可选字段
+- 新增 `UpdateUserRequest` 类型
+- 新增 `AvatarUploadResponse` 类型
 
 ### v1.0 (2026-02-12)
 - 初始版本

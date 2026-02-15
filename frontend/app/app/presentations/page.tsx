@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
 import {
   FileText,
   Plus,
@@ -18,44 +18,44 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  AlertCircle,
+  AlertCircle
 } from 'lucide-react';
-import { AppLayout } from '@/components/layout/AppLayout';
+import {AppLayout} from '@/components/layout/AppLayout';
 import {
   getPresentations,
   deletePresentation,
-  createPresentation,
+  createPresentation
 } from '@/lib/api/presentations';
 import {
   PresentationResponse,
-  PresentationStatus,
+  PresentationStatus
 } from '@/types/presentation';
 
 const statusOptions: { value: PresentationStatus | ''; label: string }[] = [
-  { value: '', label: '全部状态' },
-  { value: 'draft', label: '草稿' },
-  { value: 'generating', label: '生成中' },
-  { value: 'completed', label: '已完成' },
-  { value: 'published', label: '已发布' },
-  { value: 'archived', label: '已归档' },
+  {value: '', label: '全部状态'},
+  {value: 'draft', label: '草稿'},
+  {value: 'generating', label: '生成中'},
+  {value: 'completed', label: '已完成'},
+  {value: 'published', label: '已发布'},
+  {value: 'archived', label: '已归档'}
 ];
 
 const sortOptions = [
-  { value: 'updatedAt:desc', label: '最近更新' },
-  { value: 'updatedAt:asc', label: '最早更新' },
-  { value: 'createdAt:desc', label: '最近创建' },
-  { value: 'createdAt:asc', label: '最早创建' },
-  { value: 'title:asc', label: '名称 A-Z' },
-  { value: 'title:desc', label: '名称 Z-A' },
+  {value: 'updatedAt:desc', label: '最近更新'},
+  {value: 'updatedAt:asc', label: '最早更新'},
+  {value: 'createdAt:desc', label: '最近创建'},
+  {value: 'createdAt:asc', label: '最早创建'},
+  {value: 'title:asc', label: '名称 A-Z'},
+  {value: 'title:desc', label: '名称 Z-A'}
 ];
 
 function getStatusBadge(status: PresentationStatus) {
   const statusConfig = {
-    draft: { label: '草稿', color: 'bg-gray-100 text-gray-700 border-gray-200' },
-    generating: { label: '生成中', color: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-    completed: { label: '已完成', color: 'bg-green-100 text-green-700 border-green-200' },
-    published: { label: '已发布', color: 'bg-blue-100 text-blue-700 border-blue-200' },
-    archived: { label: '已归档', color: 'bg-gray-100 text-gray-700 border-gray-200' },
+    draft: {label: '草稿', color: 'bg-gray-100 text-gray-700 border-gray-200'},
+    generating: {label: '生成中', color: 'bg-yellow-100 text-yellow-700 border-yellow-200'},
+    completed: {label: '已完成', color: 'bg-green-100 text-green-700 border-green-200'},
+    published: {label: '已发布', color: 'bg-blue-100 text-blue-700 border-blue-200'},
+    archived: {label: '已归档', color: 'bg-gray-100 text-gray-700 border-gray-200'}
   };
 
   const config = statusConfig[status];
@@ -96,36 +96,36 @@ export default function PresentationsPage() {
       const response = await getPresentations({
         page,
         pageSize,
-        status: statusFilter || undefined,
+        status: statusFilter || undefined
       });
-      
+
       let data = response.data;
-      
+
       // Client-side search
       if (searchQuery) {
-        data = data.filter(p => 
+        data = data.filter(p =>
           p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           p.description?.toLowerCase().includes(searchQuery.toLowerCase())
         );
       }
-      
+
       // Client-side sort
       const [field, order] = sortBy.split(':');
       data = [...data].sort((a, b) => {
         let aVal: any = a[field as keyof PresentationResponse];
         let bVal: any = b[field as keyof PresentationResponse];
-        
+
         if (field === 'title') {
           aVal = (aVal || '').toLowerCase();
           bVal = (bVal || '').toLowerCase();
         }
-        
+
         if (order === 'asc') {
           return aVal > bVal ? 1 : -1;
         }
         return aVal < bVal ? 1 : -1;
       });
-      
+
       setPresentations(data);
       setTotalPages(response.meta.totalPages);
     } catch (error) {
@@ -139,7 +139,7 @@ export default function PresentationsPage() {
     try {
       const response = await createPresentation({
         title: '未命名演示文稿',
-        description: '',
+        description: ''
       });
       router.push(`/app/presentations/${response.id}/edit`);
     } catch (error) {
@@ -148,8 +148,8 @@ export default function PresentationsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('确定要删除这个演示文稿吗？')) return;
-    
+    if (!confirm('确定要删除这个演示文稿吗？')) { return; }
+
     try {
       await deletePresentation(id);
       setPresentations(prev => prev.filter(p => p.id !== id));
@@ -161,7 +161,7 @@ export default function PresentationsPage() {
 
   const handleContextMenu = (e: React.MouseEvent, ppt: PresentationResponse) => {
     e.preventDefault();
-    setContextMenu({ x: e.clientX, y: e.clientY, ppt });
+    setContextMenu({x: e.clientX, y: e.clientY, ppt});
   };
 
   const toggleSelection = (id: string) => {
@@ -188,8 +188,8 @@ export default function PresentationsPage() {
             </p>
           </div>
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{scale: 1.02}}
+            whileTap={{scale: 0.98}}
             onClick={handleCreate}
             className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md"
           >
@@ -276,8 +276,8 @@ export default function PresentationsPage() {
             <p className="text-lg font-medium text-[var(--color-text)]">暂无演示文稿</p>
             <p className="text-sm text-[var(--color-text-muted)] mt-1">点击上方按钮创建您的第一个PPT</p>
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{scale: 1.02}}
+              whileTap={{scale: 0.98}}
               onClick={handleCreate}
               className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
             >
@@ -291,9 +291,9 @@ export default function PresentationsPage() {
               <motion.div
                 key={ppt.id}
                 layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                whileHover={{ y: -4 }}
+                initial={{opacity: 0, scale: 0.95}}
+                animate={{opacity: 1, scale: 1}}
+                whileHover={{y: -4}}
                 onContextMenu={(e) => handleContextMenu(e, ppt)}
                 className="group bg-white rounded-xl border border-[var(--color-border)] shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] overflow-hidden cursor-pointer transition-all"
                 onClick={() => router.push(`/app/presentations/${ppt.id}/edit`)}
@@ -454,10 +454,10 @@ export default function PresentationsPage() {
       <AnimatePresence>
         {contextMenu && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            style={{ top: contextMenu.y, left: contextMenu.x }}
+            initial={{opacity: 0, scale: 0.95}}
+            animate={{opacity: 1, scale: 1}}
+            exit={{opacity: 0, scale: 0.95}}
+            style={{top: contextMenu.y, left: contextMenu.x}}
             className="fixed z-50 w-48 bg-white rounded-lg shadow-lg border border-[var(--color-border)] py-1"
           >
             <button

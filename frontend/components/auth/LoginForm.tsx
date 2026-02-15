@@ -1,19 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
-import { login, saveAuthData } from '@/lib/api/auth';
-import { AxiosError } from 'axios';
+import {useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {z} from 'zod';
+import {useRouter} from 'next/navigation';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Mail, Lock, Loader2, AlertCircle, Eye, EyeOff} from 'lucide-react';
+import {login, saveAuthData} from '@/lib/api/auth';
+import {AxiosError} from 'axios';
 
 // Zod 验证 schema
 const loginSchema = z.object({
   email: z.string().email('请输入有效的邮箱地址'),
-  password: z.string().min(6, '密码至少6位'),
+  password: z.string().min(6, '密码至少6位')
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -24,57 +24,57 @@ interface LoginFormProps {
 
 // Animation variants
 const containerVariants = {
-  hidden: { opacity: 0 },
+  hidden: {opacity: 0},
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.1,
-    },
-  },
+      delayChildren: 0.1
+    }
+  }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: {opacity: 0, y: 10},
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.3,
-      ease: "easeOut" as const,
-    },
-  },
+      ease: 'easeOut' as const
+    }
+  }
 };
 
 const errorVariants = {
-  hidden: { opacity: 0, height: 0, marginBottom: 0 },
+  hidden: {opacity: 0, height: 0, marginBottom: 0},
   visible: {
     opacity: 1,
     height: 'auto',
     marginBottom: 16,
     transition: {
       duration: 0.2,
-      ease: "easeOut" as const,
-    },
+      ease: 'easeOut' as const
+    }
   },
   exit: {
     opacity: 0,
     height: 0,
     marginBottom: 0,
     transition: {
-      duration: 0.15,
-    },
-  },
+      duration: 0.15
+    }
+  }
 };
 
 const shakeVariants = {
   shake: {
     x: [-4, 4, -4, 4, -2, 2, 0],
-    transition: { duration: 0.4 },
-  },
+    transition: {duration: 0.4}
+  }
 };
 
-export function LoginForm({ className }: LoginFormProps) {
+export function LoginForm({className}: LoginFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -84,13 +84,13 @@ export function LoginForm({ className }: LoginFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {errors}
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
-      password: '',
-    },
+      password: ''
+    }
   });
 
   const onSubmit = async (data: LoginFormData) => {
@@ -105,17 +105,17 @@ export function LoginForm({ className }: LoginFormProps) {
       if (error instanceof AxiosError) {
         const status = error.response?.status;
         switch (status) {
-          case 401:
-            setErrorMessage('邮箱或密码错误');
-            break;
-          case 422:
-            setErrorMessage('表单验证错误，请检查输入');
-            break;
-          case 500:
-            setErrorMessage('服务器错误，请稍后重试');
-            break;
-          default:
-            setErrorMessage('登录失败，请稍后重试');
+        case 401:
+          setErrorMessage('邮箱或密码错误');
+          break;
+        case 422:
+          setErrorMessage('表单验证错误，请检查输入');
+          break;
+        case 500:
+          setErrorMessage('服务器错误，请稍后重试');
+          break;
+        default:
+          setErrorMessage('登录失败，请稍后重试');
         }
       } else {
         setErrorMessage('网络错误，请检查网络连接');
@@ -165,9 +165,9 @@ export function LoginForm({ className }: LoginFormProps) {
         </label>
         <motion.div
           animate={{
-            scale: focusedField === 'email' ? 1.01 : 1,
+            scale: focusedField === 'email' ? 1.01 : 1
           }}
-          transition={{ duration: 0.2, ease: "easeOut" as const }}
+          transition={{duration: 0.2, ease: 'easeOut' as const}}
           className="relative"
         >
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -189,15 +189,15 @@ export function LoginForm({ className }: LoginFormProps) {
                        focus:outline-none focus:border-[var(--color-primary)]
                        disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--color-surface)]"
             style={{
-              boxShadow: focusedField === 'email' ? 'var(--shadow-focus)' : undefined,
+              boxShadow: focusedField === 'email' ? 'var(--shadow-focus)' : undefined
             }}
             placeholder="name@company.com"
           />
         </motion.div>
         {errors.email && (
           <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{opacity: 0, y: -5}}
+            animate={{opacity: 1, y: 0}}
             className="mt-1.5 text-sm text-[var(--color-error)] flex items-center gap-1"
           >
             <AlertCircle className="w-3.5 h-3.5" />
@@ -224,9 +224,9 @@ export function LoginForm({ className }: LoginFormProps) {
         </div>
         <motion.div
           animate={{
-            scale: focusedField === 'password' ? 1.01 : 1,
+            scale: focusedField === 'password' ? 1.01 : 1
           }}
-          transition={{ duration: 0.2, ease: "easeOut" as const }}
+          transition={{duration: 0.2, ease: 'easeOut' as const}}
           className="relative"
         >
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -248,7 +248,7 @@ export function LoginForm({ className }: LoginFormProps) {
                        focus:outline-none focus:border-[var(--color-primary)]
                        disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[var(--color-surface)]"
             style={{
-              boxShadow: focusedField === 'password' ? 'var(--shadow-focus)' : undefined,
+              boxShadow: focusedField === 'password' ? 'var(--shadow-focus)' : undefined
             }}
             placeholder="输入您的密码"
           />
@@ -267,8 +267,8 @@ export function LoginForm({ className }: LoginFormProps) {
         </motion.div>
         {errors.password && (
           <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{opacity: 0, y: -5}}
+            animate={{opacity: 1, y: 0}}
             className="mt-1.5 text-sm text-[var(--color-error)] flex items-center gap-1"
           >
             <AlertCircle className="w-3.5 h-3.5" />
@@ -282,9 +282,9 @@ export function LoginForm({ className }: LoginFormProps) {
         <motion.button
           type="submit"
           disabled={isLoading}
-          whileHover={{ scale: isLoading ? 1 : 1.01 }}
-          whileTap={{ scale: isLoading ? 1 : 0.98 }}
-          transition={{ duration: 0.1 }}
+          whileHover={{scale: isLoading ? 1 : 1.01}}
+          whileTap={{scale: isLoading ? 1 : 0.98}}
+          transition={{duration: 0.1}}
           className="w-full flex items-center justify-center px-4 py-3
                      text-white font-medium text-base rounded-lg
                      bg-gradient-to-r from-blue-600 to-blue-500
