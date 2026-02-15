@@ -39,7 +39,7 @@ export default function AIRecommend({
      * 分析数据特征并生成推荐
      */
     const analyzeDataAndRecommend = useMemo(() => {
-        return (fields: DataField[]): RecommendedChart[] => {
+        return (fields: DataField[], _totalRows: number): RecommendedChart[] => {
             const recommendations: RecommendedChart[] = [];
 
             // 统计字段类型

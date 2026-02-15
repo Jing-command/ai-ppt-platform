@@ -228,7 +228,7 @@ class TestOutlineServiceCreate:
         )
 
         assert result.title == "New Outline"
-        assert result.user_id == user_id
+        assert result.user_id == str(user_id)
         assert result.total_slides == 1
         assert result.status == OutlineStatus.DRAFT.value
 

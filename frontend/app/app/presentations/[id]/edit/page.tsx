@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useRouter, useParams} from 'next/navigation';
 import {motion, AnimatePresence} from 'framer-motion';
 import {
@@ -68,24 +68,24 @@ export default function PresentationEditPage() {
 
     const activeSlide = slides.find(s => s.id === activeSlideId);
 
-    useEffect(() => {
-        const loadPresentation = async () => {
-            try {
-                const data = await getPresentation(presentationId);
-                setPresentation(data);
-                setSlides(data.slides || []);
-                if (data.slides?.length > 0 && !activeSlideId) {
-                    setActiveSlideId(data.slides[0].id);
-                }
-            } catch (error) {
-                console.error('Failed to load presentation:', error);
-            } finally {
-                setIsLoading(false);
+    const loadPresentation = useCallback(async () => {
+        try {
+            const data = await getPresentation(presentationId);
+            setPresentation(data);
+            setSlides(data.slides || []);
+            if (data.slides?.length > 0 && !activeSlideId) {
+                setActiveSlideId(data.slides[0].id);
             }
-        };
-
-        loadPresentation();
+        } catch (error) {
+            console.error('Failed to load presentation:', error);
+        } finally {
+            setIsLoading(false);
+        }
     }, [presentationId, activeSlideId]);
+
+    useEffect(() => {
+        loadPresentation();
+    }, [loadPresentation]);
 
     const handleSave = async () => {
         if (!presentation) { return; }

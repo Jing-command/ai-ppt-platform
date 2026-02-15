@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {motion, AnimatePresence} from 'framer-motion';
 import {
@@ -78,54 +78,54 @@ export default function PresentationsPage() {
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; ppt: PresentationResponse } | null>(null);
 
-    useEffect(() => {
-        const loadPresentations = async () => {
-            try {
-                setIsLoading(true);
-                const response = await getPresentations({
-                    page,
-                    pageSize,
-                    status: statusFilter || undefined
-                });
+    const loadPresentations = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const response = await getPresentations({
+                page,
+                pageSize,
+                status: statusFilter || undefined
+            });
 
-                let data = response.data;
+            let data = response.data;
 
-                // Client-side search
-                if (searchQuery) {
-                    data = data.filter(p =>
-                        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            // Client-side search
+            if (searchQuery) {
+                data = data.filter(p =>
+                    p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             p.description?.toLowerCase().includes(searchQuery.toLowerCase())
-                    );
+                );
+            }
+
+            // Client-side sort
+            const [field, order] = sortBy.split(':');
+            data = [...data].sort((a, b) => {
+                let aVal: string | number | Date = a[field as keyof PresentationResponse] as string | number | Date;
+                let bVal: string | number | Date = b[field as keyof PresentationResponse] as string | number | Date;
+
+                if (field === 'title') {
+                    aVal = String(aVal || '').toLowerCase();
+                    bVal = String(bVal || '').toLowerCase();
                 }
 
-                // Client-side sort
-                const [field, order] = sortBy.split(':');
-                data = [...data].sort((a, b) => {
-                    let aVal: unknown = a[field as keyof PresentationResponse];
-                    let bVal: unknown = b[field as keyof PresentationResponse];
+                if (order === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                }
+                return aVal < bVal ? 1 : -1;
+            });
 
-                    if (field === 'title') {
-                        aVal = (aVal || '').toLowerCase();
-                        bVal = (bVal || '').toLowerCase();
-                    }
-
-                    if (order === 'asc') {
-                        return aVal > bVal ? 1 : -1;
-                    }
-                    return aVal < bVal ? 1 : -1;
-                });
-
-                setPresentations(data);
-                setTotalPages(response.meta.totalPages);
-            } catch (error) {
-                console.error('Failed to load presentations:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        loadPresentations();
+            setPresentations(data);
+            setTotalPages(response.meta.totalPages);
+        } catch (error) {
+            console.error('Failed to load presentations:', error);
+        } finally {
+            setIsLoading(false);
+        }
     }, [page, pageSize, statusFilter, sortBy, searchQuery]);
+
+    useEffect(() => {
+        loadPresentations();
+    }, [loadPresentations]);
 
     useEffect(() => {
         const handleClickOutside = () => setContextMenu(null);

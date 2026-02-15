@@ -86,13 +86,13 @@ class PresentationService:
         # 创建演示文稿
         presentation = Presentation(
             title=data.title,
-            owner_id=user_id,
+            owner_id=str(user_id),
             description=data.description,
             theme=data.template_id or "default",
         )
 
         if data.outline_id:
-            presentation.outline_id = data.outline_id
+            presentation.outline_id = str(data.outline_id)
 
         self._session.add(presentation)
         await self._session.flush()
@@ -249,7 +249,7 @@ class PresentationService:
             # 创建新幻灯片
             for idx, slide_data in enumerate(data.slides):
                 slide = self._create_slide_from_schema(
-                    presentation_id=presentation_id,
+                    presentation_id=str(presentation_id),
                     slide_data=slide_data,
                     order_index=idx,
                 )
@@ -328,7 +328,7 @@ class PresentationService:
 
         slide = Slide(
             title=content_dict.get("title", "Untitled"),
-            presentation_id=presentation_id,
+            presentation_id=str(presentation_id),
             layout_type=layout_type,
             order_index=order_index,
             content=content_dict,
@@ -483,7 +483,7 @@ class PresentationService:
 
     def _create_slide_from_schema(
         self,
-        presentation_id: UUID,
+        presentation_id: str,
         slide_data: Any,
         order_index: int,
     ) -> Slide:
@@ -520,7 +520,7 @@ class PresentationService:
 
         return Slide(
             title=title,
-            presentation_id=presentation_id,
+            presentation_id=str(presentation_id),
             layout_type=layout_type,
             order_index=order_index,
             content=content_dict,

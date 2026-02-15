@@ -153,7 +153,7 @@ export function DashboardTips() {
                                         duration: 5,
                                         ease: 'linear',
                                         repeat: Infinity,
-                                        repeatType: 'restart'
+                                        repeatType: 'loop'
                                     }}
                                 />
                             </div>

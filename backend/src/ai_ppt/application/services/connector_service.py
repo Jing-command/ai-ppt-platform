@@ -101,7 +101,7 @@ class ConnectorService:
         connector = Connector(
             name=data.name,
             type=data.type,
-            user_id=user_id,
+            user_id=str(user_id),
             config=data.config,
             description=data.description,
         )

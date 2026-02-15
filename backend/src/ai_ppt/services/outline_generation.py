@@ -239,7 +239,7 @@ class OutlineGenerationService:
         outline = Outline(
             title=result.get("title", topic),
             description=result.get("description"),
-            user_id=user_id,
+            user_id=str(user_id),
             pages=result.get("pages", []),
             background=background.to_dict() if background else None,
             total_slides=len(result.get("pages", [])),

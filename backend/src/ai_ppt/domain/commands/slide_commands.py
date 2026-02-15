@@ -47,12 +47,12 @@ class CreateSlideCommand(Command):
         from ai_ppt.domain.models.slide import Slide, SlideLayoutType
 
         slide = Slide(
-            title=self.title,
-            presentation_id=self.presentation_id,
-            layout_type=SlideLayoutType(self.layout_type),
-            content=self.content,
-            order_index=self.order_index or 0,
-        )
+                title=self.title,
+                presentation_id=str(self.presentation_id),
+                layout_type=SlideLayoutType(self.layout_type),
+                content=self.content,
+                order_index=self.order_index or 0,
+            )
 
         created_slide = await self._slide_repository.create(slide)
         self._created_slide_id = created_slide.id

@@ -160,7 +160,7 @@ class OutlineService:
         outline = Outline(
             title=title,
             description=description,
-            user_id=user_id,
+            user_id=str(user_id),
             pages=pages or [],
             background=background,
             status=OutlineStatus.DRAFT.value,
@@ -321,7 +321,7 @@ class OutlineService:
         outline = Outline(
             title=prompt[:50] + "..." if len(prompt) > 50 else prompt,
             description=prompt,
-            user_id=user_id,
+            user_id=str(user_id),
             status=OutlineStatus.GENERATING.value,
             ai_prompt=prompt,
             ai_parameters={

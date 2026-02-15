@@ -86,7 +86,7 @@ class TestPresentationServiceCreate:
         result = await presentation_service.create(data, user_id)
 
         assert result.title == "New Presentation"
-        assert result.owner_id == user_id
+        assert result.owner_id == str(user_id)
         assert result.theme == "default"
 
         mock_db_session.add.assert_called()
@@ -130,7 +130,7 @@ class TestPresentationServiceCreate:
 
         result = await presentation_service.create(data, uuid.uuid4())
 
-        assert result.outline_id == outline_id
+        assert result.outline_id == str(outline_id)
 
     async def test_create_with_slides(
         self, presentation_service, mock_db_session

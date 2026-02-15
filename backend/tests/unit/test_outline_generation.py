@@ -292,7 +292,7 @@ class TestOutlineGenerationCreateFromGeneration:
 
         assert isinstance(result, Outline)
         assert result.title == "Generated Title"
-        assert result.user_id == user_id
+        assert result.user_id == str(user_id)
         assert result.status == OutlineStatus.COMPLETED.value
         assert len(result.pages) == 2
         assert result.total_slides == 2

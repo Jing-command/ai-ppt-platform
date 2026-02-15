@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
 import {motion, AnimatePresence} from 'framer-motion';
 import {
@@ -105,25 +105,25 @@ export default function OutlinesPage() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [numSlides, setNumSlides] = useState(15);
 
-    useEffect(() => {
-        const loadOutlines = async () => {
-            try {
-                setIsLoading(true);
-                const response = await getOutlines({
-                    page: 1,
-                    pageSize: 50,
-                    status: statusFilter || undefined
-                });
-                setOutlines(response.data);
-            } catch (error) {
-                console.error('Failed to load outlines:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        loadOutlines();
+    const loadOutlines = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const response = await getOutlines({
+                page: 1,
+                pageSize: 50,
+                status: statusFilter || undefined
+            });
+            setOutlines(response.data);
+        } catch (error) {
+            console.error('Failed to load outlines:', error);
+        } finally {
+            setIsLoading(false);
+        }
     }, [statusFilter]);
+
+    useEffect(() => {
+        loadOutlines();
+    }, [loadOutlines]);
 
     const handleCreateOutline = async () => {
         if (!newOutlineTitle.trim()) { return; }
