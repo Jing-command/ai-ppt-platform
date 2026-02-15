@@ -4,7 +4,7 @@ AI 提示词助手聊天 API
 """
 
 import json
-from typing import AsyncIterator
+from typing import Any, AsyncIterator, Dict, Optional
 
 from fastapi import APIRouter, status
 from fastapi.responses import StreamingResponse
@@ -13,7 +13,6 @@ from ai_ppt.api.v1.schemas.chat import (
     ChatMessage,
     ChatRequest,
     ChatResponse,
-    ChatResponseChunk,
     MessageRole,
 )
 from ai_ppt.api.v1.schemas.common import ErrorResponse
@@ -25,7 +24,7 @@ router = APIRouter(prefix="/chat", tags=["AI 提示词助手"])
 
 async def _generate_sse_stream(
     messages: list[ChatMessage],
-    context=None,
+    context: Optional[Dict[str, Any]] = None,
 ) -> AsyncIterator[str]:
     """
     生成 SSE (Server-Sent Events) 流式响应
@@ -148,7 +147,7 @@ async def chat(request: ChatRequest) -> StreamingResponse:
         500: {"model": ErrorResponse, "description": "服务器错误"},
     },
 )
-async def analyze_intent(request: ChatRequest):
+async def analyze_intent(request: ChatRequest) -> Dict[str, Any]:
     """
     分析用户意图
 

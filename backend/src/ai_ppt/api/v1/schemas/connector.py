@@ -39,7 +39,7 @@ class ConnectorCreate(ConnectorBase):
                     "port": 3306,
                     "database": "sales",
                     "username": "readonly",
-                    "password": "***",
+                    "password": "***",  # nosec: B105 - 示例占位符密码
                 },
             }
         }

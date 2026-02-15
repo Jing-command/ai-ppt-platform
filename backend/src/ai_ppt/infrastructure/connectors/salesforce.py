@@ -280,7 +280,7 @@ class SalesforceConnector(DataConnector):
                         description=obj.get("label"),
                     )
                 )
-            except Exception:
+            except Exception:  # nosec: B112 - 跳过无法访问的 Salesforce 对象
                 # 跳过无法访问的对象
                 continue
 

@@ -4,10 +4,9 @@
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from ai_ppt.api.v1.schemas.chart import (
-    ChartGenerateRequest,
     ChartGenerateResponse,
     ChartRecommendRequest,
     ChartRecommendResponse,

@@ -7,7 +7,6 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
-from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -349,11 +348,14 @@ async def upload_avatar(
     # 生成文件名
     import uuid as uuid_module
 
-    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    ext = (
+        file.filename.split(".")[-1]
+        if file.filename and "." in file.filename
+        else "jpg"
+    )
     filename = f"{uuid_module.uuid4()}.{ext}"
 
     # 保存文件（这里简化处理，实际应该保存到云存储）
-    import os
     from pathlib import Path
 
     avatar_dir = Path("uploads/avatars")

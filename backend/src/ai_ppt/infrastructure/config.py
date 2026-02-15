@@ -93,7 +93,8 @@ class Settings(BaseSettings):
         default=50, alias="EXPORT_MAX_FILE_SIZE_MB"
     )
     export_temp_dir: str = Field(
-        default="/tmp/ai-ppt-exports", alias="EXPORT_TEMP_DIR"
+        default="/tmp/ai-ppt-exports",  # nosec: B108 - 可配置的临时目录
+        alias="EXPORT_TEMP_DIR",
     )
     export_cleanup_interval_hours: int = Field(
         default=24, alias="EXPORT_CLEANUP_INTERVAL_HOURS"

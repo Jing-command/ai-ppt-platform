@@ -67,6 +67,7 @@ pretty = true
 incremental = true
 cache_dir = ".mypy_cache"
 ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
 module = ["tests.*"]

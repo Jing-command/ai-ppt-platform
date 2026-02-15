@@ -4,7 +4,6 @@ AI 聊天服务模块
 """
 
 import asyncio
-import json
 import re
 from typing import AsyncIterator, List, Optional
 
