@@ -24,7 +24,7 @@
     "no-multiple-empty-lines": ["error", { "max": 2 }],
     "no-mixed-spaces-and-tabs": "error",
 
-    "indent": ["warn", 2],
+    "indent": ["warn", 4],
     "comma-dangle": ["warn", "never"],
     "object-curly-spacing": ["warn", "never"],
     "array-bracket-spacing": ["warn", "never"],
