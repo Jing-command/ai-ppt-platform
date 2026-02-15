@@ -120,24 +120,33 @@ class TestJWTAccessToken:
         """测试访问令牌默认过期时间"""
         user_id = uuid.uuid4()
 
-        with patch("ai_ppt.core.security.datetime") as mock_datetime:
-            now = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
-            mock_datetime.now.return_value = now
-            mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
+        with patch("ai_ppt.core.security.settings") as mock_settings:
+            mock_settings.security_secret_key = (
+                "test-secret-key-for-testing-only-32chars-long"
+            )
+            mock_settings.security_algorithm = "HS256"
+            mock_settings.security_access_token_expire_minutes = 30
 
-            token = create_access_token(user_id)
+            with patch("ai_ppt.core.security.datetime") as mock_datetime:
+                now = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+                mock_datetime.now.return_value = now
+                mock_datetime.side_effect = lambda *args, **kw: datetime(
+                    *args, **kw
+                )
 
-        # 解码不验证过期时间
-        payload = jwt.decode(
-            token,
-            "test-secret-key-for-testing-only-32chars-long",
-            algorithms=["HS256"],
-            options={"verify_exp": False},
-        )
+                token = create_access_token(user_id)
 
-        # 验证过期时间（默认30分钟）
-        expected_exp = datetime(2024, 1, 1, 12, 30, 0, tzinfo=timezone.utc)
-        assert payload["exp"] == int(expected_exp.timestamp())
+            # 解码不验证过期时间
+            payload = jwt.decode(
+                token,
+                "test-secret-key-for-testing-only-32chars-long",
+                algorithms=["HS256"],
+                options={"verify_exp": False},
+            )
+
+            # 验证过期时间（默认30分钟）
+            expected_exp = datetime(2024, 1, 1, 12, 30, 0, tzinfo=timezone.utc)
+            assert payload["exp"] == int(expected_exp.timestamp())
 
     def test_create_access_token_custom_expiry(self):
         """测试访问令牌自定义过期时间"""
@@ -166,16 +175,24 @@ class TestJWTAccessToken:
     def test_access_token_contains_correct_type(self):
         """测试访问令牌包含正确的类型"""
         user_id = uuid.uuid4()
-        token = create_access_token(user_id)
 
-        payload = jwt.decode(
-            token,
-            "test-secret-key-for-testing-only-32chars-long",
-            algorithms=["HS256"],
-            options={"verify_exp": False},
-        )
+        with patch("ai_ppt.core.security.settings") as mock_settings:
+            mock_settings.security_secret_key = (
+                "test-secret-key-for-testing-only-32chars-long"
+            )
+            mock_settings.security_algorithm = "HS256"
+            mock_settings.security_access_token_expire_minutes = 30
 
-        assert payload["type"] == "access"
+            token = create_access_token(user_id)
+
+            payload = jwt.decode(
+                token,
+                "test-secret-key-for-testing-only-32chars-long",
+                algorithms=["HS256"],
+                options={"verify_exp": False},
+            )
+
+            assert payload["type"] == "access"
 
     def test_access_token_contains_iat(self):
         """测试访问令牌包含签发时间"""
@@ -183,19 +200,26 @@ class TestJWTAccessToken:
 
         from datetime import timedelta
 
-        before = datetime.now(timezone.utc) - timedelta(seconds=1)
-        token = create_access_token(user_id)
-        after = datetime.now(timezone.utc) + timedelta(seconds=1)
+        with patch("ai_ppt.core.security.settings") as mock_settings:
+            mock_settings.security_secret_key = (
+                "test-secret-key-for-testing-only-32chars-long"
+            )
+            mock_settings.security_algorithm = "HS256"
+            mock_settings.security_access_token_expire_minutes = 30
 
-        payload = jwt.decode(
-            token,
-            "test-secret-key-for-testing-only-32chars-long",
-            algorithms=["HS256"],
-            options={"verify_exp": False},
-        )
+            before = datetime.now(timezone.utc) - timedelta(seconds=1)
+            token = create_access_token(user_id)
+            after = datetime.now(timezone.utc) + timedelta(seconds=1)
 
-        iat = datetime.fromtimestamp(payload["iat"], tz=timezone.utc)
-        assert before <= iat <= after
+            payload = jwt.decode(
+                token,
+                "test-secret-key-for-testing-only-32chars-long",
+                algorithms=["HS256"],
+                options={"verify_exp": False},
+            )
+
+            iat = datetime.fromtimestamp(payload["iat"], tz=timezone.utc)
+            assert before <= iat <= after
 
 
 class TestJWTRefreshToken:
@@ -215,36 +239,51 @@ class TestJWTRefreshToken:
         """测试刷新令牌过期时间"""
         user_id = uuid.uuid4()
 
-        with patch("ai_ppt.core.security.datetime") as mock_datetime:
-            now = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
-            mock_datetime.now.return_value = now
+        with patch("ai_ppt.core.security.settings") as mock_settings:
+            mock_settings.security_secret_key = (
+                "test-secret-key-for-testing-only-32chars-long"
+            )
+            mock_settings.security_algorithm = "HS256"
+            mock_settings.security_refresh_token_expire_days = 7
 
-            token = create_refresh_token(user_id)
+            with patch("ai_ppt.core.security.datetime") as mock_datetime:
+                now = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+                mock_datetime.now.return_value = now
 
-        payload = jwt.decode(
-            token,
-            "test-secret-key-for-testing-only-32chars-long",
-            algorithms=["HS256"],
-            options={"verify_exp": False},
-        )
+                token = create_refresh_token(user_id)
 
-        # 验证过期时间（默认7天）
-        expected_exp = datetime(2024, 1, 8, 12, 0, 0, tzinfo=timezone.utc)
-        assert payload["exp"] == int(expected_exp.timestamp())
+            payload = jwt.decode(
+                token,
+                "test-secret-key-for-testing-only-32chars-long",
+                algorithms=["HS256"],
+                options={"verify_exp": False},
+            )
+
+            # 验证过期时间（默认7天）
+            expected_exp = datetime(2024, 1, 8, 12, 0, 0, tzinfo=timezone.utc)
+            assert payload["exp"] == int(expected_exp.timestamp())
 
     def test_refresh_token_contains_correct_type(self):
         """测试刷新令牌包含正确的类型"""
         user_id = uuid.uuid4()
-        token = create_refresh_token(user_id)
 
-        payload = jwt.decode(
-            token,
-            "test-secret-key-for-testing-only-32chars-long",
-            algorithms=["HS256"],
-            options={"verify_exp": False},
-        )
+        with patch("ai_ppt.core.security.settings") as mock_settings:
+            mock_settings.security_secret_key = (
+                "test-secret-key-for-testing-only-32chars-long"
+            )
+            mock_settings.security_algorithm = "HS256"
+            mock_settings.security_refresh_token_expire_days = 7
 
-        assert payload["type"] == "refresh"
+            token = create_refresh_token(user_id)
+
+            payload = jwt.decode(
+                token,
+                "test-secret-key-for-testing-only-32chars-long",
+                algorithms=["HS256"],
+                options={"verify_exp": False},
+            )
+
+            assert payload["type"] == "refresh"
 
 
 class TestTokenDecode:
@@ -316,18 +355,24 @@ class TestTokenDecode:
 
     def test_decode_token_missing_sub(self):
         """测试解码缺少 sub 的令牌"""
-        # 手动创建没有 sub 的令牌
-        payload = {
-            "exp": datetime.now(timezone.utc) + timedelta(hours=1),
-            "type": "access",
-        }
-        token = jwt.encode(
-            payload,
-            "test-secret-key-for-testing-only-32chars-long",
-            algorithm="HS256",
-        )
+        with patch("ai_ppt.core.security.settings") as mock_settings:
+            mock_settings.security_secret_key = (
+                "test-secret-key-for-testing-only-32chars-long"
+            )
+            mock_settings.security_algorithm = "HS256"
 
-        decoded_id, error = decode_token(token)
+            # 手动创建没有 sub 的令牌
+            payload = {
+                "exp": datetime.now(timezone.utc) + timedelta(hours=1),
+                "type": "access",
+            }
+            token = jwt.encode(
+                payload,
+                "test-secret-key-for-testing-only-32chars-long",
+                algorithm="HS256",
+            )
+
+            decoded_id, error = decode_token(token)
 
         assert decoded_id is None
         assert "subject" in error.lower() or "missing" in error.lower()

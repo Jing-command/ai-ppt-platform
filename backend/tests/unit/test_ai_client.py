@@ -38,11 +38,17 @@ class TestLLMClient:
 
         def test_default_initialization(self):
             """测试默认初始化"""
-            with patch.dict('os.environ', {'AI_API_KEY': 'test_key'}):
-                with patch('ai_ppt.infrastructure.ai.client.settings') as mock_settings:
-                    mock_settings.ai.provider = 'deepseek'
-                    mock_settings.ai.api_key.get_secret_value.return_value = 'test_key'
-                    mock_settings.ai.model = None
+            with patch.dict("os.environ", {"AI_API_KEY": "test_key"}):
+                with patch(
+                    "ai_ppt.infrastructure.ai.client.settings"
+                ) as mock_settings:
+                    mock_settings.ai_provider = "deepseek"
+                    mock_settings.ai_api_key.get_secret_value.return_value = (
+                        "test_key"
+                    )
+                    mock_settings.ai_model = None
+                    mock_settings.ai_base_url = None
+                    mock_settings.ai_timeout = 60
 
                     client = LLMClient()
 
@@ -69,22 +75,32 @@ class TestLLMClient:
 
         def test_initialization_without_api_key(self):
             """测试缺少 API key 时抛出异常"""
-            with patch.dict('os.environ', {}, clear=True):
-                with patch('ai_ppt.infrastructure.ai.client.settings') as mock_settings:
-                    mock_settings.ai.provider = 'deepseek'
-                    mock_settings.ai.api_key.get_secret_value.return_value = ''
-                    mock_settings.ai.model = None
+            with patch.dict("os.environ", {}, clear=True):
+                with patch(
+                    "ai_ppt.infrastructure.ai.client.settings"
+                ) as mock_settings:
+                    mock_settings.ai_provider = "deepseek"
+                    mock_settings.ai_api_key.get_secret_value.return_value = ""
+                    mock_settings.ai_model = None
+                    mock_settings.ai_base_url = None
+                    mock_settings.ai_timeout = 60
 
-                    with pytest.raises(LLMClientError, match="API key not configured"):
+                    with pytest.raises(
+                        LLMClientError, match="API key not configured"
+                    ):
                         LLMClient()
 
         def test_initialization_from_env(self):
             """测试从环境变量读取 API key"""
-            with patch.dict('os.environ', {'DEEPSEEK_API_KEY': 'env_key'}):
-                with patch('ai_ppt.infrastructure.ai.client.settings') as mock_settings:
-                    mock_settings.ai.provider = 'deepseek'
-                    mock_settings.ai.api_key.get_secret_value.return_value = ''
-                    mock_settings.ai.model = None
+            with patch.dict("os.environ", {"DEEPSEEK_API_KEY": "env_key"}):
+                with patch(
+                    "ai_ppt.infrastructure.ai.client.settings"
+                ) as mock_settings:
+                    mock_settings.ai_provider = "deepseek"
+                    mock_settings.ai_api_key.get_secret_value.return_value = ""
+                    mock_settings.ai_model = None
+                    mock_settings.ai_base_url = None
+                    mock_settings.ai_timeout = 60
 
                     client = LLMClient()
 
@@ -154,23 +170,36 @@ class TestLLMClient:
             """测试成功完成请求"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "choices": [{"message": {"content": "Hello!"}, "finish_reason": "stop"}],
-                "model": "deepseek-chat",
-                "usage": {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15},
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "choices": [
+                        {
+                            "message": {"content": "Hello!"},
+                            "finish_reason": "stop",
+                        }
+                    ],
+                    "model": "deepseek-chat",
+                    "usage": {
+                        "prompt_tokens": 10,
+                        "completion_tokens": 5,
+                        "total_tokens": 15,
+                    },
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
                 )
 
-                request = LLMRequest(messages=[{"role": "user", "content": "Hi"}])
+                request = LLMRequest(
+                    messages=[{"role": "user", "content": "Hi"}]
+                )
                 response = await client.complete(request)
 
                 assert response.content == "Hello!"
@@ -180,17 +209,21 @@ class TestLLMClient:
         async def test_complete_timeout(self):
             """测试请求超时"""
             mock_client = MagicMock()
-            mock_client.post = AsyncMock(side_effect=httpx.TimeoutException("Request timed out"))
+            mock_client.post = AsyncMock(
+                side_effect=httpx.TimeoutException("Request timed out")
+            )
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
                     timeout=1.0,
                 )
 
-                request = LLMRequest(messages=[{"role": "user", "content": "Hi"}])
+                request = LLMRequest(
+                    messages=[{"role": "user", "content": "Hi"}]
+                )
 
                 with pytest.raises(LLMTimeoutError, match="timed out"):
                     await client.complete(request)
@@ -202,20 +235,24 @@ class TestLLMClient:
             mock_response.text = "Unauthorized"
 
             mock_client = MagicMock()
-            mock_client.post = AsyncMock(side_effect=httpx.HTTPStatusError(
-                "401 Unauthorized",
-                request=MagicMock(),
-                response=mock_response,
-            ))
+            mock_client.post = AsyncMock(
+                side_effect=httpx.HTTPStatusError(
+                    "401 Unauthorized",
+                    request=MagicMock(),
+                    response=mock_response,
+                )
+            )
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
                 )
 
-                request = LLMRequest(messages=[{"role": "user", "content": "Hi"}])
+                request = LLMRequest(
+                    messages=[{"role": "user", "content": "Hi"}]
+                )
 
                 with pytest.raises(LLMAPIError, match="API error") as exc_info:
                     await client.complete(request)
@@ -226,23 +263,29 @@ class TestLLMClient:
             """测试无效响应格式"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "invalid": "response",  # 缺少必要字段
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "invalid": "response",  # 缺少必要字段
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
                 )
 
-                request = LLMRequest(messages=[{"role": "user", "content": "Hi"}])
+                request = LLMRequest(
+                    messages=[{"role": "user", "content": "Hi"}]
+                )
 
-                with pytest.raises(LLMFormatError, match="Invalid LLM response format"):
+                with pytest.raises(
+                    LLMFormatError, match="Invalid LLM response format"
+                ):
                     await client.complete(request)
 
     class TestCompleteStream:
@@ -251,12 +294,28 @@ class TestLLMClient:
         async def test_complete_stream_success(self):
             """测试成功流式请求"""
             sse_lines = [
-                "data: " + json.dumps({
-                    "choices": [{"delta": {"content": "Hello"}, "finish_reason": None}]
-                }),
-                "data: " + json.dumps({
-                    "choices": [{"delta": {"content": " World"}, "finish_reason": "stop"}]
-                }),
+                "data: "
+                + json.dumps(
+                    {
+                        "choices": [
+                            {
+                                "delta": {"content": "Hello"},
+                                "finish_reason": None,
+                            }
+                        ]
+                    }
+                ),
+                "data: "
+                + json.dumps(
+                    {
+                        "choices": [
+                            {
+                                "delta": {"content": " World"},
+                                "finish_reason": "stop",
+                            }
+                        ]
+                    }
+                ),
                 "data: [DONE]",
             ]
 
@@ -269,16 +328,20 @@ class TestLLMClient:
             mock_response.aiter_lines = mock_aiter_lines
 
             mock_client = MagicMock()
-            mock_client.stream = MagicMock(return_value=async_context_manager(mock_response))
+            mock_client.stream = MagicMock(
+                return_value=async_context_manager(mock_response)
+            )
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
                 )
 
-                request = LLMRequest(messages=[{"role": "user", "content": "Hi"}])
+                request = LLMRequest(
+                    messages=[{"role": "user", "content": "Hi"}]
+                )
                 chunks = []
                 async for chunk in client.complete_stream(request):
                     chunks.append(chunk)
@@ -288,18 +351,24 @@ class TestLLMClient:
         async def test_complete_stream_timeout(self):
             """测试流式请求超时"""
             mock_client = MagicMock()
-            mock_client.stream = MagicMock(side_effect=httpx.TimeoutException("Timeout"))
+            mock_client.stream = MagicMock(
+                side_effect=httpx.TimeoutException("Timeout")
+            )
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
                 )
 
-                request = LLMRequest(messages=[{"role": "user", "content": "Hi"}])
+                request = LLMRequest(
+                    messages=[{"role": "user", "content": "Hi"}]
+                )
 
-                with pytest.raises(LLMTimeoutError, match="streaming request timed out"):
+                with pytest.raises(
+                    LLMTimeoutError, match="streaming request timed out"
+                ):
                     async for _ in client.complete_stream(request):
                         pass
 
@@ -308,9 +377,13 @@ class TestLLMClient:
 
         def test_render_prompt(self):
             """测试渲染提示词"""
-            with patch.object(Environment, 'get_template') as mock_get_template:
+            with patch.object(
+                Environment, "get_template"
+            ) as mock_get_template:
                 mock_template = MagicMock()
-                mock_template.render = MagicMock(return_value="Rendered prompt")
+                mock_template.render = MagicMock(
+                    return_value="Rendered prompt"
+                )
                 mock_get_template.return_value = mock_template
 
                 client = LLMClient(
@@ -331,26 +404,44 @@ class TestLLMClient:
             """测试成功生成大纲"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "choices": [{"message": {"content": json.dumps({
-                    "title": "Test Outline",
-                    "pages": [{"title": "Page 1", "content": "Content 1"}],
-                })}, "finish_reason": "stop"}],
-                "model": "deepseek-chat",
-                "usage": {"prompt_tokens": 100, "completion_tokens": 50},
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "choices": [
+                        {
+                            "message": {
+                                "content": json.dumps(
+                                    {
+                                        "title": "Test Outline",
+                                        "pages": [
+                                            {
+                                                "title": "Page 1",
+                                                "content": "Content 1",
+                                            }
+                                        ],
+                                    }
+                                )
+                            },
+                            "finish_reason": "stop",
+                        }
+                    ],
+                    "model": "deepseek-chat",
+                    "usage": {"prompt_tokens": 100, "completion_tokens": 50},
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
                 )
 
-                data_schema = [DataSchema(name="sales", columns=["date", "amount"])]
+                data_schema = [
+                    DataSchema(name="sales", columns=["date", "amount"])
+                ]
                 result = await client.generate_outline(
                     user_prompt="Generate sales report",
                     data_schema=data_schema,
@@ -363,23 +454,32 @@ class TestLLMClient:
             """测试无效 JSON 响应"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "choices": [{"message": {"content": "not valid json"}, "finish_reason": "stop"}],
-                "model": "deepseek-chat",
-                "usage": {},
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "choices": [
+                        {
+                            "message": {"content": "not valid json"},
+                            "finish_reason": "stop",
+                        }
+                    ],
+                    "model": "deepseek-chat",
+                    "usage": {},
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
                 )
 
-                with pytest.raises(LLMFormatError, match="Failed to parse outline JSON"):
+                with pytest.raises(
+                    LLMFormatError, match="Failed to parse outline JSON"
+                ):
                     await client.generate_outline(
                         user_prompt="Generate report",
                         data_schema=[],
@@ -392,20 +492,33 @@ class TestLLMClient:
             """测试成功增强幻灯片内容"""
             mock_response = MagicMock()
             mock_response.raise_for_status = MagicMock()
-            mock_response.json = MagicMock(return_value={
-                "choices": [{"message": {"content": json.dumps({
-                    "content": {"text": "Enhanced content"},
-                    "improvements": ["Better formatting"],
-                })}, "finish_reason": "stop"}],
-                "model": "deepseek-chat",
-                "usage": {},
-            })
+            mock_response.json = MagicMock(
+                return_value={
+                    "choices": [
+                        {
+                            "message": {
+                                "content": json.dumps(
+                                    {
+                                        "content": {
+                                            "text": "Enhanced content"
+                                        },
+                                        "improvements": ["Better formatting"],
+                                    }
+                                )
+                            },
+                            "finish_reason": "stop",
+                        }
+                    ],
+                    "model": "deepseek-chat",
+                    "usage": {},
+                }
+            )
 
             mock_client = MagicMock()
             mock_client.post = AsyncMock(return_value=mock_response)
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
@@ -426,7 +539,7 @@ class TestLLMClient:
             mock_client = MagicMock()
             mock_client.aclose = AsyncMock()
 
-            with patch('httpx.AsyncClient', return_value=mock_client):
+            with patch("httpx.AsyncClient", return_value=mock_client):
                 client = LLMClient(
                     provider=LLMProvider.DEEPSEEK,
                     api_key="key",
@@ -472,8 +585,12 @@ class TestLLMClientEdgeCases:
 
     def test_default_models(self):
         """测试默认模型"""
-        with patch('ai_ppt.infrastructure.ai.client.settings') as mock_settings:
-            mock_settings.ai.model = None
+        with patch(
+            "ai_ppt.infrastructure.ai.client.settings"
+        ) as mock_settings:
+            mock_settings.ai_model = None
+            mock_settings.ai_base_url = None
+            mock_settings.ai_timeout = 60
 
             client = LLMClient(
                 provider=LLMProvider.OPENAI,
@@ -491,16 +608,21 @@ class TestLLMClientEdgeCases:
 
     def test_default_base_urls(self):
         """测试默认基础 URL"""
-        client = LLMClient(
-            provider=LLMProvider.OPENAI,
-            api_key="key",
-        )
+        with patch(
+            "ai_ppt.infrastructure.ai.client.settings"
+        ) as mock_settings:
+            mock_settings.ai_base_url = None
 
-        assert client.base_url == "https://api.openai.com/v1"
+            client = LLMClient(
+                provider=LLMProvider.OPENAI,
+                api_key="key",
+            )
 
-        client2 = LLMClient(
-            provider=LLMProvider.KIMI,
-            api_key="key",
-        )
+            assert client.base_url == "https://api.openai.com/v1"
 
-        assert client2.base_url == "https://api.moonshot.cn/v1"
+            client2 = LLMClient(
+                provider=LLMProvider.KIMI,
+                api_key="key",
+            )
+
+            assert client2.base_url == "https://api.moonshot.cn/v1"

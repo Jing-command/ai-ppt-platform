@@ -91,13 +91,22 @@ class TestCommand:
         def test_mark_executed_overwrite(self):
             """测试重复标记执行"""
             cmd = MockCommand()
-            cmd.mark_executed()
-            first_time = cmd.executed_at
 
-            cmd.mark_executed()
+            with patch(
+                "ai_ppt.domain.commands.base.datetime"
+            ) as mock_datetime:
+                first_time = datetime(2024, 1, 1, 12, 0, 0)
+                second_time = datetime(2024, 1, 1, 12, 0, 1)
 
-            assert cmd.executed_at != first_time
-            assert cmd.executed_at > first_time
+                mock_datetime.utcnow.return_value = first_time
+                cmd.mark_executed()
+                assert cmd.executed_at == first_time
+
+                mock_datetime.utcnow.return_value = second_time
+                cmd.mark_executed()
+
+                assert cmd.executed_at == second_time
+                assert cmd.executed_at > first_time
 
     class TestMarkUndone:
         """测试 mark_undone 方法"""
