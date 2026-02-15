@@ -72,7 +72,9 @@ class LLMClient:
         >>> client = LLMClient(provider=LLMProvider.DEEPSEEK)
         >>> response = await client.generate_outline(
         ...     user_prompt="生成销售报告PPT",
-        ...     data_schema=[DataSchema(name="sales", columns=["date", "amount"])]
+        ...     data_schema=[
+        ...         DataSchema(name="sales", columns=["date", "amount"])
+        ...     ]
         ... )
     """
 

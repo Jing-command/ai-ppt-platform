@@ -14,11 +14,9 @@ import {
   Edit,
   Copy,
   Download,
-  Filter,
   ChevronLeft,
   ChevronRight,
-  Clock,
-  AlertCircle
+  Clock
 } from 'lucide-react';
 import {AppLayout} from '@/components/layout/AppLayout';
 import {

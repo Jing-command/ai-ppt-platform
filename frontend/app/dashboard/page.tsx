@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { UserProfileModal } from '@/components/layout/UserProfileModal';
-import { useDashboard } from '@/hooks/useDashboard';
-import { containerVariants } from '@/constants/animations';
+import {useState} from 'react';
+import {motion} from 'framer-motion';
+import {UserProfileModal} from '@/components/layout/UserProfileModal';
+import {useDashboard} from '@/hooks/useDashboard';
+import {containerVariants} from '@/constants/animations';
 import {
   DashboardNavbar,
   DashboardHero,
@@ -20,7 +20,7 @@ import {
 } from '@/components/dashboard';
 
 export default function DashboardPage() {
-  const { user, isLoading, stats, error, handleRetry, handleLogout, handleUserUpdate } = useDashboard();
+  const {user, isLoading, stats, error, handleRetry, handleLogout, handleUserUpdate} = useDashboard();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   if (isLoading) {
@@ -30,7 +30,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
       <DashboardBackground />
-      
+
       <DashboardNavbar
         user={user}
         onLogout={handleLogout}
@@ -47,7 +47,7 @@ export default function DashboardPage() {
           <DashboardStats stats={stats} error={error} onRetry={handleRetry} />
           <DashboardQuickActions />
           <DashboardFeatures />
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             <DashboardRecentActivity stats={stats} />
             <DashboardTemplates />

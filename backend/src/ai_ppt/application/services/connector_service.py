@@ -50,7 +50,9 @@ class ConnectorService:
     使用示例:
         >>> service = ConnectorService(db_session)
         >>> connector = await service.create_connector(
-        ...     data=ConnectorCreate(name="MySQL", type="mysql", config={...}),
+        ...     data=ConnectorCreate(
+        ...         name="MySQL", type="mysql", config={...}
+        ...     ),
         ...     user_id=user_id,
         ... )
     """

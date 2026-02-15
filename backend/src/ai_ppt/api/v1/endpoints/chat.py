@@ -92,11 +92,15 @@ async def chat(request: ChatRequest) -> Union[StreamingResponse, ChatResponse]:
 
     响应示例 (SSE 格式):
         ```
-        data: {"content": "根据", "isFinished": false, "hasOptimizedPrompt": false}
+        data: {"content": "根据", "isFinished": false,
+        "hasOptimizedPrompt": false}
 
-        data: {"content": "您的描述", "isFinished": false, "hasOptimizedPrompt": false}
+        data: {"content": "您的描述", "isFinished": false,
+        "hasOptimizedPrompt": false}
 
-        data: {"content": "...", "isFinished": true, "hasOptimizedPrompt": true, "optimizedPrompt": "主题：销售报告\\n目标受众：领导"}
+        data: {"content": "...", "isFinished": true,
+        "hasOptimizedPrompt": true,
+        "optimizedPrompt": "主题：销售报告\\n目标受众：领导"}
         ```
     """
     # 检查是否使用流式响应

@@ -26,7 +26,9 @@ async def get_current_user(
 
     用法：
         @app.get("/items/")
-        async def read_items(current_user: User = Depends(get_current_user)):
+        async def read_items(
+            current_user: User = Depends(get_current_user)
+        ):
             ...
     """
     if not credentials:

@@ -206,7 +206,8 @@ async def recommend_charts(
                 {
                     "chartType": "bar",
                     "confidence": 0.9,
-                    "reason": "数据包含维度字段（category）和度量字段（value），适合使用柱状图展示对比关系",
+                    "reason": "数据包含维度字段（category）和度量字段"
+                    "（value），适合使用柱状图展示对比关系",
                     "fieldMapping": {
                         "xField": "category",
                         "yField": "value"

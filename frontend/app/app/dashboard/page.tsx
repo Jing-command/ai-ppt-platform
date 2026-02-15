@@ -6,7 +6,6 @@ import {motion} from 'framer-motion';
 import {
   FileText,
   Plus,
-  Search,
   TrendingUp,
   Clock,
   ChevronRight,

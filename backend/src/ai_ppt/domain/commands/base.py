@@ -20,18 +20,24 @@ class Command(ABC):
 
     使用示例:
         >>> class MyCommand(Command):
-        ...     def __init__(self, target_id: UUID, data: dict):
+        ...     def __init__(
+        ...         self, target_id: UUID, data: dict
+        ...     ):
         ...         self.target_id = target_id
         ...         self.data = data
         ...         self.previous_data = None
         ...
         ...     async def execute(self) -> None:
-        ...         self.previous_data = await fetch_data(self.target_id)
+        ...         self.previous_data = await fetch_data(
+        ...             self.target_id
+        ...         )
         ...         await update_data(self.target_id, self.data)
         ...
         ...     async def undo(self) -> None:
         ...         if self.previous_data:
-        ...             await update_data(self.target_id, self.previous_data)
+        ...             await update_data(
+        ...                 self.target_id, self.previous_data
+        ...             )
         ...
         ...     def to_dict(self) -> dict:
         ...         return {

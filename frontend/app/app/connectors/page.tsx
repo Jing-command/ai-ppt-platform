@@ -11,7 +11,6 @@ import {
   Cloud,
   HardDrive,
   Globe,
-  MoreVertical,
   Trash2,
   Edit,
   RefreshCw,

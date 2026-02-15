@@ -7,7 +7,6 @@ import {
   List,
   Plus,
   Search,
-  MoreVertical,
   Trash2,
   Edit,
   FileText,
@@ -16,7 +15,6 @@ import {
   ChevronRight,
   ChevronDown,
   FolderTree,
-  AlertCircle,
   X
 } from 'lucide-react';
 import {AppLayout} from '@/components/layout/AppLayout';

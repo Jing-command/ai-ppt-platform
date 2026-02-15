@@ -245,14 +245,14 @@ export default function GenerateOutlinePage() {
     } catch (err) {
       const axiosError = err as AxiosError;
       // 处理 401 错误或未登录情况
-      if (axiosError.response?.status === 401 || 
+      if (axiosError.response?.status === 401 ||
           (err as Error).message?.includes('未登录')) {
         router.push('/login');
         return;
       }
       // 显示错误信息
-      const errorMessage = (axiosError.response?.data as { message?: string })?.message 
-        || (err as Error).message 
+      const errorMessage = (axiosError.response?.data as { message?: string })?.message
+        || (err as Error).message
         || '生成失败，请稍后重试';
       setError(errorMessage);
     } finally {

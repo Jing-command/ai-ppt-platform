@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState, useCallback} from 'react';
+import {useEffect, useState} from 'react';
 import {useRouter, useParams} from 'next/navigation';
 import {motion, AnimatePresence} from 'framer-motion';
 import {
@@ -17,8 +17,7 @@ import {
   BarChart3,
   Layout,
   Check,
-  Sparkles,
-  X
+  Sparkles
 } from 'lucide-react';
 import {
   getPresentation,

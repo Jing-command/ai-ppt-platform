@@ -10,7 +10,6 @@ import {
   Trash2,
   ArrowUp,
   ArrowDown,
-  FileText,
   Sparkles,
   Type,
   Layout,

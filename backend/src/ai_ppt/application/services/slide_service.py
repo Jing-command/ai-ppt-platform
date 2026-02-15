@@ -37,9 +37,11 @@ class SlideService:
 
     使用示例:
         >>> service = SlideService(db_session)
-        >>> await service.update_slide(ppt_id, slide_id, updates, user_id)
-        >>> result = await service.undo(ppt_id, slide_id)  # 撤销
-        >>> result = await service.redo(ppt_id, slide_id)  # 重做
+        >>> await service.update_slide(
+        ...     ppt_id, slide_id, updates, user_id
+        ... )
+        >>> result = await service.undo(ppt_id, slide_id)
+        >>> result = await service.redo(ppt_id, slide_id)
     """
 
     # 每个 PPT 的命令历史（实际项目中应该持久化到数据库或 Redis）

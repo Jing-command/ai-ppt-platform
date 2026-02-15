@@ -31,7 +31,7 @@ const settingsSections = [
 
 export default function SettingsPage() {
   const [activeSection, setActiveSection] = useState('profile');
-  const [user, setUser] = useState<UserType | null>(null);
+  const [, setUser] = useState<UserType | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
