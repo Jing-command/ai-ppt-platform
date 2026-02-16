@@ -3,7 +3,6 @@ AI 聊天服务模块
 处理用户与 AI 提示词助手的对话逻辑
 """
 
-import asyncio
 import re
 from typing import AsyncIterator, List, Optional
 
@@ -15,6 +14,74 @@ from ai_ppt.api.v1.schemas.chat import (
     IntentType,
     MessageRole,
 )
+from ai_ppt.infrastructure.ai.client import LLMClient, LLMProvider
+from ai_ppt.infrastructure.ai.models import LLMRequest
+from ai_ppt.infrastructure.config import settings
+
+
+# AI 提示词助手的系统提示词
+CHAT_SYSTEM_PROMPT = """你是一个专业的 AI 提示词助手，专门帮助用户优化和生成 PPT 提示词。
+
+你的主要职责：
+1. 与用户进行友好的对话，了解他们的 PPT 需求
+2. 引导用户明确 PPT 的主题、受众、目的和风格
+3. 当用户需求明确后，生成优化后的 PPT 提示词
+
+对话风格：
+- 友好、专业、有耐心
+- 使用清晰的中文
+- 适当使用表情符号增加亲和力
+
+## 重要：输出格式规则
+
+### 思考过程（可选）
+在回复之前，你可以先进行思考分析。使用以下格式：
+
+[THINKING_START]
+你的思考过程...
+[THINKING_END]
+
+### 优化提示词（仅在确认生成时使用）
+**只有当你明确决定为用户生成优化后的提示词时**，才使用以下格式：
+
+[PROMPT_START]
+主题：xxx
+目标受众：xxx
+演示目的：xxx
+设计风格：xxx
+[PROMPT_END]
+
+## 关键规则
+
+1. **不要滥用 [PROMPT_START]**：只有当用户明确要求生成提示词，或者你已经充分了解用户需求并决定给出最终优化结果时，才使用这个格式。
+
+2. **正常对话时不要输出标记**：如果你还在和用户聊天、了解需求、提供建议，不要使用 [PROMPT_START]...[PROMPT_END]。
+
+3. **思考过程是可选的**：简单问题可以不写思考过程。
+
+## 示例
+
+**场景1：还在了解需求（不要输出 PROMPT 标记）**
+用户：我想做一个PPT
+你的回复：好的！请问这个PPT是关于什么主题的呢？是用于什么场合的？
+
+**场景2：需求明确，生成优化提示词**
+用户：我想做一个产品发布会的PPT，面向媒体和合作伙伴
+你的回复：
+[THINKING_START]
+用户需求明确：产品发布会PPT，受众是媒体和合作伙伴。可以生成优化提示词。
+[THINKING_END]
+
+好的，我来帮你优化提示词！
+
+[PROMPT_START]
+主题：新产品发布会
+目标受众：媒体、合作伙伴、潜在客户
+演示目的：产品发布与品牌宣传
+设计风格：科技感、现代简约
+[PROMPT_END]
+
+你可以直接使用这个提示词，或者告诉我需要调整的地方！"""
 
 
 class ChatService:
@@ -63,7 +130,39 @@ class ChatService:
 
     def __init__(self) -> None:
         """初始化聊天服务"""
-        pass
+        self._llm_client: Optional[LLMClient] = None
+        self._use_real_llm = True  # 是否使用真实大模型
+
+    def _get_llm_client(self) -> LLMClient:
+        """获取或创建 LLM 客户端（使用独立的提示词助手配置）"""
+        if self._llm_client is None:
+            try:
+                # 使用独立的提示词助手配置
+                provider = settings.chat_ai_provider
+                api_key = settings.chat_ai_api_key.get_secret_value()
+                
+                # 如果环境变量中设置了 CHAT_AI_API_KEY，优先使用
+                import os
+                env_api_key = os.environ.get("CHAT_AI_API_KEY")
+                if env_api_key:
+                    api_key = env_api_key
+                
+                if not api_key:
+                    raise ValueError("Chat AI API key not configured")
+                
+                self._llm_client = LLMClient(
+                    provider=LLMProvider(settings.chat_ai_provider),
+                    api_key=api_key,
+                    base_url=settings.chat_ai_base_url,
+                    model=settings.chat_ai_model,
+                    timeout=settings.chat_ai_timeout,
+                )
+            except Exception as e:
+                # 如果无法创建 LLM 客户端，回退到模拟模式
+                print(f"Warning: Failed to create chat LLM client: {e}")
+                self._use_real_llm = False
+                self._llm_client = None
+        return self._llm_client
 
     def analyze_intent(
         self,
@@ -360,48 +459,9 @@ class ChatService:
         Yields:
             响应块
         """
-        # 分析意图
-        intent = self.analyze_intent(messages, context)
-
-        # 根据意图生成响应
-        if intent.intent_type == IntentType.CLARIFICATION:
-            response_text = self._generate_clarification_response(intent)
-            has_optimized = False
-            optimized_prompt = None
-
-        elif intent.intent_type == IntentType.PROMPT_OPTIMIZATION:
-            response_text = self._generate_optimization_response(intent)
-            has_optimized = True
-            optimized_prompt = self.generate_optimized_prompt(
-                messages, context
-            )
-
-        elif intent.intent_type == IntentType.SUGGESTION:
-            response_text = self._generate_suggestion_response(intent)
-            has_optimized = False
-            optimized_prompt = None
-
-        else:
-            response_text = self._generate_general_response(messages)
-            has_optimized = False
-            optimized_prompt = None
-
-        # 模拟流式输出 - 逐字符发送
-        chunk_size = 3  # 每次发送的字符数
-
-        for i in range(0, len(response_text), chunk_size):
-            chunk_content = response_text[i : i + chunk_size]
-            is_last = i + chunk_size >= len(response_text)
-
-            yield ChatResponseChunk(
-                content=chunk_content,
-                is_finished=is_last,
-                has_optimized_prompt=has_optimized if is_last else False,
-                optimized_prompt=optimized_prompt if is_last else None,
-            )
-
-            # 模拟打字延迟
-            await asyncio.sleep(0.02)
+        # 直接使用真实大模型
+        async for chunk in self._generate_llm_response_stream(messages, context):
+            yield chunk
 
     def _generate_clarification_response(self, intent: IntentAnalysis) -> str:
         """生成澄清类型的响应"""
@@ -457,6 +517,146 @@ class ChatService:
         # 默认响应
         return "我可以帮助您优化 PPT 生成的提示词。请描述您想制作的 PPT 内容，我会提供专业的建议。"
 
+    async def _generate_llm_response_stream(
+        self,
+        messages: List[ChatMessage],
+        context: Optional[ChatContext] = None,
+    ) -> AsyncIterator[ChatResponseChunk]:
+        """
+        使用真实大模型生成流式响应
+
+        Args:
+            messages: 聊天消息列表
+            context: 上下文信息
+
+        Yields:
+            响应块
+        """
+        # 构建消息列表
+        llm_messages = [{"role": "system", "content": CHAT_SYSTEM_PROMPT}]
+
+        # 添加历史消息
+        for msg in messages:
+            role_value = msg.role.value if hasattr(msg.role, 'value') else msg.role
+            llm_messages.append({
+                "role": role_value,
+                "content": msg.content
+            })
+
+        # 创建 LLM 请求
+        request = LLMRequest(
+            messages=llm_messages,
+            temperature=settings.chat_ai_temperature,
+            max_tokens=settings.chat_ai_max_tokens,
+            stream=True,
+        )
+
+        # 获取 LLM 客户端
+        client = self._get_llm_client()
+        if client is None:
+            # 如果无法获取客户端，返回错误
+            yield ChatResponseChunk(
+                content="抱歉，AI 服务暂时不可用，请检查配置后重试。",
+                is_finished=True,
+                has_optimized_prompt=False,
+                optimized_prompt=None,
+                thinking_content=None,
+            )
+            return
+
+        # 调用大模型流式接口
+        full_response = ""
+        
+        async for chunk in client.complete_stream(request):
+            full_response += chunk.content
+            # 不再实时输出，先收集完整响应
+
+        # 提取思考内容和优化后的提示词
+        thinking_content = self._extract_thinking_content(full_response)
+        optimized_prompt = self._extract_optimized_prompt(full_response)
+        
+        if optimized_prompt:
+            # 如果有优化提示词，只输出固定结束语
+            yield ChatResponseChunk(
+                content="如果有哪里不满意，可以直接提出来，我再修改 😊",
+                is_finished=False,
+                has_optimized_prompt=False,
+                optimized_prompt=None,
+                thinking_content=thinking_content,
+            )
+            # 然后输出提示词卡片
+            yield ChatResponseChunk(
+                content="",
+                is_finished=True,
+                has_optimized_prompt=True,
+                optimized_prompt=optimized_prompt,
+                thinking_content=thinking_content,
+            )
+        else:
+            # 没有优化提示词时，清理响应中的标记后输出
+            clean_response = self._clean_response(full_response)
+            yield ChatResponseChunk(
+                content=clean_response,
+                is_finished=True,
+                has_optimized_prompt=False,
+                optimized_prompt=None,
+                thinking_content=thinking_content,
+            )
+
+    def _clean_response(self, response: str) -> str:
+        """
+        清理响应中的标记
+
+        Args:
+            response: 原始响应内容
+
+        Returns:
+            清理后的响应内容
+        """
+        # 移除思考块
+        clean = re.sub(r'\[THINKING_START[^\]]*\]', '', response)
+        clean = re.sub(r'\[THINKING_END[^\]]*\]', '', clean)
+        # 移除提示词块
+        clean = re.sub(r'\[PROMPT_START[^\]]*\].*?\[PROMPT_END[^\]]*\]', '', clean, flags=re.DOTALL)
+        # 清理多余空白
+        clean = re.sub(r'\n{3,}', '\n\n', clean)
+        return clean.strip()
+
+    def _extract_thinking_content(self, response: str) -> Optional[str]:
+        """
+        从大模型响应中提取思考内容
+
+        Args:
+            response: 大模型的响应内容
+
+        Returns:
+            思考内容，如果没有则返回 None
+        """
+        # 使用正则表达式匹配，支持标记后跟其他字符的情况
+        pattern = r'\[THINKING_START[^\]]*\](.*?)\[THINKING_END[^\]]*\]'
+        match = re.search(pattern, response, re.DOTALL)
+        if match:
+            thinking = match.group(1).strip()
+            return thinking if thinking else None
+        return None
+
+    def _extract_optimized_prompt(self, response: str) -> Optional[str]:
+        """
+        从大模型响应中提取优化后的提示词
+
+        Args:
+            response: 大模型的响应内容
+
+        Returns:
+            优化后的提示词，如果没有则返回 None
+        """
+        # 使用正则表达式匹配，支持标记后跟其他字符的情况
+        pattern = r'\[PROMPT_START[^\]]*\](.*?)\[PROMPT_END[^\]]*\]'
+        match = re.search(pattern, response, re.DOTALL)
+        if match:
+            prompt = match.group(1).strip()
+            return prompt if prompt else None
+        return None
 
 # 创建全局服务实例
 chat_service = ChatService()

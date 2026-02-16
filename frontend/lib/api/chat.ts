@@ -17,6 +17,7 @@ export interface ChatStreamChunk {
     isFinished: boolean;         // 是否完成
     hasOptimizedPrompt: boolean; // 是否包含优化后的提示词
     optimizedPrompt?: string;    // 优化后的提示词（可选）
+    thinkingContent?: string;    // 思考过程内容（可选）
 }
 
 /**

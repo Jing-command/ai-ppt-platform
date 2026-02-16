@@ -155,7 +155,9 @@ export default function PromptsAssistantPage() {
                                 // 如果完成，更新状态
                                 isStreaming: !chunk.isFinished,
                                 // 如果有优化后的提示词，保存
-                                optimizedPrompt: chunk.optimizedPrompt || msg.optimizedPrompt
+                                optimizedPrompt: chunk.optimizedPrompt || msg.optimizedPrompt,
+                                // 如果有思考内容，保存
+                                thinkingContent: chunk.thinkingContent || msg.thinkingContent
                             };
                         }
                         return msg;

@@ -31,6 +31,8 @@ class LLMProvider(str, Enum):
     OPENAI = "openai"
     DEEPSEEK = "deepseek"
     KIMI = "kimi"
+    ANTHROPIC = "anthropic"
+    YUNWU = "yunwu"
 
 
 class LLMClientError(Exception):
@@ -83,12 +85,16 @@ class LLMClient:
         LLMProvider.OPENAI: "https://api.openai.com/v1",
         LLMProvider.DEEPSEEK: "https://api.deepseek.com/v1",
         LLMProvider.KIMI: "https://api.moonshot.cn/v1",
+        LLMProvider.ANTHROPIC: "https://api.anthropic.com/v1",
+        LLMProvider.YUNWU: "https://yunwu.ai/v1",
     }
 
     DEFAULT_MODELS = {
         LLMProvider.OPENAI: "gpt-4",
         LLMProvider.DEEPSEEK: "deepseek-chat",
         LLMProvider.KIMI: "moonshot-v1-8k",
+        LLMProvider.ANTHROPIC: "claude-haiku-4-5-2025-01-20",
+        LLMProvider.YUNWU: "claude-sonnet-4-20250514",
     }
 
     def __init__(
@@ -159,6 +165,13 @@ class LLMClient:
 
     def _get_headers(self) -> Dict[str, str]:
         """获取 API 请求头"""
+        if self.provider == LLMProvider.ANTHROPIC:
+            # Anthropic 使用 x-api-key 认证
+            return {
+                "x-api-key": self.api_key,
+                "Content-Type": "application/json",
+                "anthropic-version": "2023-06-01",
+            }
         return {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
@@ -166,13 +179,30 @@ class LLMClient:
 
     def _build_request_body(self, request: LLMRequest) -> Dict[str, Any]:
         """构建 API 请求体"""
+        # Anthropic 使用不同的 API 格式
+        if self.provider == LLMProvider.ANTHROPIC:
+            body: Dict[str, Any] = {
+                "model": self.model,
+                "messages": request.messages,
+                "max_tokens": request.max_tokens or 1024,
+                "stream": request.stream,
+            }
+            if request.temperature:
+                body["temperature"] = request.temperature
+            return body
+        
         body: Dict[str, Any] = {
             "model": self.model,
             "messages": request.messages,
-            "temperature": request.temperature,
             "max_tokens": request.max_tokens,
             "stream": request.stream,
         }
+        
+        # Kimi kimi-k2.5 模型只支持 temperature=1
+        if self.provider == LLMProvider.KIMI:
+            body["temperature"] = 1
+        else:
+            body["temperature"] = request.temperature
 
         # OpenAI、Kimi 和 DeepSeek 都支持 response_format
         # 使用 OpenAI 兼容格式
@@ -185,6 +215,31 @@ class LLMClient:
         self, data: Dict[str, Any], latency_ms: float
     ) -> LLMResponse:
         """解析 API 响应"""
+        # Anthropic 使用不同的响应格式
+        if self.provider == LLMProvider.ANTHROPIC:
+            content = data.get("content", [])
+            if content and isinstance(content, list):
+                text_content = content[0].get("text", "")
+            else:
+                text_content = str(content)
+            
+            usage_data = data.get("usage", {})
+            usage = Usage(
+                prompt_tokens=usage_data.get("input_tokens", 0),
+                completion_tokens=usage_data.get("output_tokens", 0),
+                total_tokens=usage_data.get("input_tokens", 0) + usage_data.get("output_tokens", 0),
+            )
+            
+            return LLMResponse(
+                content=text_content,
+                model=data.get("model", self.model),
+                provider=self.provider.value,
+                usage=usage,
+                finish_reason=data.get("stop_reason"),
+                latency_ms=latency_ms,
+            )
+        
+        # OpenAI、Kimi、DeepSeek 格式
         choice = data["choices"][0]
 
         # 提取使用统计
@@ -244,6 +299,7 @@ class LLMClient:
             ) from e
         except httpx.HTTPStatusError as e:
             response_body = e.response.text if hasattr(e, "response") else None
+            logger.error(f"LLM API error: status={e.response.status_code}, body={response_body}")
             raise LLMAPIError(
                 f"LLM API error: {e}",
                 status_code=(
@@ -268,6 +324,12 @@ class LLMClient:
         Yields:
             流式响应块
         """
+        # Anthropic 使用不同的流式 API
+        if self.provider == LLMProvider.ANTHROPIC:
+            async for chunk in self._complete_stream_anthropic(request):
+                yield chunk
+            return
+        
         request_dict = request.model_dump()
         request_dict["stream"] = True
         stream_request = LLMRequest(**request_dict)
@@ -452,6 +514,72 @@ class LLMClient:
             ) from e
         except Exception as e:
             raise LLMFormatError(f"Invalid enhancement format: {e}") from e
+
+    async def _complete_stream_anthropic(
+        self, request: LLMRequest
+    ) -> AsyncIterator[StreamingChunk]:
+        """
+        Anthropic 流式 API 处理
+
+        Args:
+            request: LLM 请求参数
+
+        Yields:
+            流式响应块
+        """
+        body = self._build_request_body(request)
+        
+        try:
+            async with self._client.stream(
+                "POST", "/messages", json=body
+            ) as response:
+                response.raise_for_status()
+
+                async for line in response.aiter_lines():
+                    line = line.strip()
+
+                    if not line or line.startswith(":"):
+                        continue
+
+                    if line.startswith("data: "):
+                        data_str = line[6:]
+
+                        if data_str == "[DONE]":
+                            yield StreamingChunk(
+                                content="", is_finished=True, index=0
+                            )
+                            break
+
+                        try:
+                            data = json.loads(data_str)
+                            
+                            # Anthropic 流式响应格式
+                            if data.get("type") == "content_block_delta":
+                                delta = data.get("delta", {})
+                                if delta.get("type") == "text_delta":
+                                    content = delta.get("text", "")
+                                    if content:
+                                        yield StreamingChunk(
+                                            content=content,
+                                            is_finished=False,
+                                            index=0,
+                                        )
+                            
+                            # 检查是否完成
+                            if data.get("type") == "message_delta":
+                                yield StreamingChunk(
+                                    content="",
+                                    is_finished=True,
+                                    index=0,
+                                )
+
+                        except json.JSONDecodeError:
+                            continue
+
+        except httpx.TimeoutException as e:
+            raise LLMTimeoutError("Anthropic streaming request timed out") from e
+        except httpx.HTTPError as e:
+            raise LLMAPIError(f"Anthropic streaming request failed: {e}") from e
 
     async def close(self) -> None:
         """关闭 HTTP 客户端"""

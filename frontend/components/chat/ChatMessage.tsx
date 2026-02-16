@@ -3,8 +3,9 @@
 
 'use client';
 
-import {motion} from 'framer-motion';
-import {Sparkles, User} from 'lucide-react';
+import {useState} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Sparkles, User, ChevronDown, ChevronRight, Brain} from 'lucide-react';
 import PromptCard from './PromptCard';
 
 /**
@@ -15,6 +16,7 @@ export interface MessageData {
     role: 'user' | 'assistant';    // 消息角色
     content: string;               // 消息内容
     optimizedPrompt?: string;      // 优化后的提示词（仅 AI 消息）
+    thinkingContent?: string;      // 思考过程内容（仅 AI 消息）
     isStreaming?: boolean;         // 是否正在流式输出
 }
 
@@ -28,11 +30,13 @@ interface ChatMessageProps {
 /**
  * 聊天消息组件
  * 根据角色显示不同样式的消息气泡
- * AI 消息支持显示优化后的提示词卡片
+ * AI 消息支持显示思考过程和优化后的提示词卡片
  */
 export default function ChatMessage({message}: ChatMessageProps) {
     // 判断是否是用户消息
     const isUser = message.role === 'user';
+    // 思考内容折叠状态
+    const [isThinkingExpanded, setIsThinkingExpanded] = useState(false);
 
     return (
         <motion.div
@@ -59,6 +63,43 @@ export default function ChatMessage({message}: ChatMessageProps) {
 
             {/* 消息内容区域 */}
             <div className={`flex-1 max-w-[80%] ${isUser ? 'text-right' : 'text-left'}`}>
+                {/* 思考过程折叠区域（仅 AI 消息且有思考内容时显示） */}
+                {!isUser && message.thinkingContent && (
+                    <motion.div
+                        initial={{opacity: 0, y: -5}}
+                        animate={{opacity: 1, y: 0}}
+                        className="mb-2"
+                    >
+                        <button
+                            onClick={() => setIsThinkingExpanded(!isThinkingExpanded)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                        >
+                            <Brain className="w-3.5 h-3.5" />
+                            <span>思考过程</span>
+                            {isThinkingExpanded ? (
+                                <ChevronDown className="w-3.5 h-3.5" />
+                            ) : (
+                                <ChevronRight className="w-3.5 h-3.5" />
+                            )}
+                        </button>
+                        <AnimatePresence>
+                            {isThinkingExpanded && (
+                                <motion.div
+                                    initial={{opacity: 0, height: 0}}
+                                    animate={{opacity: 1, height: 'auto'}}
+                                    exit={{opacity: 0, height: 0}}
+                                    transition={{duration: 0.2}}
+                                    className="mt-2 overflow-hidden"
+                                >
+                                    <div className="px-4 py-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
+                                        {message.thinkingContent}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
+                )}
+
                 {/* 消息气泡 */}
                 <motion.div
                     // 气泡动画：轻微缩放

@@ -71,6 +71,7 @@ class ChatResponseChunk(BaseModel):
         default=False, description="是否包含优化后的提示词"
     )
     optimized_prompt: Optional[str] = Field(None, description="优化后的提示词")
+    thinking_content: Optional[str] = Field(None, description="思考过程内容")
 
     model_config = ConfigDict(populate_by_name=True)
 
