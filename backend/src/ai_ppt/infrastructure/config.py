@@ -81,9 +81,13 @@ class Settings(BaseSettings):
     chat_ai_api_key: SecretStr = Field(
         default_factory=lambda: SecretStr(""), alias="CHAT_AI_API_KEY"
     )
-    chat_ai_base_url: Optional[str] = Field(default=None, alias="CHAT_AI_BASE_URL")
+    chat_ai_base_url: Optional[str] = Field(
+        default=None, alias="CHAT_AI_BASE_URL"
+    )
     chat_ai_model: str = Field(default="deepseek-chat", alias="CHAT_AI_MODEL")
-    chat_ai_temperature: float = Field(default=0.7, alias="CHAT_AI_TEMPERATURE")
+    chat_ai_temperature: float = Field(
+        default=0.7, alias="CHAT_AI_TEMPERATURE"
+    )
     chat_ai_max_tokens: int = Field(default=2048, alias="CHAT_AI_MAX_TOKENS")
     chat_ai_timeout: int = Field(default=60, alias="CHAT_AI_TIMEOUT")
 

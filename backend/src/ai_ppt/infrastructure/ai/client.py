@@ -190,14 +190,14 @@ class LLMClient:
             if request.temperature:
                 body["temperature"] = request.temperature
             return body
-        
+
         body: Dict[str, Any] = {
             "model": self.model,
             "messages": request.messages,
             "max_tokens": request.max_tokens,
             "stream": request.stream,
         }
-        
+
         # Kimi kimi-k2.5 模型只支持 temperature=1
         if self.provider == LLMProvider.KIMI:
             body["temperature"] = 1
@@ -222,14 +222,15 @@ class LLMClient:
                 text_content = content[0].get("text", "")
             else:
                 text_content = str(content)
-            
+
             usage_data = data.get("usage", {})
             usage = Usage(
                 prompt_tokens=usage_data.get("input_tokens", 0),
                 completion_tokens=usage_data.get("output_tokens", 0),
-                total_tokens=usage_data.get("input_tokens", 0) + usage_data.get("output_tokens", 0),
+                total_tokens=usage_data.get("input_tokens", 0)
+                + usage_data.get("output_tokens", 0),
             )
-            
+
             return LLMResponse(
                 content=text_content,
                 model=data.get("model", self.model),
@@ -238,7 +239,7 @@ class LLMClient:
                 finish_reason=data.get("stop_reason"),
                 latency_ms=latency_ms,
             )
-        
+
         # OpenAI、Kimi、DeepSeek 格式
         choice = data["choices"][0]
 
@@ -299,7 +300,9 @@ class LLMClient:
             ) from e
         except httpx.HTTPStatusError as e:
             response_body = e.response.text if hasattr(e, "response") else None
-            logger.error(f"LLM API error: status={e.response.status_code}, body={response_body}")
+            logger.error(
+                f"LLM API error: status={e.response.status_code}, body={response_body}"
+            )
             raise LLMAPIError(
                 f"LLM API error: {e}",
                 status_code=(
@@ -329,7 +332,7 @@ class LLMClient:
             async for chunk in self._complete_stream_anthropic(request):
                 yield chunk
             return
-        
+
         request_dict = request.model_dump()
         request_dict["stream"] = True
         stream_request = LLMRequest(**request_dict)
@@ -528,7 +531,7 @@ class LLMClient:
             流式响应块
         """
         body = self._build_request_body(request)
-        
+
         try:
             async with self._client.stream(
                 "POST", "/messages", json=body
@@ -552,7 +555,7 @@ class LLMClient:
 
                         try:
                             data = json.loads(data_str)
-                            
+
                             # Anthropic 流式响应格式
                             if data.get("type") == "content_block_delta":
                                 delta = data.get("delta", {})
@@ -564,7 +567,7 @@ class LLMClient:
                                             is_finished=False,
                                             index=0,
                                         )
-                            
+
                             # 检查是否完成
                             if data.get("type") == "message_delta":
                                 yield StreamingChunk(
@@ -577,9 +580,13 @@ class LLMClient:
                             continue
 
         except httpx.TimeoutException as e:
-            raise LLMTimeoutError("Anthropic streaming request timed out") from e
+            raise LLMTimeoutError(
+                "Anthropic streaming request timed out"
+            ) from e
         except httpx.HTTPError as e:
-            raise LLMAPIError(f"Anthropic streaming request failed: {e}") from e
+            raise LLMAPIError(
+                f"Anthropic streaming request failed: {e}"
+            ) from e
 
     async def close(self) -> None:
         """关闭 HTTP 客户端"""

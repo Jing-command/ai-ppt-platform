@@ -18,7 +18,6 @@ from ai_ppt.infrastructure.ai.client import LLMClient, LLMProvider
 from ai_ppt.infrastructure.ai.models import LLMRequest
 from ai_ppt.infrastructure.config import settings
 
-
 # AI 提示词助手的系统提示词
 CHAT_SYSTEM_PROMPT = """你是一个专业的 AI 提示词助手，专门帮助用户优化和生成 PPT 提示词。
 
@@ -140,16 +139,17 @@ class ChatService:
                 # 使用独立的提示词助手配置
                 provider = settings.chat_ai_provider
                 api_key = settings.chat_ai_api_key.get_secret_value()
-                
+
                 # 如果环境变量中设置了 CHAT_AI_API_KEY，优先使用
                 import os
+
                 env_api_key = os.environ.get("CHAT_AI_API_KEY")
                 if env_api_key:
                     api_key = env_api_key
-                
+
                 if not api_key:
                     raise ValueError("Chat AI API key not configured")
-                
+
                 self._llm_client = LLMClient(
                     provider=LLMProvider(settings.chat_ai_provider),
                     api_key=api_key,
@@ -460,7 +460,9 @@ class ChatService:
             响应块
         """
         # 直接使用真实大模型
-        async for chunk in self._generate_llm_response_stream(messages, context):
+        async for chunk in self._generate_llm_response_stream(
+            messages, context
+        ):
             yield chunk
 
     def _generate_clarification_response(self, intent: IntentAnalysis) -> str:
@@ -537,11 +539,10 @@ class ChatService:
 
         # 添加历史消息
         for msg in messages:
-            role_value = msg.role.value if hasattr(msg.role, 'value') else msg.role
-            llm_messages.append({
-                "role": role_value,
-                "content": msg.content
-            })
+            role_value = (
+                msg.role.value if hasattr(msg.role, "value") else msg.role
+            )
+            llm_messages.append({"role": role_value, "content": msg.content})
 
         # 创建 LLM 请求
         request = LLMRequest(
@@ -566,7 +567,7 @@ class ChatService:
 
         # 调用大模型流式接口
         full_response = ""
-        
+
         async for chunk in client.complete_stream(request):
             full_response += chunk.content
             # 不再实时输出，先收集完整响应
@@ -574,7 +575,7 @@ class ChatService:
         # 提取思考内容和优化后的提示词
         thinking_content = self._extract_thinking_content(full_response)
         optimized_prompt = self._extract_optimized_prompt(full_response)
-        
+
         if optimized_prompt:
             # 如果有优化提示词，只输出固定结束语
             yield ChatResponseChunk(
@@ -614,12 +615,17 @@ class ChatService:
             清理后的响应内容
         """
         # 移除思考块
-        clean = re.sub(r'\[THINKING_START[^\]]*\]', '', response)
-        clean = re.sub(r'\[THINKING_END[^\]]*\]', '', clean)
+        clean = re.sub(r"\[THINKING_START[^\]]*\]", "", response)
+        clean = re.sub(r"\[THINKING_END[^\]]*\]", "", clean)
         # 移除提示词块
-        clean = re.sub(r'\[PROMPT_START[^\]]*\].*?\[PROMPT_END[^\]]*\]', '', clean, flags=re.DOTALL)
+        clean = re.sub(
+            r"\[PROMPT_START[^\]]*\].*?\[PROMPT_END[^\]]*\]",
+            "",
+            clean,
+            flags=re.DOTALL,
+        )
         # 清理多余空白
-        clean = re.sub(r'\n{3,}', '\n\n', clean)
+        clean = re.sub(r"\n{3,}", "\n\n", clean)
         return clean.strip()
 
     def _extract_thinking_content(self, response: str) -> Optional[str]:
@@ -633,7 +639,7 @@ class ChatService:
             思考内容，如果没有则返回 None
         """
         # 使用正则表达式匹配，支持标记后跟其他字符的情况
-        pattern = r'\[THINKING_START[^\]]*\](.*?)\[THINKING_END[^\]]*\]'
+        pattern = r"\[THINKING_START[^\]]*\](.*?)\[THINKING_END[^\]]*\]"
         match = re.search(pattern, response, re.DOTALL)
         if match:
             thinking = match.group(1).strip()
@@ -651,12 +657,13 @@ class ChatService:
             优化后的提示词，如果没有则返回 None
         """
         # 使用正则表达式匹配，支持标记后跟其他字符的情况
-        pattern = r'\[PROMPT_START[^\]]*\](.*?)\[PROMPT_END[^\]]*\]'
+        pattern = r"\[PROMPT_START[^\]]*\](.*?)\[PROMPT_END[^\]]*\]"
         match = re.search(pattern, response, re.DOTALL)
         if match:
             prompt = match.group(1).strip()
             return prompt if prompt else None
         return None
+
 
 # 创建全局服务实例
 chat_service = ChatService()
