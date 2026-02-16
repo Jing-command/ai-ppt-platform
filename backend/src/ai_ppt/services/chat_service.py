@@ -137,7 +137,6 @@ class ChatService:
         if self._llm_client is None:
             try:
                 # 使用独立的提示词助手配置
-                provider = settings.chat_ai_provider
                 api_key = settings.chat_ai_api_key.get_secret_value()
 
                 # 如果环境变量中设置了 CHAT_AI_API_KEY，优先使用
