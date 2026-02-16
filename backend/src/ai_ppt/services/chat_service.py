@@ -132,7 +132,7 @@ class ChatService:
         self._llm_client: Optional[LLMClient] = None
         self._use_real_llm = True  # 是否使用真实大模型
 
-    def _get_llm_client(self) -> LLMClient:
+    def _get_llm_client(self) -> Optional[LLMClient]:
         """获取或创建 LLM 客户端（使用独立的提示词助手配置）"""
         if self._llm_client is None:
             try:

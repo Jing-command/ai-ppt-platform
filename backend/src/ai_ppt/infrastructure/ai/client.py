@@ -179,9 +179,11 @@ class LLMClient:
 
     def _build_request_body(self, request: LLMRequest) -> Dict[str, Any]:
         """构建 API 请求体"""
+        body: Dict[str, Any]
+
         # Anthropic 使用不同的 API 格式
         if self.provider == LLMProvider.ANTHROPIC:
-            body: Dict[str, Any] = {
+            body = {
                 "model": self.model,
                 "messages": request.messages,
                 "max_tokens": request.max_tokens or 1024,
@@ -191,7 +193,7 @@ class LLMClient:
                 body["temperature"] = request.temperature
             return body
 
-        body: Dict[str, Any] = {
+        body = {
             "model": self.model,
             "messages": request.messages,
             "max_tokens": request.max_tokens,
